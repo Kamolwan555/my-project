@@ -9,12 +9,13 @@ EnvironmentOutlined,
 ShoppingOutlined,
 DashboardOutlined,
 DotChartOutlined,
-FileTextOutlined 
+FileTextOutlined,
+LogoutOutlined
 } from '@ant-design/icons';
 import { Button, Breadcrumb, Layout, Menu, theme } from 'antd';
 const { Header, Sider, Content } = Layout;
 
-const Drawer = () => {
+const Navigation = () => {
 const [collapsed, setCollapsed] = useState(false);
 const {
 token: { colorBgContainer, borderRadiusLG },
@@ -75,6 +76,14 @@ return (
             icon: <ReadOutlined />,
             label: <Link to="/recommend">คำแนะนำ</Link>,
         },
+        {
+            type: 'divider',
+        },
+        {
+            key: '8',
+            icon: <LogoutOutlined />,
+            label: <Link to="/login">ออกจากระบบ</Link>,
+        },
         ]}
         
     />
@@ -125,4 +134,4 @@ return (
 );
 };
 
-export default Drawer;
+export default Navigation;
