@@ -1,6 +1,6 @@
 import { Button, Checkbox, Form, Grid, Input, theme, Typography } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
@@ -9,17 +9,42 @@ const { Text, Title, Link } = Typography;
 export default function Login() {
   const { token } = useToken();
   const screens = useBreakpoint();
-  const navigate = useNavigate(); 
-
+  const navigate = useNavigate();
+  const login = (usernameOrEmail, password, callback) => {
+    fetch(`${import.meta.env.VITE_APP_API_HOST}/login`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        username_or_email: usernameOrEmail,
+        password: password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.access_token) {
+          localStorage.setItem("accessToken", res.access_token);
+          callback();
+        }
+      })
+      .catch(() => {
+        alert("something went wrong");
+      });
+  };
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    navigate("/nav"); 
+    login(values.email, values.password, () => {
+      navigate("/home");
+    });
   };
 
   const styles = {
     container: {
       margin: "0 auto",
-      padding: screens.md ? `${token.paddingXL}px` : `${token.sizeXXL}px ${token.padding}px`,
+      padding: screens.md
+        ? `${token.paddingXL}px`
+        : `${token.sizeXXL}px ${token.padding}px`,
       width: "380px",
     },
     footer: {
@@ -32,7 +57,7 @@ export default function Login() {
     },
     header: {
       marginBottom: token.marginXL,
-      textAlign: "center", 
+      textAlign: "center",
     },
     section: {
       alignItems: "center",
@@ -55,8 +80,7 @@ export default function Login() {
         <div style={styles.header}>
           <Title style={styles.title}>Login</Title>
           <Text style={styles.text}>
-            Welcome back! Please enter your details below to
-            sign in.
+            Welcome back! Please enter your details below to sign in.
           </Text>
         </div>
         <Form
