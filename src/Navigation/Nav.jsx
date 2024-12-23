@@ -84,7 +84,7 @@ const Navigation = () => {
             {
                 key: "8",
                 icon: <LogoutOutlined />,
-                label: <Link to="/login">ออกจากระบบ</Link>,
+                label: <Link to="/">ออกจากระบบ</Link>,
             },
             ]}
         />
