@@ -44,7 +44,7 @@ return (
         {
             key: '1',
             icon: <DashboardOutlined />,
-            label: <Link to="/home">หน้าหลัก</Link>,
+            label: <Link to="/Home">หน้าหลัก</Link>,
         },
         {
             key: '2',

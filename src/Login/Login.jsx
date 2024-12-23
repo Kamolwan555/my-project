@@ -35,7 +35,7 @@ export default function Login() {
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
     login(values.email, values.password, () => {
-      navigate("/home");
+      navigate("/Home");
     });
   };
 
