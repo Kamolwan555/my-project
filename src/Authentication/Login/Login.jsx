@@ -13,7 +13,7 @@ export default function Login() {
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    navigate("/nav"); 
+    navigate("/home"); 
   };
 
   const styles = {
@@ -53,10 +53,9 @@ export default function Login() {
     <section style={styles.section}>
       <div style={styles.container}>
         <div style={styles.header}>
-          <Title style={styles.title}>Login</Title>
+          <Title style={styles.title}>เข้าสู่ระบบ</Title>
           <Text style={styles.text}>
-            Welcome back! Please enter your details below to
-            sign in.
+          กรุณากรอกรายละเอียดด้านล่างเพื่อเข้าสู่ระบบ
           </Text>
         </div>
         <Form
@@ -74,42 +73,41 @@ export default function Login() {
               {
                 type: "email",
                 required: true,
-                message: "Please input your Email!",
+                message: "กรุณาใส่อีเมลของคุณ!",
               },
             ]}
           >
-            <Input prefix={<MailOutlined />} placeholder="Email" />
+            <Input prefix={<MailOutlined />} placeholder="ชื่อผู้ใช้หรืออีเมล" />
           </Form.Item>
           <Form.Item
             name="password"
             rules={[
               {
                 required: true,
-                message: "Please input your Password!",
+                message: "กรุณาใส่รหัสผ่านของคุณ!",
               },
             ]}
           >
             <Input.Password
               prefix={<LockOutlined />}
               type="password"
-              placeholder="Password"
+              placeholder="รหัสผ่าน"
             />
           </Form.Item>
+
           <Form.Item>
             <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
+              <Checkbox>จดจำฉันไว้</Checkbox>
             </Form.Item>
-            <a style={styles.forgotPassword} href="#">
-              Forgot password?
-            </a>
           </Form.Item>
+
           <Form.Item style={{ marginBottom: "0px" }}>
             <Button block type="primary" htmlType="submit">
-              Login
+              เข้าสู่ระบบ
             </Button>
             <div style={styles.footer}>
-              <Text style={styles.text}>Don&apos;t have an account?</Text>{" "}
-              <Link href="/register">Register</Link>
+              <Text style={styles.text}>ไม่มีบัญชีใช่ไหม?</Text>{" "}
+              <Link href="/register">ลงทะเบียน</Link>
             </div>
           </Form.Item>
         </Form>

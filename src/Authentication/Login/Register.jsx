@@ -51,8 +51,8 @@ return (
 <section style={styles.section}>
     <div style={styles.container}>
     <div style={styles.header}>
-        <Title style={styles.title}>Sign up</Title>
-        <Text style={styles.text}>Join us! Create an account to get started.</Text>
+        <Title style={styles.title}>ลงทะเบียน</Title>
+        <Text style={styles.text}>สร้างบัญชีเพื่อเริ่มต้น</Text>
     </div>
     <Form
         name="normal_signup"
@@ -62,34 +62,34 @@ return (
     >
         <Form.Item
         name="Username"
-        rules={[{ required: true, message: "Please input your Name!" }]}
+        rules={[{ required: true, message: "กรุณากรอกชื่อผู้ใช้ของคุณ!" }]}
         >
-        <Input prefix={<UserOutlined />} placeholder="Name" aria-label="Name" />
+        <Input prefix={<UserOutlined />} placeholder="ชื่อผู้ใช้" aria-label="Name" />
         </Form.Item>
         <Form.Item
         name="email"
-        rules={[{ type: "email", required: true, message: "Please input your Email!" }]}
+        rules={[{ type: "email", required: true, message: "กรุณากรอกอีเมลของคุณ!" }]}
         >
-        <Input prefix={<MailOutlined />} placeholder="Email" aria-label="Email" />
+        <Input prefix={<MailOutlined />} placeholder="อีเมล" aria-label="Email" />
         </Form.Item>
         <Form.Item
         name="password"
-        extra="Password needs to be at least 8 characters."
-        rules={[{ required: true, message: "Please input your Password!" }]}
+        extra="รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร"
+        rules={[{ required: true, message: "กรุณาใส่รหัสผ่านของคุณ!" }]}
         >
         <Input.Password
             prefix={<LockOutlined />}
-            placeholder="Password"
+            placeholder="รหัสผ่าน"
             aria-label="Password"
         />
         </Form.Item>
         <Form.Item style={{ marginBottom: "0" }}>
         <Button block type="primary" htmlType="submit">
-            Sign up
+            ลงทะเบียน
         </Button>
         <div style={styles.signupLink}>
-            <Text style={styles.text}>Already have an account?</Text>{" "}
-            <Link href="/login">Register</Link>
+            <Text style={styles.text}>มีบัญชีอยู่แล้วหรือ?</Text>{" "}
+            <Link href="/login">เข้าสู่ระบบ</Link>
         </div>
         </Form.Item>
     </Form>

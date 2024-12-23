@@ -1,23 +1,22 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Components
-import Navigation from './Nav'; 
-import Calculate from "./calculate";
-import Fertilizer from "./Fertilizer";
-import Order from "./Order";
-import Soil from "./Soil";
-import Recommend from "./Recommend";
-import Soildata from "./Soildata";
-import Home from "./Home";
-import Login from "./Login/Login";
-import Register from './Register';
+import Navigation from './Navigation/Nav'; 
+import Calculate from "./DashboardContent/Calculate";
+import Fertilizer from "./DashboardContent/Fertilizer";
+import Order from "./DashboardContent/Order";
+import Soil from "./DashboardContent/Soil";
+import Recommend from "./DashboardContent/Recommend";
+import Soildata from "./DashboardContent/Soildata";
+import Home from "./DashboardContent/Home";
+import Login from "./Authentication/Login/Login";
+import Register from './Authentication/Login/Register';
 
 const App = () => {
 return (
     <BrowserRouter>
         <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/nav" element={<Navigation />} />
             <Route path="/register" element={<Register />} />
 
             <Route path="/" element={<Navigation />}>
