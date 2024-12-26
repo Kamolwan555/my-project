@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager, create_access_token,jwt_required, get
 from flask_cors import CORS
 from datetime import datetime, timedelta,timezone
 import os
+from sqlalchemy.orm import joinedload
 
 # load_dotenv()
 
@@ -24,10 +25,14 @@ jwt = JWTManager(app)
 
 # Define User model
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('role.role_id'))  # Reference role.role_id
+    role = db.relationship('Role', backref='users')
+
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,6 +43,11 @@ class Order(db.Model):
     email = db.Column(db.String(100))
     order_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))  # ใช้ timezone-aware datetime
 
+class Role(db.Model):
+    __tablename__ = 'role'
+    role_id = db.Column(db.Integer, primary_key=True)  # Use 'role_id' instead of 'id'
+    role_name = db.Column(db.String(255), nullable=False)
+    
 # Routes
 @app.route('/register', methods=['POST'])
 def register():
@@ -77,13 +87,30 @@ def login():
         return jsonify({'error': 'Username/email and password are required'}), 400
 
     # Find user by username or email
-    user = User.query.filter((User.username == username_or_email) | (User.email == username_or_email)).first()
+    user = (
+    User.query
+    .join(Role, User.role_id == Role.role_id)  # Join using 'role_id'
+    .filter((User.username == username_or_email) | (User.email == username_or_email))
+    .first()
+)
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify({'error': 'Invalid credentials'}), 401
 
+    # Get role name from user's role
+    role_name = user.role.role_name if user.role else None
+
     # Generate JWT token
-    access_token = create_access_token(identity=user.username,additional_claims={'email': user.email},expires_delta=timedelta(hours=2))
-    return jsonify({'access_token': access_token}), 200
+    access_token = create_access_token(
+        identity=user.username,
+        additional_claims={'email': user.email, 'role': role_name},
+        expires_delta=timedelta(hours=2)
+    )
+    print(role_name) 
+    return jsonify({
+        'access_token': access_token,
+        'role_name': role_name,
+    }), 200
+
 
 # Route to place an order
 @app.route('/order', methods=['POST'])

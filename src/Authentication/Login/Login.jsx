@@ -25,6 +25,7 @@ export default function Login() {
       .then((res) => {
         if (res.access_token) {
           localStorage.setItem("accessToken", res.access_token);
+          localStorage.setItem("roleName", res.role_name); // Storing role_name
           callback();
         }
       })
