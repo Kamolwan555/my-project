@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const { Title } = Typography;
 const columns = [
@@ -47,7 +50,7 @@ const Home = () => {
             },
           })
             .then((res) => res.json())
-            .then((res) => setData(res));
+            .then((res) => { setData(res); toast.success("เข้าสู่ระบบสำเร็จ!"); });
         };
         fetchDashboard();
       }, []);
@@ -72,6 +75,7 @@ const Home = () => {
     if (!data) return <span>Loading data...</span>;
     return (
         <div style={{ padding: 30 }}>
+          <ToastContainer />
             <Slider {...sliderSettings} style={{ marginBottom: 20 }}>
                 {Array.from({ length: 5 }).map((_, index) => (
                     <div key={index}>
