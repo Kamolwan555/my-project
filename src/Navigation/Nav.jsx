@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -13,124 +14,134 @@ import {
     LogoutOutlined,
 } from "@ant-design/icons";
 import { Button, Breadcrumb, Layout, Menu, theme } from "antd";
+
 const { Header, Sider, Content } = Layout;
+
+const routeBreadcrumbs = {
+    "/home": "Home",
+    "/calculate": "Calculate",
+    "/fertilizer": "Fertilizer",
+    "/order": "Order",
+    "/soil": "Soil",
+    "/recommend": "Recommend",
+    "/soildata": "Soil Data",
+};
 
 const Navigation = () => {
     const [collapsed, setCollapsed] = useState(false);
+    const location = useLocation();
     const {
-    token: { colorBgContainer, borderRadiusLG },
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const breadcrumbItems = [{ title: "User" }, { title: "Bill" }];
+
+    // Generate Breadcrumb Items Based on Current Path
+    const generateBreadcrumbItems = () => {
+        const pathSegments = location.pathname.split("/").filter(Boolean);
+        return pathSegments.map((segment, index) => {
+            const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
+            return {
+                title: <Link to={path}>{routeBreadcrumbs[path] || segment}</Link>,
+            };
+        });
+    };
+
+    const menuItems = [
+        {
+            key: "/home",
+            icon: <DashboardOutlined />,
+            label: <Link to="/home">หน้าหลัก</Link>,
+        },
+        {
+            key: "/calculate",
+            icon: <CalculatorOutlined />,
+            label: <Link to="/calculate">คำนวณ</Link>,
+        },
+        {
+            key: "/order",
+            icon: <ShoppingOutlined />,
+            label: <Link to="/order">คำสั่งซื้อ</Link>,
+        },
+        {
+            key: "/soil",
+            icon: <EnvironmentOutlined />,
+            label: <Link to="/soil">ตรวจสอบดิน</Link>,
+        },
+        {
+            key: "/fertilizer",
+            icon: <DotChartOutlined />,
+            label: <Link to="/fertilizer">ตรวจสอบปุ๋ย</Link>,
+        },
+        {
+            key: "/soildata",
+            icon: <FileTextOutlined />,
+            label: <Link to="/soildata">ชุดข้อมูลดิน</Link>,
+        },
+        {
+            key: "/recommend",
+            icon: <ReadOutlined />,
+            label: <Link to="/recommend">คำแนะนำ</Link>,
+        },
+        {
+            type: "divider",
+        },
+        {
+            key: "/logout",
+            icon: <LogoutOutlined />,
+            label: <Link to="/logout">ออกจากระบบ</Link>,
+        },
+    ];
 
     return (
-    <Layout
-        style={{
-        minHeight: "100vh",
-        backgroundColor: "#ffffff",
-        }}
-    >
-        <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        style={{
-            backgroundColor: "#ffffff",
-        }}
-        >
-        <div className="demo-logo-vertical" />
-        <Menu
-            theme="light"
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            items={[
-            {
-                key: "1",
-                icon: <DashboardOutlined />,
-                label: <Link to="/home">หน้าหลัก</Link>,
-            },
-            {
-                key: "2",
-                icon: <CalculatorOutlined />,
-                label: <Link to="/calculate">คำนวณ</Link>,
-            },
-            {
-                key: "3",
-                icon: <ShoppingOutlined />,
-                label: <Link to="/order">คำสั่งซื้อ</Link>,
-            },
-            {
-                key: "4",
-                icon: <EnvironmentOutlined />,
-                label: <Link to="/soil">ตรวจสอบดิน</Link>,
-            },
-            {
-                key: "5",
-                icon: <DotChartOutlined />,
-                label: <Link to="/fertilizer">ตรวจสอบปุ๋ย</Link>,
-            },
-            {
-                key: "6",
-                icon: <FileTextOutlined />,
-                label: <Link to="/soildata">ชุดข้อมูลดิน</Link>,
-            },
-            {
-                key: "7",
-                icon: <ReadOutlined />,
-                label: <Link to="/recommend">คำแนะนำ</Link>,
-            },
-            {
-                type: "divider",
-            },
-            {
-                key: "8",
-                icon: <LogoutOutlined />,
-                label: <Link to="/">ออกจากระบบ</Link>,
-            },
-            ]}
-        />
-        </Sider>
-        <Layout>
-        <Header
-            style={{
-            padding: 0,
-            background: colorBgContainer,
-            }}
-        >
-            <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-                fontSize: "16px",
-                width: 64,
-                height: 64,
-            }}
-            />
-        </Header>
-        <Content
-            style={{
-            margin: "0 16px",
-            }}
-        >
-            <Breadcrumb
-            style={{
-                margin: "16px 0",
-            }}
-            items={breadcrumbItems}
-            />
-            <div
-            style={{
-                padding: 24,
-                minHeight: 360,
-                borderRadius: borderRadiusLG,
-            }}
+        <Layout style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
+            {/* Sidebar */}
+            <Sider
+                trigger={null}
+                collapsible
+                collapsed={collapsed}
+                style={{ backgroundColor: "#ffffff" }}
             >
-            <Outlet />
-            </div>
-        </Content>
+                <div className="demo-logo-vertical" />
+                <Menu
+                    theme="light"
+                    mode="inline"
+                    selectedKeys={[location.pathname]}
+                    items={menuItems}
+                />
+            </Sider>
+
+            {/* Main Layout */}
+            <Layout>
+                {/* Header */}
+                <Header style={{ padding: 0, background: colorBgContainer }}>
+                    <Button
+                        type="text"
+                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                        onClick={() => setCollapsed(!collapsed)}
+                        style={{ fontSize: "16px", width: 64, height: 64 }}
+                    />
+                </Header>
+
+                {/* Content Area */}
+                <Content style={{ margin: "0 16px" }}>
+                    <Breadcrumb style={{ margin: "16px 0" }} items={generateBreadcrumbItems()} />
+                    <div
+                        style={{
+                            padding: 24,
+                            minHeight: 360,
+                            borderRadius: borderRadiusLG,
+                            backgroundColor: "#fff",
+                        }}
+                    >
+                        <Outlet />
+                    </div>
+                </Content>
+            </Layout>
         </Layout>
-    </Layout>
     );
+};
+
+Navigation.propTypes = {
+    children: PropTypes.node,
 };
 
 export default Navigation;

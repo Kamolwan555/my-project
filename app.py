@@ -43,7 +43,7 @@ class Order(db.Model):
     number = db.Column(db.String(100))
     email = db.Column(db.String(100))
     order_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))  # ใช้ timezone-aware datetime
-
+    status = db.Column(db.String(100))
 class Role(db.Model):
     __tablename__ = 'role'
     role_id = db.Column(db.Integer, primary_key=True)  # Use 'role_id' instead of 'id'
@@ -165,7 +165,8 @@ def get_all_orders():
             'data': order.data,
             'number': order.number,
             'email': order.email,
-            'order_date': order.order_date.isoformat() if order.order_date else None  # แปลงเป็น ISO 8601
+            'order_date': order.order_date.isoformat() if order.order_date else None,  # แปลงเป็น ISO 8601
+            'status': order.status
         })
 
     return jsonify({'orders': orders_list}), 200
@@ -190,14 +191,20 @@ def get_orders_today_summary():
         'data': order.data,
         'number': order.number,
         'email': order.email,
-        'order_date': order.order_date.isoformat() if order.order_date else None
+        'order_date': order.order_date.isoformat() if order.order_date else None,
+        'status': order.status
     } for order in orderls]
 
     # สรุปจำนวนรายการ
+    all_order = len(Order.query.all())
     total_orders = len(orders)
-
+    in_progress_count = len([order for order in orderls if order.status.lower() == "in progress"])
+    completed_count = len([order for order in orderls if order.status.lower() == "completed"])
     return jsonify({
         'total_orders_today': total_orders,
+        'all_order':all_order,
+        'in_progress_count' : in_progress_count,
+        'completed_count': completed_count,
         'orders': orders_list
     }), 200
 
