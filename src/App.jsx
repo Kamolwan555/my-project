@@ -12,7 +12,7 @@ import Home from "./DashboardContent/Home";
 import Login from "./Authentication/Login/Login";
 import Register from "./Authentication/Login/Register";
 import Logout from "./Authentication/Login/logout";
-import { PrivateRoute } from "./component/PrivateRoute";
+// import { PrivateRoute } from "./component/PrivateRoute";
 
 const App = () => {
   return (
