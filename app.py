@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 # Configure database URI and secret key
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:362545@localhost:5432/mydatabase'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9213@localhost:5432/mydatabase'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:362545@localhost:5432/mydatabase'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'
 
@@ -48,7 +48,7 @@ class Role(db.Model):
     __tablename__ = 'role'
     role_id = db.Column(db.Integer, primary_key=True)  # Use 'role_id' instead of 'id'
     role_name = db.Column(db.String(255), nullable=False)
-    
+
 # Routes
 @app.route('/register', methods=['POST'])
 def register():
@@ -106,7 +106,7 @@ def login():
         additional_claims={'email': user.email, 'role': role_name},
         expires_delta=timedelta(hours=2)
     )
-    print(role_name) 
+    print(role_name)
     return jsonify({
         'access_token': access_token,
         'role_name': role_name,
@@ -149,7 +149,7 @@ def place_order():
         return jsonify({'message': 'Order placed successfully', 'order_id': new_order.id}), 201
     except Exception as e:
         return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
-        
+
 @app.route('/orderlist', methods=['GET'])
 def get_all_orders():
     # Fetch all orders from the database
