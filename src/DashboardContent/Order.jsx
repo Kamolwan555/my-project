@@ -1,18 +1,8 @@
-// function Order() {
-//     return (
-//         <div>
-//             <h2>This is Order Page.</h2>
-//         </div>
-//     );
-// }
 
-// export default Order;
-
-// PlaceOrder.js
 import { useState } from "react";
 import axios from "axios";
 
-const PlaceOrder = () => {
+const Order = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [dataa, setData] = useState("");
@@ -27,28 +17,6 @@ const PlaceOrder = () => {
     setMessage("");
 
     try {
-      console.log(name);
-      console.log(address);
-      console.log(dataa);
-      console.log(number);
-      console.log(email);
-      console.log(error);
-      console.log(message);
-      // const token = localStorage.getItem('access_token'); // Assume JWT is stored in local storage
-      // const response = await axios.post('http://localhost:5000/order', {
-      //   name,
-      //   address,
-      //   data,
-      //   number,
-      //   email,
-      // }, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // });
-
-      // setMessage(response.data.message);
-      // const axios = require("axios");
       let data = JSON.stringify({
         name: name,
         address: address,
@@ -68,31 +36,26 @@ const PlaceOrder = () => {
         data: data,
       };
 
-      axios
-        .request(config)
-        .then((response) => {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const response = await axios.request(config);
+      setMessage(response.data.message || "Order placed successfully!");
     } catch (err) {
-      setError(err.response ? err.response.data.error : "Error occurred");
+      setError(err.response?.data?.error || "An error occurred while placing the order.");
     }
   };
 
   return (
-    <div>
-      <h2>Place Order</h2>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {message && <div style={{ color: "green" }}>{message}</div>}
-      <form onSubmit={handleSubmit}>
+    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h2 style={{ textAlign: "center" }}>Place Your Order</h2>
+      {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
+      {message && <div style={{ color: "green", marginBottom: "10px" }}>{message}</div>}
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <input
           type="text"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          style={inputStyle}
         />
         <input
           type="text"
@@ -100,6 +63,7 @@ const PlaceOrder = () => {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           required
+          style={inputStyle}
         />
         <input
           type="text"
@@ -107,6 +71,7 @@ const PlaceOrder = () => {
           value={dataa}
           onChange={(e) => setData(e.target.value)}
           required
+          style={inputStyle}
         />
         <input
           type="text"
@@ -114,6 +79,7 @@ const PlaceOrder = () => {
           value={number}
           onChange={(e) => setNumber(e.target.value)}
           required
+          style={inputStyle}
         />
         <input
           type="email"
@@ -121,12 +87,31 @@ const PlaceOrder = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          style={inputStyle}
         />
-        <button type="submit">Submit Order</button>
+        <button type="submit" style={buttonStyle}>
+          Submit Order
+        </button>
       </form>
     </div>
   );
 };
 
-export default PlaceOrder;
+const inputStyle = {
+  padding: "10px",
+  borderRadius: "5px",
+  border: "1px solid #ccc",
+  fontSize: "16px",
+};
 
+const buttonStyle = {
+  padding: "10px",
+  borderRadius: "5px",
+  border: "none",
+  backgroundColor: "#007BFF",
+  color: "white",
+  fontSize: "16px",
+  cursor: "pointer",
+};
+
+export default Order;
