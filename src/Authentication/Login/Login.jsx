@@ -1,6 +1,6 @@
-import { Button, Checkbox, Form, Grid, Input, theme, Typography } from "antd";
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import picture from "../../components/extended/background/picture.png";
+import { Button, Checkbox, Form, Grid, theme, Typography } from "antd";
+import "./Login.css";
+import picture from "../../components/extended/background/picture.jpg";
 import { useNavigate } from "react-router-dom";
 
 const { useToken } = theme;
@@ -102,6 +102,9 @@ export default function Login() {
             layout="vertical"
             requiredMark={false}
           >
+            <label htmlFor="email" className="email-label">
+              อีเมล
+            </label>
             <Form.Item
               name="email"
               rules={[
@@ -112,11 +115,16 @@ export default function Login() {
                 },
               ]}
             >
-              <Input
-                prefix={<MailOutlined />}
+              <input
+                type="email"
+                id="email"
+                className="email-input"
                 placeholder="ชื่อผู้ใช้หรืออีเมล"
               />
             </Form.Item>
+            <label htmlFor="password" className="password-label">
+              รหัสผ่าน
+            </label>
             <Form.Item
               name="password"
               rules={[
@@ -126,12 +134,14 @@ export default function Login() {
                 },
               ]}
             >
-              <Input.Password
-                prefix={<LockOutlined />}
+              <input
                 type="password"
+                id="password"
+                className="password-input"
                 placeholder="รหัสผ่าน"
               />
             </Form.Item>
+
             <Form.Item>
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox>จดจำฉันไว้</Checkbox>
@@ -150,5 +160,5 @@ export default function Login() {
         </div>
       </div>
     </section>
-  );  
+  );
 }

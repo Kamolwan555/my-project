@@ -14,8 +14,8 @@ from sqlalchemy.orm import joinedload
 app = Flask(__name__)
 
 # Configure database URI and secret key
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:362545@localhost:5432/mydatabase'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:362545@localhost:5432/mydatabase'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9213@localhost:5432/mydatabase'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'
 
