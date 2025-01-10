@@ -1,4 +1,5 @@
-.email-label {
+.email-label,
+.password-label {
     display: block;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
@@ -22,14 +23,6 @@
 .email-input:focus {
     border-color: #16a34a;
     box-shadow: 0 0 8px rgba(22, 163, 74, 0.8);
-}
-
-.password-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #1f2937;
 }
 
 .password-input {

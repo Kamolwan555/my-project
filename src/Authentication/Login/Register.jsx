@@ -1,5 +1,5 @@
-import { Button, Form, Grid, Input, theme, Typography, message } from "antd";
-import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+import "./Register.css";
+import { Button, Form, Grid, theme, Typography, message } from "antd";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
@@ -12,17 +12,20 @@ export default function SignUpPage() {
   // Handle form submission
   const onFinish = async (values) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_APP_API_HOST}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_API_HOST}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: values.username,
+            email: values.email,
+            password: values.password,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -42,7 +45,9 @@ export default function SignUpPage() {
   const styles = {
     container: {
       margin: "0 auto",
-      padding: screens.md ? `${token.paddingXL}px` : `${token.paddingXL}px ${token.padding}px`,
+      padding: screens.md
+        ? `${token.paddingXL}px`
+        : `${token.paddingXL}px ${token.padding}px`,
       maxWidth: "380px",
       width: "100%",
     },
@@ -75,7 +80,7 @@ export default function SignUpPage() {
 
   return (
     <section style={styles.section}>
-      <div style={styles.container}>
+      <div className="wrapper">
         <div style={styles.header}>
           <Title style={styles.title}>ลงทะเบียน</Title>
           <Text style={styles.text}>สร้างบัญชีเพื่อเริ่มต้น</Text>
@@ -86,39 +91,164 @@ export default function SignUpPage() {
           layout="vertical"
           requiredMark="optional"
         >
-          <Form.Item
-            name="username"
-            rules={[{ required: true, message: "กรุณากรอกชื่อผู้ใช้ของคุณ!" }]}
-          >
-            <Input prefix={<UserOutlined />} placeholder="ชื่อผู้ใช้" aria-label="Name" />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            rules={[{ type: "email", required: true, message: "กรุณากรอกอีเมลของคุณ!" }]}
-          >
-            <Input prefix={<MailOutlined />} placeholder="อีเมล" aria-label="Email" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            extra="รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร"
-            rules={[
-              { required: true, message: "กรุณาใส่รหัสผ่านของคุณ!" },
-              { min: 8, message: "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร" },
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="รหัสผ่าน"
-              aria-label="Password"
-            />
-          </Form.Item>
+          <div className="form-group">
+            <label htmlFor="email" className="email-label">
+              อีเมล
+            </label>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  required: true,
+                  message: "กรุณาใส่อีเมลของคุณ!",
+                },
+              ]}
+            >
+              <input
+                type="email"
+                id="email"
+                className="email-Input"
+                placeholder="ชื่อผู้ใช้หรืออีเมล"
+              />
+            </Form.Item>
+          </div>
+          <div className="form-group">
+            <label htmlFor="phone" className="phone-label">
+              เบอร์โทรศัพท์
+            </label>
+            <Form.Item
+              name="phone"
+              rules={[
+                {
+                  type: "tel",
+                  required: true,
+                  message: "กรุณาใส่เบอร์โทรศัพท์ของคุณ!",
+                },
+              ]}
+            >
+              <input
+                type="tel"
+                id="phone"
+                className="phone-input"
+                placeholder="เบอร์โทรศัพท์"
+              />
+            </Form.Item>
+          </div>
+          <div className="form-grid">
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="firstName" className="firstName-label">
+                  ชื่อ
+                </label>
+                <Form.Item
+                  name="firstName"
+                  rules={[
+                    {
+                      type: "text",
+                      required: true,
+                      message: "กรุณาใส่ชื่อของคุณ!",
+                    },
+                  ]}
+                >
+                  <input
+                    type="text"
+                    id="firstName"
+                    className="firstName-input"
+                    placeholder="ชื่อ"
+                  />
+                </Form.Item>
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="lastName" className="lastName-label">
+                  นามสกุล
+                </label>
+                <Form.Item
+                  name="lastName"
+                  rules={[
+                    {
+                      type: "text",
+                      required: true,
+                      message: "กรุณาใส่นามสกุลของคุณ!",
+                    },
+                  ]}
+                >
+                  <input
+                    type="text"
+                    id="lastName"
+                    className="lastName-input"
+                    placeholder="นามสกุล"
+                  />
+                </Form.Item>
+              </div>
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="password" className="password-label">
+              รหัสผ่าน
+            </label>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาใส่รหัสผ่านของคุณ!",
+                },
+              ]}
+            >
+              <input
+                type="password"
+                id="password"
+                className="password-Input"
+                placeholder="รหัสผ่าน"
+              />
+            </Form.Item>
+          </div>
+          <div className="form-group">
+            <label
+              htmlFor="confirm-password"
+              className="confirm-password-label"
+            >
+              ยืนยันรหัสผ่าน
+            </label>
+            <Form.Item
+              name="confirm-password"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาใส่รหัสผ่านของคุณ!",
+                },
+              ]}
+            >
+              <input
+                type="confirm-password"
+                id="confirm-password"
+                className="confirm-password-Input"
+                placeholder="ยืนยันรหัสผ่าน"
+              />
+            </Form.Item>
+          </div>
           <Form.Item style={{ marginBottom: "0" }}>
-            <Button block type="primary" htmlType="submit">
+            <Button
+              block
+              type="primary"
+              size="default"
+              htmlType="submit"
+              style={{
+                backgroundColor: "#16a34a",
+                borderColor: "#16a34a",
+                color: "#fff",
+              }}
+            >
               ลงทะเบียน
             </Button>
             <div style={styles.signupLink}>
               <Text style={styles.text}>มีบัญชีอยู่แล้วหรือ?</Text>{" "}
-              <Link href="/">เข้าสู่ระบบ</Link>
+              <Link href="/" style={{ color: "#16a34a" }}>
+                เข้าสู่ระบบ
+              </Link>
             </div>
           </Form.Item>
         </Form>

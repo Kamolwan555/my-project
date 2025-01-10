@@ -1,0 +1,102 @@
+.email-label,
+.phone-label,
+.password-label,
+.confirm-password-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.email-Input,
+.phone-input,
+.password-Input,
+.confirm-password-Input {
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+    color: #1f2937;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    display: block;
+    width: 100%;
+    padding: 0.625rem;
+    outline: none;
+    /* outline-color: #16a34a; */
+    transition: box-shadow 0.3s ease;
+}
+
+.email-Input:focus,
+.phone-input:focus,
+.firstName-input:focus,
+.lastName-input:focus,
+.password-Input:focus,
+.confirm-password-Input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 8px rgba(22, 163, 74, 0.8);
+}
+
+.firstName-label {
+    grid-column: 1;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 0.5 rem;
+}
+
+.firstName-input {
+    grid-column: 2;
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+    color: #1f2937;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    display: block;
+    width: 100%;
+    padding: 0.625rem;
+    outline: none;
+    /* outline-color: #16a34a; */
+    transition: box-shadow 0.3s ease;
+}
+
+.lastName-label {
+    grid-column: 1;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.lastName-input {
+    grid-column: 2;
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+    color: #1f2937;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    display: block;
+    width: 100%;
+    padding: 0.625rem;
+    outline: none;
+    /* outline-color: #16a34a; */
+    transition: box-shadow 0.3s ease;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 30rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}

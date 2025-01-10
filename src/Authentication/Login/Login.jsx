@@ -141,19 +141,29 @@ export default function Login() {
                 placeholder="รหัสผ่าน"
               />
             </Form.Item>
-
             <Form.Item>
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox>จดจำฉันไว้</Checkbox>
               </Form.Item>
             </Form.Item>
             <Form.Item style={{ marginBottom: "0px" }}>
-              <Button block type="primary" htmlType="submit">
+              <Button
+                block
+                type="primary"
+                htmlType="submit"
+                style={{
+                  backgroundColor: "#16a34a",
+                  borderColor: "#16a34a",
+                  color: "#fff",
+                }}
+              >
                 เข้าสู่ระบบ
               </Button>
               <div style={styles.footer}>
                 <Text style={styles.text}>ไม่มีบัญชีใช่ไหม?</Text>{" "}
-                <Link href="/register">ลงทะเบียน</Link>
+                <Link href="/register" style={{ color: "#16a34a" }}>
+                  ลงทะเบียน
+                </Link>
               </div>
             </Form.Item>
           </Form>

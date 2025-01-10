@@ -30,9 +30,7 @@ const routeBreadcrumbs = {
 const Navigation = () => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
+    const { token: { borderRadiusLG, colorCustom = '#16a34a' }, } = theme.useToken();
 
     // Generate Breadcrumb Items Based on Current Path
     const generateBreadcrumbItems = () => {
@@ -92,27 +90,42 @@ const Navigation = () => {
     ];
 
     return (
-        <Layout style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
+        <Layout style={{ minHeight: "100vh", backgroundColor: colorCustom }}>
             {/* Sidebar */}
             <Sider
                 trigger={null}
                 collapsible
                 collapsed={collapsed}
-                style={{ backgroundColor: "#ffffff" }}
+                style={{ backgroundColor: colorCustom }}
             >
+                {/* Logo */}
+                <div
+                    className="flex shrink-0 items-center"
+                    style={{ padding: "16px", textAlign: "center" }}
+                >
+                    <img
+                        alt="Your Company"
+                        src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+                        className="h-8 w-auto"
+                    />
+                </div>
+
                 <div className="demo-logo-vertical" />
                 <Menu
-                    theme="light"
+                    theme="dark"
                     mode="inline"
                     selectedKeys={[location.pathname]}
                     items={menuItems}
+                    style={{
+                        backgroundColor: colorCustom,
+                    }}
                 />
             </Sider>
 
             {/* Main Layout */}
             <Layout>
                 {/* Header */}
-                <Header style={{ padding: 0, background: colorBgContainer }}>
+                <Header style={{ padding: 0, background: "transparent" }}>
                     <Button
                         type="text"
                         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -123,7 +136,10 @@ const Navigation = () => {
 
                 {/* Content Area */}
                 <Content style={{ margin: "0 16px" }}>
-                    <Breadcrumb style={{ margin: "16px 0" }} items={generateBreadcrumbItems()} />
+                    <Breadcrumb
+                        style={{ margin: "16px 0" }}
+                        items={generateBreadcrumbItems()}
+                    />
                     <div
                         style={{
                             padding: 24,
