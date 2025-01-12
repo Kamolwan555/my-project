@@ -8,12 +8,14 @@ import {
     ReadOutlined,
     EnvironmentOutlined,
     ShoppingOutlined,
-    DashboardOutlined,
+    HomeOutlined,
     DotChartOutlined,
     FileTextOutlined,
     LogoutOutlined,
 } from "@ant-design/icons";
 import { Button, Breadcrumb, Layout, Menu, theme } from "antd";
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
 
 const { Header, Sider, Content } = Layout;
 
@@ -30,7 +32,7 @@ const routeBreadcrumbs = {
 const Navigation = () => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
-    const { token: { borderRadiusLG, colorCustom = '#16a34a' }, } = theme.useToken();
+    const { token: { borderRadiusLG, colorCustom = '#32CD32', fontFamilyCustom = 'Noto Sans Thai, sans-serif' }, } = theme.useToken();
 
     // Generate Breadcrumb Items Based on Current Path
     const generateBreadcrumbItems = () => {
@@ -46,57 +48,57 @@ const Navigation = () => {
     const menuItems = [
         {
             key: "/home",
-            icon: <DashboardOutlined />,
-            label: <Link to="/home">หน้าหลัก</Link>,
+            icon: <HomeOutlined style={{ color: "white" }} />,
+            label: <Link to="/home" style={{ color: "white" }}>หน้าหลัก</Link>,
         },
         {
             key: "/calculate",
-            icon: <CalculatorOutlined />,
-            label: <Link to="/calculate">คำนวณ</Link>,
+            icon: <CalculatorOutlined style={{ color: "white" }} />,
+            label: <Link to="/calculate" style={{ color: "white" }}>คำนวณ</Link>,
         },
         {
             key: "/order",
-            icon: <ShoppingOutlined />,
-            label: <Link to="/order">คำสั่งซื้อ</Link>,
+            icon: <ShoppingOutlined style={{ color: "white" }} />,
+            label: <Link to="/order" style={{ color: "white" }}>คำสั่งซื้อ</Link>,
         },
         {
             key: "/soil",
-            icon: <EnvironmentOutlined />,
-            label: <Link to="/soil">ตรวจสอบดิน</Link>,
+            icon: <EnvironmentOutlined style={{ color: "white" }} />,
+            label: <Link to="/soil" style={{ color: "white" }}>ตรวจสอบดิน</Link>,
         },
         {
             key: "/fertilizer",
-            icon: <DotChartOutlined />,
-            label: <Link to="/fertilizer">ตรวจสอบปุ๋ย</Link>,
+            icon: <DotChartOutlined style={{ color: "white" }} />,
+            label: <Link to="/fertilizer" style={{ color: "white" }}>ตรวจสอบปุ๋ย</Link>,
         },
         {
             key: "/soildata",
-            icon: <FileTextOutlined />,
-            label: <Link to="/soildata">ชุดข้อมูลดิน</Link>,
+            icon: <FileTextOutlined style={{ color: "white" }} />,
+            label: <Link to="/soildata" style={{ color: "white" }}>ชุดข้อมูลดิน</Link>,
         },
         {
             key: "/recommend",
-            icon: <ReadOutlined />,
-            label: <Link to="/recommend">คำแนะนำ</Link>,
+            icon: <ReadOutlined style={{ color: "white" }} />,
+            label: <Link to="/recommend" style={{ color: "white" }}>คำแนะนำ</Link>,
         },
         {
             type: "divider",
         },
         {
             key: "/logout",
-            icon: <LogoutOutlined />,
-            label: <Link to="/logout">ออกจากระบบ</Link>,
+            icon: <LogoutOutlined style={{ color: "white" }} />,
+            label: <Link to="/logout" style={{ color: "white" }}>ออกจากระบบ</Link>,
         },
     ];
 
     return (
-        <Layout style={{ minHeight: "100vh", backgroundColor: colorCustom }}>
+        <Layout style={{ minHeight: "100vh", backgroundColor: colorCustom, fontFamily: fontFamilyCustom }}>
             {/* Sidebar */}
             <Sider
                 trigger={null}
                 collapsible
                 collapsed={collapsed}
-                style={{ backgroundColor: colorCustom }}
+                style={{ backgroundColor: colorCustom, fontFamily: fontFamilyCustom }}
             >
                 {/* Logo */}
                 <div
@@ -118,6 +120,7 @@ const Navigation = () => {
                     items={menuItems}
                     style={{
                         backgroundColor: colorCustom,
+                        fontFamily: fontFamilyCustom,
                     }}
                 />
             </Sider>
@@ -125,19 +128,24 @@ const Navigation = () => {
             {/* Main Layout */}
             <Layout>
                 {/* Header */}
-                <Header style={{ padding: 0, background: "transparent" }}>
-                    <Button
-                        type="text"
-                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                        onClick={() => setCollapsed(!collapsed)}
-                        style={{ fontSize: "16px", width: 64, height: 64 }}
-                    />
+                <Header style={{ padding: "2px 16px", background: "transparent", fontFamily: fontFamilyCustom }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{ fontSize: "16px", width: 50, height: 50 }}
+                        />
+                        <Stack direction="row" spacing={2} style={{ marginRight: "18px" }}>
+                            <Avatar src="https://github.com/shadcn.png" />
+                        </Stack>
+                    </div>
                 </Header>
 
                 {/* Content Area */}
-                <Content style={{ margin: "0 16px" }}>
+                <Content style={{ margin: "0 16px", fontFamily: fontFamilyCustom }}>
                     <Breadcrumb
-                        style={{ margin: "16px 0" }}
+                        style={{ margin: "16px px" }}
                         items={generateBreadcrumbItems()}
                     />
                     <div
@@ -145,7 +153,8 @@ const Navigation = () => {
                             padding: 24,
                             minHeight: 360,
                             borderRadius: borderRadiusLG,
-                            backgroundColor: "#fff",
+                            backgroundColor: "transparent",
+                            fontFamily: fontFamilyCustom,
                         }}
                     >
                         <Outlet />

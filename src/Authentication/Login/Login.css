@@ -1,43 +1,47 @@
 .email-label,
 .password-label {
     display: block;
-    margin-bottom: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #1f2937;
+    font-family: 'Noto Sans Thai', sans-serif;
 }
 
-.email-input {
-    background-color: #ffffff;
-    border: 1px solid #d1d5db;
-    color: #1f2937;
-    font-size: 0.875rem;
-    border-radius: 0.5rem;
-    display: block;
-    width: 100%;
-    padding: 0.625rem;
-	outline: none;
-    transition: box-shadow 0.3s ease;
-}
-
-.email-input:focus {
-    border-color: #16a34a;
-    box-shadow: 0 0 8px rgba(22, 163, 74, 0.8);
-}
-
+.email-input,
 .password-input {
     background-color: #ffffff;
     border: 1px solid #d1d5db;
     color: #1f2937;
     font-size: 0.875rem;
+    font-family: 'Noto Sans Thai', sans-serif;
     border-radius: 0.5rem;
     display: block;
     width: 100%;
     padding: 0.625rem;
-	outline: none;
+    margin-bottom: 0rem;
+    outline: 2px solid transparent;
+    transition: outline-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.email-input:focus,
 .password-input:focus {
-    border-color: #16a34a;
-    box-shadow: 0 0 8px rgba(22, 163, 74, 0.8);
+    outline-color: #32CD32;
+}
+
+.ant-form-item {
+    margin-bottom: 0rem;
+}
+
+button {
+    margin-top: 0.5rem;
+}
+
+button:hover {
+    background-color: #32CD32;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+div.footer {
+    margin-top: 0rem;
 }

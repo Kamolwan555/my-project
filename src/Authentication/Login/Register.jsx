@@ -50,6 +50,7 @@ export default function SignUpPage() {
         : `${token.paddingXL}px ${token.padding}px`,
       maxWidth: "380px",
       width: "100%",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     section: {
       display: "flex",
@@ -58,23 +59,29 @@ export default function SignUpPage() {
       height: screens.sm ? "100vh" : "auto",
       backgroundColor: token.colorBgContainer,
       padding: screens.md ? `${token.sizeXXL}px 0` : "0",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     header: {
       textAlign: "center",
       marginBottom: token.marginXL,
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     title: {
       fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3,
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     text: {
       color: token.colorTextSecondary,
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     signupLink: {
       marginTop: token.marginLG,
       textAlign: "center",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     forgotPassword: {
       float: "right",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
   };
 
@@ -234,19 +241,22 @@ export default function SignUpPage() {
             <Button
               block
               type="primary"
-              size="default"
+              size="large"
               htmlType="submit"
               style={{
-                backgroundColor: "#16a34a",
-                borderColor: "#16a34a",
+                backgroundColor: "#32CD32",
+                borderColor: "#32CD32",
                 color: "#fff",
+                fontFamily: "'Noto Sans Thai', sans-serif",
               }}
             >
               ลงทะเบียน
             </Button>
             <div style={styles.signupLink}>
               <Text style={styles.text}>มีบัญชีอยู่แล้วหรือ?</Text>{" "}
-              <Link href="/" style={{ color: "#16a34a" }}>
+              <Link href="/" style={{
+                color: "#32CD32", fontFamily: "'Noto Sans Thai', sans-serif",
+              }}>
                 เข้าสู่ระบบ
               </Link>
             </div>

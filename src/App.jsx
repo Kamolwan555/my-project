@@ -17,7 +17,7 @@ import Logout from "./Authentication/Login/logout";
 const App = () => {
   return (
     <BrowserRouter>
- 
+
       <Routes>
           <Route path="/" element={<Login />} />
           <Route element={<Navigation />}>
@@ -32,7 +32,7 @@ const App = () => {
             </Route>
             <Route path="/register" element={<Register />} />
       </Routes>
-       
+
     </BrowserRouter>
   );
 };
