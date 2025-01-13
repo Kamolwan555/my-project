@@ -1,6 +1,6 @@
-import { Button, Checkbox, Form, Grid, Input, theme, Typography } from "antd";
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import picture from "../../components/extended/background/picture.png";
+import { Button, Checkbox, Form, Grid, theme, Typography } from "antd";
+import "./Login.css";
+import picture from "../../components/extended/background/picture.jpg";
 import { useNavigate } from "react-router-dom";
 
 const { useToken } = theme;
@@ -45,6 +45,7 @@ export default function Login() {
     section: {
       display: "flex",
       minHeight: "100vh",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     container: {
       margin: "0 auto",
@@ -56,21 +57,26 @@ export default function Login() {
       justifyContent: "center",
       alignItems: "center",
       flex: 1,
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     header: {
-      marginBottom: token.marginXL,
+      marginBottom: token.marginLG,
       textAlign: "center",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     title: {
       fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3,
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     text: {
       color: token.colorTextSecondary,
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     footer: {
       marginTop: token.marginLG,
       textAlign: "center",
       width: "100%",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
     imageSection: {
       flex: 1,
@@ -79,6 +85,7 @@ export default function Login() {
       backgroundPosition: "center",
       height: "100vh",
       display: screens.md ? "block" : "none",
+      fontFamily: "'Noto Sans Thai', sans-serif",
     },
   };
 
@@ -102,6 +109,9 @@ export default function Login() {
             layout="vertical"
             requiredMark={false}
           >
+            <label htmlFor="email" className="email-label" style={{ marginBottom: "0px" }}>
+              อีเมล
+            </label>
             <Form.Item
               name="email"
               rules={[
@@ -112,11 +122,17 @@ export default function Login() {
                 },
               ]}
             >
-              <Input
-                prefix={<MailOutlined />}
+              <input
+                type="email"
+                id="email"
+                className="email-input"
                 placeholder="ชื่อผู้ใช้หรืออีเมล"
+                style={{ fontFamily: "'Noto Sans Thai', sans-serif" }}
               />
             </Form.Item>
+            <label htmlFor="password" className="password-label" style={{ marginBottom: "0px" }}>
+              รหัสผ่าน
+            </label>
             <Form.Item
               name="password"
               rules={[
@@ -126,29 +142,53 @@ export default function Login() {
                 },
               ]}
             >
-              <Input.Password
-                prefix={<LockOutlined />}
+              <input
                 type="password"
+                id="password"
+                className="password-input"
                 placeholder="รหัสผ่าน"
+                style={{ fontFamily: "'Noto Sans Thai', sans-serif" }}
               />
             </Form.Item>
             <Form.Item>
               <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>จดจำฉันไว้</Checkbox>
+                <Checkbox
+                  style={{ fontFamily: "'Noto Sans Thai', sans-serif" }}
+                >
+                  จดจำฉันไว้
+                </Checkbox>
               </Form.Item>
             </Form.Item>
-            <Form.Item style={{ marginBottom: "0px" }}>
-              <Button block type="primary" htmlType="submit">
+            <Form.Item style={{ marginTop: "auto" }}>
+              <Button
+                block
+                type="primary"
+                htmlType="submit"
+                style={{
+                  backgroundColor: "#32CD32",
+                  borderColor: "#32CD32",
+                  color: "#fff",
+                  fontFamily: "'Noto Sans Thai', sans-serif",
+                }}
+              >
                 เข้าสู่ระบบ
               </Button>
               <div style={styles.footer}>
                 <Text style={styles.text}>ไม่มีบัญชีใช่ไหม?</Text>{" "}
-                <Link href="/register">ลงทะเบียน</Link>
+                <Link
+                  href="/register"
+                  style={{
+                    color: "#32CD32",
+                    fontFamily: "'Noto Sans Thai', sans-serif",
+                  }}
+                >
+                  ลงทะเบียน
+                </Link>
               </div>
             </Form.Item>
           </Form>
         </div>
       </div>
     </section>
-  );  
+  );
 }
