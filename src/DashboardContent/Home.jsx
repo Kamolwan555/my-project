@@ -138,22 +138,22 @@ const Home = () => {
             {
               title: "Order วันนี้",
               value: data?.total_orders_today || 0,
-              color: "#32CD32",
+              color: "#08bb00",
             },
             {
               title: "ออเดอร์ทั้งหมด",
               value: data?.all_order || 0,
-              color: "#32CD32",
+              color: "#08bb00",
             },
             {
               title: "รายการที่กำลังดำเนินการ",
               value: data?.in_progress_count || 0,
-              color: "#32CD32",
+              color: "#08bb00",
             },
             {
               title: "รายการที่เสร็จสิ้นแล้ว",
               value: data?.completed_count || 0,
-              color: "#32CD32",
+              color: "#08bb00",
             },
           ].map((item, index) => (
             <div key={index}>

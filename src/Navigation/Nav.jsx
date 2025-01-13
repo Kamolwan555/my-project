@@ -32,7 +32,7 @@ const routeBreadcrumbs = {
 const Navigation = () => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
-    const { token: { borderRadiusLG, colorCustom = '#32CD32', fontFamilyCustom = 'Noto Sans Thai, sans-serif' }, } = theme.useToken();
+    const { token: { borderRadiusLG, colorCustom = '#08bb00', fontFamilyCustom = 'Noto Sans Thai, sans-serif' }, } = theme.useToken();
 
     // Generate Breadcrumb Items Based on Current Path
     const generateBreadcrumbItems = () => {
@@ -48,46 +48,46 @@ const Navigation = () => {
     const menuItems = [
         {
             key: "/home",
-            icon: <HomeOutlined style={{ color: "white" }} />,
-            label: <Link to="/home" style={{ color: "white" }}>หน้าหลัก</Link>,
+            icon: <HomeOutlined style={{ color: "black" }} />,
+            label: <Link to="/home" style={{ color: "black" }}>หน้าหลัก</Link>,
         },
         {
             key: "/calculate",
-            icon: <CalculatorOutlined style={{ color: "white" }} />,
-            label: <Link to="/calculate" style={{ color: "white" }}>คำนวณ</Link>,
+            icon: <CalculatorOutlined style={{ color: "black" }} />,
+            label: <Link to="/calculate" style={{ color: "black" }}>คำนวณ</Link>,
         },
         {
             key: "/order",
-            icon: <ShoppingOutlined style={{ color: "white" }} />,
-            label: <Link to="/order" style={{ color: "white" }}>คำสั่งซื้อ</Link>,
+            icon: <ShoppingOutlined style={{ color: "black" }} />,
+            label: <Link to="/order" style={{ color: "black" }}>คำสั่งซื้อ</Link>,
         },
         {
             key: "/soil",
-            icon: <EnvironmentOutlined style={{ color: "white" }} />,
-            label: <Link to="/soil" style={{ color: "white" }}>ตรวจสอบดิน</Link>,
+            icon: <EnvironmentOutlined style={{ color: "black" }} />,
+            label: <Link to="/soil" style={{ color: "black" }}>ตรวจสอบดิน</Link>,
         },
         {
             key: "/fertilizer",
-            icon: <DotChartOutlined style={{ color: "white" }} />,
-            label: <Link to="/fertilizer" style={{ color: "white" }}>ตรวจสอบปุ๋ย</Link>,
+            icon: <DotChartOutlined style={{ color: "black" }} />,
+            label: <Link to="/fertilizer" style={{ color: "black" }}>ตรวจสอบปุ๋ย</Link>,
         },
         {
             key: "/soildata",
-            icon: <FileTextOutlined style={{ color: "white" }} />,
-            label: <Link to="/soildata" style={{ color: "white" }}>ชุดข้อมูลดิน</Link>,
+            icon: <FileTextOutlined style={{ color: "black" }} />,
+            label: <Link to="/soildata" style={{ color: "black" }}>ชุดข้อมูลดิน</Link>,
         },
         {
             key: "/recommend",
-            icon: <ReadOutlined style={{ color: "white" }} />,
-            label: <Link to="/recommend" style={{ color: "white" }}>คำแนะนำ</Link>,
+            icon: <ReadOutlined style={{ color: "black" }} />,
+            label: <Link to="/recommend" style={{ color: "black" }}>คำแนะนำ</Link>,
         },
         {
             type: "divider",
         },
         {
             key: "/logout",
-            icon: <LogoutOutlined style={{ color: "white" }} />,
-            label: <Link to="/logout" style={{ color: "white" }}>ออกจากระบบ</Link>,
+            icon: <LogoutOutlined style={{ color: "black" }} />,
+            label: <Link to="/logout" style={{ color: "black" }}>ออกจากระบบ</Link>,
         },
     ];
 
@@ -107,14 +107,17 @@ const Navigation = () => {
                 >
                     <img
                         alt="Your Company"
-                        src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+                        src="https://i.postimg.cc/htCbfgrh/freepik-the-style-is-candid-image-photography-with-natural-94126-1.jpg"
                         className="h-8 w-auto"
                     />
+                    <p style={{ color: "white" }}>&nbsp;Your Fertilizer</p>
+
+
                 </div>
 
                 <div className="demo-logo-vertical" />
                 <Menu
-                    theme="dark"
+                    theme="light"
                     mode="inline"
                     selectedKeys={[location.pathname]}
                     items={menuItems}
@@ -137,7 +140,7 @@ const Navigation = () => {
                             style={{ fontSize: "16px", width: 50, height: 50 }}
                         />
                         <Stack direction="row" spacing={2} style={{ marginRight: "18px" }}>
-                            <Avatar src="https://github.com/shadcn.png" />
+                            <Avatar src="https://i.postimg.cc/nLJjFW8M/getpersonimage.jpg" />
                         </Stack>
                     </div>
                 </Header>
