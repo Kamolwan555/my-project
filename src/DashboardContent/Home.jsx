@@ -1,10 +1,7 @@
-import { Table, Card, Typography, Modal, Button, ConfigProvider } from "antd";
 import { useEffect, useState } from "react";
-// import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Table, Card, Typography, Modal, Button, ConfigProvider } from "antd";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../DashboardContent/css/index.css";
 
 const { Title } = Typography;
@@ -84,11 +81,17 @@ const Home = () => {
 
   useEffect(() => {
     const fetchDashboard = () => {
-      const hasShownToast = localStorage.getItem("hasShownLoginToast");
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        toast.error("กรุณาล็อกอินก่อน");
+        return;
+      }
 
       fetch(`${import.meta.env.VITE_APP_API_HOST}/dashboard`, {
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: `Bearer ${accessToken}`, // Use the JWT token
         },
       })
         .then((res) => res.json())
@@ -98,11 +101,6 @@ const Home = () => {
         .catch((err) => {
           console.error("Failed to fetch dashboard data:", err);
         });
-
-      if (!hasShownToast) {
-        toast.success("เข้าสู่ระบบสำเร็จ!");
-        localStorage.setItem("hasShownLoginToast", "true");
-      }
     };
 
     fetchDashboard();
@@ -116,50 +114,6 @@ const Home = () => {
     setStatusModal({ visible: false, status: "" });
   };
 
-  // const sliderSettings = {
-  //     dots: false,
-  //     infinite: true,
-  //     speed: 500,
-  //     slidesToShow: 4,
-  //     slidesToScroll: 4,
-  //     swipe: false,
-  //     draggable: false,
-  //     responsive: [
-  //         {
-  //             breakpoint: 768,
-  //             settings: {
-  //                 slidesToShow: 1,
-  //                 slidesToScroll: 1,
-  //                 swipe: false,
-  //                 draggable: false,
-  //             }
-  //         },
-  //     ]
-  // };
-
-  const cardData = [
-    {
-      title: "Order วันนี้",
-      value: data?.total_orders_today || 0,
-      color: "#32CD32",
-    },
-    {
-      title: "ออเดอร์ทั้งหมด",
-      value: data?.all_order || 0,
-      color: "#32CD32",
-    },
-    {
-      title: "รายการที่กำลังดำเนินการ",
-      value: data?.in_progress_count || 0,
-      color: "#32CD32",
-    },
-    {
-      title: "รายการที่เสร็จสิ้นแล้ว",
-      value: data?.completed_count || 0,
-      color: "#32CD32",
-    },
-  ];
-
   if (!data) return <span>Loading data...</span>;
 
   return (
@@ -172,9 +126,36 @@ const Home = () => {
     >
       <div style={{ padding: 30 }}>
         <ToastContainer />
-        {/* <Slider {...sliderSettings}> */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "20px", padding: "20px" }}>
-          {cardData.map((item, index) => (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: "20px",
+            padding: "20px",
+          }}
+        >
+          {[
+            {
+              title: "Order วันนี้",
+              value: data?.total_orders_today || 0,
+              color: "#32CD32",
+            },
+            {
+              title: "ออเดอร์ทั้งหมด",
+              value: data?.all_order || 0,
+              color: "#32CD32",
+            },
+            {
+              title: "รายการที่กำลังดำเนินการ",
+              value: data?.in_progress_count || 0,
+              color: "#32CD32",
+            },
+            {
+              title: "รายการที่เสร็จสิ้นแล้ว",
+              value: data?.completed_count || 0,
+              color: "#32CD32",
+            },
+          ].map((item, index) => (
             <div key={index}>
               <Card
                 bordered={false}
@@ -193,7 +174,6 @@ const Home = () => {
             </div>
           ))}
         </div>
-        {/* </Slider> */}
         <div style={{ marginTop: 30 }}>
           <Title level={5} style={{ marginBottom: 20 }}>
             คำสั่งซื้อ

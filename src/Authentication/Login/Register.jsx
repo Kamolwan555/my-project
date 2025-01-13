@@ -22,6 +22,9 @@ export default function SignUpPage() {
           body: JSON.stringify({
             username: values.username,
             email: values.email,
+            tel: values.phone,
+            first_name: values.firstName,
+            last_name: values.lastName,
             password: values.password,
           }),
         }
@@ -98,6 +101,28 @@ export default function SignUpPage() {
           layout="vertical"
           requiredMark="optional"
         >
+           <div className="form-group">
+            <label htmlFor="username" className="username-label">
+              อีเมล
+            </label>
+            <Form.Item
+              name="username"
+              rules={[
+                {
+                  type: "username",
+                  required: true,
+                  message: "กรุณาใส่ชื่อผู้ใช้ของคุณ!",
+                },
+              ]}
+            >
+              <input
+                type="username"
+                id="username"
+                className="username-Input"
+                placeholder="ชื่อผู้ใช้"
+              />
+            </Form.Item>
+          </div>
           <div className="form-group">
             <label htmlFor="email" className="email-label">
               อีเมล
@@ -116,7 +141,7 @@ export default function SignUpPage() {
                 type="email"
                 id="email"
                 className="email-Input"
-                placeholder="ชื่อผู้ใช้หรืออีเมล"
+                placeholder="อีเมล"
               />
             </Form.Item>
           </div>
