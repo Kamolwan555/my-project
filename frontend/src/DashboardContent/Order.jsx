@@ -64,7 +64,7 @@ const Order = () => {
 
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_APP_API_HOST}/orderlist`,
+          `http://127.0.0.1:5000/orderlist`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
           }
@@ -88,7 +88,7 @@ const Order = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_API_HOST}/order`,
+        `http://127.0.0.1:5000/order`,
         { ...values },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -99,7 +99,7 @@ const Order = () => {
 
       // Refresh order list
       const updatedOrders = await axios.get(
-        `${import.meta.env.VITE_APP_API_HOST}/orderlist`,
+        `http://127.0.0.1:5000/orderlist`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       setData(updatedOrders.data);

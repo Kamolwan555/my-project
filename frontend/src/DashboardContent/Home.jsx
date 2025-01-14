@@ -88,7 +88,7 @@ const Home = () => {
         return;
       }
 
-      fetch(`${import.meta.env.VITE_APP_API_HOST}/dashboard`, {
+      fetch(`http://127.0.0.1:5000/dashboard`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`, // Use the JWT token

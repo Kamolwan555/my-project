@@ -12,7 +12,7 @@ export default function Login() {
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const login = (usernameOrEmail, password, callback) => {
-    fetch(`${import.meta.env.VITE_APP_API_HOST}/login`, {
+    fetch(`http://127.0.0.1:5000/login`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

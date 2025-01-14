@@ -13,7 +13,7 @@ export default function SignUpPage() {
   const onFinish = async (values) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_APP_API_HOST}/register`,
+        `http://127.0.0.1:5000/register`,
         {
           method: "POST",
           headers: {
