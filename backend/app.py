@@ -13,6 +13,7 @@ from db import *
 
 # load_dotenv()
 
+
 # Initialize Flask app
 
 app = Flask(__name__)
