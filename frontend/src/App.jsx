@@ -12,6 +12,7 @@ import Home from "./DashboardContent/Home";
 import Login from "./Authentication/Login/Login";
 import Register from "./Authentication/Login/Register";
 import Logout from "./Authentication/Login/logout";
+import CustomerFer from "./DashboardContent/CustomerFer";
 // import { PrivateRoute } from "./component/PrivateRoute";
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/home" element={<Home />} />
                 <Route path="/calculate" element={<Calculate />} />
                 <Route path="/fertilizer" element={<Fertilizer />} />
+                <Route path="/customerfer" element={<CustomerFer />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/soil" element={<Soil />} />
                 <Route path="/recommend" element={<Recommend />} />
