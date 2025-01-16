@@ -14,8 +14,8 @@ from sqlalchemy.orm import joinedload
 app = Flask(__name__)
 
 # Configure database URI and secret key
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:362545@localhost:5432/mydatabase'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9213@localhost:5432/mydatabase'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:362545@localhost:5432/postgres'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9213@localhost:5432/mydatabase'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'
 
@@ -48,7 +48,7 @@ class Order(db.Model):
     email = db.Column(db.String(100))
     order_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))  # ใช้ timezone-aware datetime
     status = db.Column(db.String(100))
-    
+
 class Role(db.Model):
     __tablename__ = 'role'
 
@@ -126,7 +126,7 @@ def login():
         .filter((User.username == username_or_email) | (User.email == username_or_email))
         .first()
     )
-    
+
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify({'error': 'Invalid credentials'}), 401
 

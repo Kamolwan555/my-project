@@ -140,7 +140,7 @@ const Navigation = () => {
                             style={{ fontSize: "16px", width: 50, height: 50 }}
                         />
                         <Stack direction="row" spacing={2} style={{ marginRight: "18px" }}>
-                            <Avatar src="https://i.postimg.cc/nLJjFW8M/getpersonimage.jpg" />
+                            <Avatar src="https://img2.pic.in.th/pic/AdobeStock_370472691_Preview.jpeg" />
                         </Stack>
                     </div>
                 </Header>
