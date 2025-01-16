@@ -1,4 +1,22 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import PropTypes from 'prop-types';
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Alert
+} from '@mui/material';
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell
+} from 'recharts';
 
 const soilData = [
   { soil_temperature: 21, soil_moisture: 43, ec: 4.54, ph: 6, nitrogen: 90, potassium: 75, phosphorus: 38 },
@@ -22,28 +40,170 @@ const soilData = [
   { soil_temperature: 24, soil_moisture: 60, ec: 9.62, ph: 6.4, nitrogen: 50, potassium: 98, phosphorus: 65 },
 ];
 
-const Fertilizer = () => {
-    return (
-        <div style={{ padding: '20px' }}>
-          <h1 style={{ textAlign: 'center' }}>Soil Data Dashboard</h1>
-          <div style={{ height: '400px', marginTop: '20px' }}>
-            <h2 style={{ textAlign: 'center' }}>Soil Metrics Overview</h2>
-            <ResponsiveContainer>
-              <BarChart data={soilData}>
-                <XAxis dataKey="soil_temperature" label={{ value: 'Temperature (°C)', position: 'insideBottom', offset: -5 }} />
-                <YAxis label={{ value: 'Values', angle: -90, position: 'insideLeft' }} />
-                <Tooltip />
-                <Bar dataKey="soil_moisture" fill="#82ca9d" name="Moisture (%)" />
-                <Bar dataKey="ec" fill="#ff7300" name="EC" />
-                <Bar dataKey="ph" fill="#8884d8" name="pH" />
-                <Bar dataKey="nitrogen" fill="#d0ed57" name="Nitrogen (mg)" />
-                <Bar dataKey="potassium" fill="#a4de6c" name="Potassium (mg)" />
-                <Bar dataKey="phosphorus" fill="#ffc658" name="Phosphorus (mg)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      );
-    };
+const nowData = soilData[0];
+const finalData = soilData[soilData.length - 1];
 
-export default Fertilizer;
+// เตรียมข้อมูล 3 รายการ: N, P, K
+const chartData = [
+  {
+    name: 'Nitrogen',
+    now: nowData.nitrogen,
+    final: finalData.nitrogen,
+  },
+  {
+    name: 'Phosphorus',
+    now: nowData.phosphorus,
+    final: finalData.phosphorus,
+  },
+  {
+    name: 'Potassium',
+    now: nowData.potassium,
+    final: finalData.potassium,
+  },
+];
+
+// สร้าง Tooltip แบบกำหนดเอง แสดง Now / Final
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload || !payload.length) return null;
+  const thisData = payload[0].payload;
+  return (
+    <Box sx={{ p: 1, bgcolor: 'white', boxShadow: 1, borderRadius: 1 }}>
+      <Typography variant="body2" fontWeight="bold">{label}</Typography>
+      <Typography variant="body2">Now: {thisData.now}</Typography>
+      <Typography variant="body2">Final: {thisData.final}</Typography>
+    </Box>
+  );
+};
+
+CustomTooltip.propTypes = {
+  active: PropTypes.bool,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  payload: PropTypes.arrayOf(PropTypes.shape({
+    payload: PropTypes.shape({
+      now: PropTypes.number,
+      final: PropTypes.number,
+    }),
+  })),
+};
+
+// คอมโพเนนต์ย่อย สำหรับแสดงแต่ละรายการ Alert/Survey (จะใช้เป็น Card หรือ Alert ก็ได้)
+function SurveyAlertItem({ id, title }) {
+  return (
+    <Alert
+      severity="info"
+      variant="outlined"
+      sx={{ mb: 2, display: 'flex', flexDirection: 'column' }}
+    >
+      <Typography variant="subtitle2" color="text.secondary">
+        #{id}
+      </Typography>
+      <Typography variant="body1" fontWeight="bold">
+        {title}
+      </Typography>
+    </Alert>
+  );
+}
+
+SurveyAlertItem.propTypes = {
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  createdAt: PropTypes.string.isRequired,
+};
+
+export default function App() {
+  return (
+    <Box
+      sx={{
+        p: 2,
+        display: 'flex',
+        gap: 2,
+        alignItems: 'flex-start',
+      }}
+    >
+
+      <Box sx={{ flex: 1 }}>
+        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+              Soil Data Dashboard
+            </Typography>
+
+            <Box sx={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  layout="vertical"
+                  data={chartData}
+                  margin={{ top: 20, right: 20, bottom: 20, left: 80 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" />
+                  <Tooltip content={<CustomTooltip />} />
+
+                  <Bar dataKey="now" stackId="stack" barSize={20}>
+                    {chartData.map((entry) => {
+                      let darkColor = '#1565C0'; // น้ำเงินเข้ม
+                      if (entry.name === 'Phosphorus') {
+                        darkColor = '#F9A825'; // เหลืองเข้ม
+                      } else if (entry.name === 'Potassium') {
+                        darkColor = '#388E3C'; // เขียวเข้ม
+                      }
+                      return <Cell key={`now-${entry.name}`} fill={darkColor} />;
+                    })}
+                  </Bar>
+
+                  <Bar dataKey="final" stackId="stack" barSize={20}>
+                    {chartData.map((entry) => {
+                      let lightColor = '#90CAF9'; // น้ำเงินอ่อน
+                      if (entry.name === 'Phosphorus') {
+                        lightColor = '#FFF59D'; // เหลืองอ่อน
+                      } else if (entry.name === 'Potassium') {
+                        lightColor = '#C8E6C9'; // เขียวอ่อน
+                      }
+                      return <Cell key={`final-${entry.name}`} fill={lightColor} />;
+                    })}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+
+      <Box sx={{ width: 320 }}>
+        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
+              Alert
+            </Typography>
+
+            <SurveyAlertItem
+              id="240622-002"
+              title="Help us innovate"
+              createdAt="11:24 PM"
+              views={1123}
+              comments={334}
+            />
+            <SurveyAlertItem
+              id="240622-002"
+              title="Help us innovate survey"
+              createdAt="11:24 PM"
+              views={1123}
+              comments={334}
+            />
+            <SurveyAlertItem
+              id="240622-002"
+              title="Monthly goals"
+              createdAt="11:24 PM"
+              views={1123}
+              comments={334}
+            />
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
+  );
+}
