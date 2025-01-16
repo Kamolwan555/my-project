@@ -1,5 +1,5 @@
 import "../DashboardContent/css/index.css";
-import { Table, Modal, Button, Form } from "antd";
+import { Table, Modal, Button, Form, ConfigProvider } from "antd";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -112,6 +112,12 @@ const Order = () => {
   if (!dataa) return <span>Loading data...</span>;
 
   return (
+    <ConfigProvider
+    theme={{
+      token: {
+        fontFamily: '"Noto Sans Thai", serif'
+      },
+    }}>
     <div className="container">
       <div className="header">
         <p className="subtitle">คำสั่งซื้อ</p>
@@ -210,6 +216,7 @@ const Order = () => {
 
       <ToastContainer />
     </div>
+    </ConfigProvider>
   );
 };
 
