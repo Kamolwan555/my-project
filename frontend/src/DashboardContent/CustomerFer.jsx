@@ -1,24 +1,7 @@
 import PropTypes from 'prop-types';
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Alert
-} from '@mui/material';
+import { Box, Card, CardContent, Typography, Alert } from '@mui/material';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell
-} from 'recharts';
-
-// ตัวอย่างข้อมูล (soilData) และอื่น ๆ
 const soilData = [
   { soil_temperature: 21, soil_moisture: 43, ec: 4.54, ph: 6, nitrogen: 90, potassium: 75, phosphorus: 38 },
   { soil_temperature: 20, soil_moisture: 56, ec: 3.88, ph: 6.9, nitrogen: 16, potassium: 71, phosphorus: 51 },
@@ -63,7 +46,6 @@ const chartData = [
   },
 ];
 
-// สร้าง Tooltip แบบกำหนดเอง
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
   const thisData = payload[0].payload;
@@ -90,7 +72,6 @@ CustomTooltip.propTypes = {
   })),
 };
 
-// คอมโพเนนต์ย่อย สำหรับแสดง Alert/Survey
 function SurveyAlertItem({ id, title }) {
   return (
     <Alert
@@ -120,21 +101,22 @@ SurveyAlertItem.propTypes = {
 export default function App() {
   return (
     <Box sx={{ p: 2 }}>
-      
-      {/* ส่วน Container ใหม่ (4 กล่อง) ตามภาพตัวอย่าง */}
       <Box 
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(6, 1fr)', 
+          },
           gap: 2,
-          mb: 3  // ระยะห่างจากด้านล่าง
+          mb: 3
         }}
       >
-        {/* Likes */}
         <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" color="text.secondary">
-              Total Likes
+              Nitrogen
             </Typography>
             <Typography variant="h5" fontWeight="bold">
               350,809
@@ -142,11 +124,10 @@ export default function App() {
           </CardContent>
         </Card>
 
-        {/* Comments */}
         <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" color="text.secondary">
-              Total Comments
+              Phosphorus
             </Typography>
             <Typography variant="h5" fontWeight="bold">
               186,072
@@ -154,11 +135,10 @@ export default function App() {
           </CardContent>
         </Card>
 
-        {/* Shares */}
         <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" color="text.secondary">
-              Total Shares
+              Potassium
             </Typography>
             <Typography variant="h5" fontWeight="bold">
               120,043
@@ -166,11 +146,32 @@ export default function App() {
           </CardContent>
         </Card>
 
-        {/* Engagement */}
         <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
           <CardContent>
             <Typography variant="h6" color="text.secondary">
-              Engagement
+              Temp
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              48.07%
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" color="text.secondary">
+              EC
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              48.07%
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+          <CardContent>
+            <Typography variant="h6" color="text.secondary">
+              PH
             </Typography>
             <Typography variant="h5" fontWeight="bold">
               48.07%
@@ -179,10 +180,14 @@ export default function App() {
         </Card>
       </Box>
 
-      {/* ส่วนเดิม (Dashboard + Alert) */}
+      {/* ส่วนของ Dashboard (Chart + Alert) */}
       <Box
         sx={{
           display: 'flex',
+          flexDirection: {
+            xs: 'column', 
+            md: 'row', 
+          },
           gap: 2,
           alignItems: 'flex-start',
         }}
@@ -238,7 +243,14 @@ export default function App() {
         </Box>
 
         {/* Alert */}
-        <Box sx={{ width: 320 }}>
+        <Box 
+          sx={{ 
+            width: {
+              xs: '100%',
+              md: 320
+            }
+          }}
+        >
           <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
             <CardContent>
               <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
@@ -250,15 +262,15 @@ export default function App() {
                 title="Alert"
               />
               <SurveyAlertItem
-                id="240622-002"
+                id="240622-003"
                 title="Alert"
               />
               <SurveyAlertItem
-                id="240622-002"
+                id="240622-004"
                 title="Alert"
               />
               <SurveyAlertItem
-                id="240622-002"
+                id="240622-005"
                 title="Alert"
               />
             </CardContent>
