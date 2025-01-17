@@ -1,0 +1,75 @@
+version: '3.8'
+
+networks:
+  pui:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:15
+    networks:
+      - pui
+    volumes:
+      - ./conf/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./conf/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/db.sh:/db-entrypoint.sh
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pui_database
+    ports:
+      - "5432:5432"
+    entrypoint: ["bash", "/db-entrypoint.sh"]
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    networks:
+      - pui
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@test.com
+      PGADMIN_DEFAULT_PASSWORD: test1234
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    networks:
+      - pui
+    volumes:
+      - ./backend:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: frontend
+  #   networks:
+  #     - pui
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - "5173:5173"
+  #   depends_on:
+  #     - backend
+  #   restart: always
+
+volumes:
+  pgdata:
+  pgadmin_data:
