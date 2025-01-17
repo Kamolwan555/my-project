@@ -93,15 +93,18 @@ CustomTooltip.propTypes = {
 function SurveyAlertItem({ id, title }) {
   return (
     <Alert
-      severity="info"
+      severity="warning"
       variant="outlined"
-      sx={{ mb: 2, display: 'flex', flexDirection: 'column' }}
+      sx={{ 
+        mb: 2, 
+        alignItems: 'center', // จัดวางข้อความกึ่งกลางแนวตั้ง
+      }}
     >
-      <Typography variant="subtitle2" color="text.secondary">
-        #{id}
-      </Typography>
-      <Typography variant="body1" fontWeight="bold">
+      <Typography variant="body2" fontWeight="bold">
         {title}
+      </Typography>
+      <Typography variant="subtitle2" color="text.secondary" sx={{ mr: 1 }}>
+        #{id}
       </Typography>
     </Alert>
   );
@@ -182,24 +185,15 @@ export default function App() {
 
             <SurveyAlertItem
               id="240622-002"
-              title="Help us innovate"
-              createdAt="11:24 PM"
-              views={1123}
-              comments={334}
+              title="Alert"
             />
             <SurveyAlertItem
               id="240622-002"
-              title="Help us innovate survey"
-              createdAt="11:24 PM"
-              views={1123}
-              comments={334}
+              title="Alert"
             />
             <SurveyAlertItem
               id="240622-002"
-              title="Monthly goals"
-              createdAt="11:24 PM"
-              views={1123}
-              comments={334}
+              title="Alert"
             />
           </CardContent>
         </Card>
