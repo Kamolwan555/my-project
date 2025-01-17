@@ -23,6 +23,7 @@ import {
   Recommend as RecommendIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const menuItems = [
   { key: "/home", label: "หน้าหลัก", icon: <HomeIcon />, link: "/home" },
@@ -65,16 +66,23 @@ const menuItems = [
   },
 ];
 
+const theme = createTheme({
+  typography: {
+    fontFamily: 'Noto Sans Thai, serif',
+  },
+});
+
 const Navigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const location = useLocation();
 
   return (
+    <ThemeProvider theme={theme}>
     <Box sx={{ display: "flex" }}>
       {/* AppBar */}
       <AppBar
         position="fixed"
-        color="primary"
+        color="white"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1, // Ensure AppBar is above Drawer
           marginLeft: isDrawerOpen ? "220px" : "0", // Adjust margin-left when Drawer is open
@@ -167,6 +175,7 @@ const Navigation = () => {
         <Outlet />
       </Box>
     </Box>
+    </ThemeProvider>
   );
 };
 
