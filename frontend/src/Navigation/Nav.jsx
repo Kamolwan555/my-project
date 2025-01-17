@@ -74,7 +74,7 @@ const Navigation = () => {
       {/* AppBar */}
       <AppBar
         position="fixed"
-        color="primary"
+        color="inherit"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1, // Ensure AppBar is above Drawer
           marginLeft: isDrawerOpen ? "220px" : "0", // Adjust margin-left when Drawer is open
