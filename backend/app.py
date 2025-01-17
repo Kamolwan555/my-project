@@ -138,7 +138,7 @@ def login():
 
         # Generate JWT access token
         access_token = create_access_token(
-            identity=str(user.id),  # Convert user.id to string if needed
+            identity=str(user.user_id),  # Convert user.id to string if needed
             additional_claims={'email': user.email, 'role': role_name},
             expires_delta=timedelta(hours=2)
         )
@@ -232,14 +232,14 @@ def get_orders_today_summary():
         
         # Convert all orders to a list of dicts
         orders_list = [{
-            'id': order.id,
+            'id': order.order_id,
             'name': order.name,
             'address': order.address,
-            'data': order.data,
+            'data': order.order_date,
             'number': order.number,
-            'email': order.email,
+            'email': order.order_status,
             'order_date': order.order_date.isoformat() if order.order_date else None,
-            'status': order.status
+            'status': order.order_status
         } for order in all_orders]
 
         # Summaries
