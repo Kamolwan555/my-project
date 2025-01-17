@@ -1,175 +1,173 @@
 import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import PropTypes from "prop-types";
 import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    CalculatorOutlined,
-    ReadOutlined,
-    EnvironmentOutlined,
-    ShoppingOutlined,
-    HomeOutlined,
-    DotChartOutlined,
-    FileTextOutlined,
-    LogoutOutlined,
-} from "@ant-design/icons";
-import { Button, Breadcrumb, Layout, Menu, theme } from "antd";
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Box,
+  Typography,
+} from "@mui/material";
+import {
+  Menu as MenuIcon,
+  Home as HomeIcon,
+  Calculate as CalculateIcon,
+  ShoppingCart as ShoppingCartIcon,
+  Terrain as TerrainIcon,
+  EmojiNature as EmojiNatureIcon,
+  DataUsage as DataUsageIcon,
+  Recommend as RecommendIcon,
+  Logout as LogoutIcon,
+} from "@mui/icons-material";
 
-const { Header, Sider, Content } = Layout;
-
-const routeBreadcrumbs = {
-    "/home": "Home",
-    "/calculate": "Calculate",
-    "/fertilizer": "Fertilizer",
-    "/order": "Order",
-    "/soil": "Soil",
-    "/recommend": "Recommend",
-    "/soildata": "Soil Data",
-};
+const menuItems = [
+  { key: "/home", label: "หน้าหลัก", icon: <HomeIcon />, link: "/home" },
+  {
+    key: "/calculate",
+    label: "คำนวณ",
+    icon: <CalculateIcon />,
+    link: "/calculate",
+  },
+  {
+    key: "/order",
+    label: "คำสั่งซื้อ",
+    icon: <ShoppingCartIcon />,
+    link: "/order",
+  },
+  { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainIcon />, link: "/soil" },
+  {
+    key: "/fertilizer",
+    label: "ตรวจสอบปุ๋ย",
+    icon: <EmojiNatureIcon />,
+    link: "/fertilizer",
+  },
+  {
+    key: "/soildata",
+    label: "ชุดข้อมูลดิน",
+    icon: <DataUsageIcon />,
+    link: "/soildata",
+  },
+  {
+    key: "/recommend",
+    label: "คำแนะนำ",
+    icon: <RecommendIcon />,
+    link: "/recommend",
+  },
+  {
+    key: "/logout",
+    label: "ออกจากระบบ",
+    icon: <LogoutIcon />,
+    link: "/logout",
+  },
+];
 
 const Navigation = () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const location = useLocation();
-    const { token: { borderRadiusLG, colorCustom = '#08bb00', fontFamilyCustom = 'Noto Sans Thai, sans-serif' }, } = theme.useToken();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const location = useLocation();
 
-    // Generate Breadcrumb Items Based on Current Path
-    const generateBreadcrumbItems = () => {
-        const pathSegments = location.pathname.split("/").filter(Boolean);
-        return pathSegments.map((segment, index) => {
-            const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
-            return {
-                title: <Link to={path}>{routeBreadcrumbs[path] || segment}</Link>,
-            };
-        });
-    };
+  return (
+    <Box sx={{ display: "flex" }}>
+      {/* AppBar */}
+      <AppBar
+        position="fixed"
+        color="primary"
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1, // Ensure AppBar is above Drawer
+          marginLeft: isDrawerOpen ? "220px" : "0", // Adjust margin-left when Drawer is open
+          width: isDrawerOpen ? "calc(100% - 220px)" : "100%", // Adjust width of AppBar
+          transition: "margin 0.3s ease-out, width 0.3s ease-out",
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            ระบบจัดการปุ๋ย
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-    const menuItems = [
-        {
-            key: "/home",
-            icon: <HomeOutlined style={{ color: "black" }} />,
-            label: <Link to="/home" style={{ color: "black" }}>หน้าหลัก</Link>,
-        },
-        {
-            key: "/calculate",
-            icon: <CalculatorOutlined style={{ color: "black" }} />,
-            label: <Link to="/calculate" style={{ color: "black" }}>คำนวณ</Link>,
-        },
-        {
-            key: "/order",
-            icon: <ShoppingOutlined style={{ color: "black" }} />,
-            label: <Link to="/order" style={{ color: "black" }}>คำสั่งซื้อ</Link>,
-        },
-        {
-            key: "/soil",
-            icon: <EnvironmentOutlined style={{ color: "black" }} />,
-            label: <Link to="/soil" style={{ color: "black" }}>ตรวจสอบดิน</Link>,
-        },
-        {
-            key: "/fertilizer",
-            icon: <DotChartOutlined style={{ color: "black" }} />,
-            label: <Link to="/fertilizer" style={{ color: "black" }}>ตรวจสอบปุ๋ย</Link>,
-        },
-        {
-            key: "/soildata",
-            icon: <FileTextOutlined style={{ color: "black" }} />,
-            label: <Link to="/soildata" style={{ color: "black" }}>ชุดข้อมูลดิน</Link>,
-        },
-        {
-            key: "/recommend",
-            icon: <ReadOutlined style={{ color: "black" }} />,
-            label: <Link to="/recommend" style={{ color: "black" }}>คำแนะนำ</Link>,
-        },
-        {
-            type: "divider",
-        },
-        {
-            key: "/logout",
-            icon: <LogoutOutlined style={{ color: "black" }} />,
-            label: <Link to="/logout" style={{ color: "black" }}>ออกจากระบบ</Link>,
-        },
-    ];
-
-    return (
-        <Layout style={{ minHeight: "100vh", backgroundColor: colorCustom, fontFamily: fontFamilyCustom }}>
-            {/* Sidebar */}
-            <Sider
-                trigger={null}
-                collapsible
-                collapsed={collapsed}
-                style={{ backgroundColor: colorCustom, fontFamily: fontFamilyCustom }}
+      {/* Drawer */}
+      <Drawer
+        variant="persistent"
+        open={isDrawerOpen}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 220,
+            backgroundColor: "#08bb00",
+            color: "#ffffff",
+            transition: "width 0.3s ease-out",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: "center",
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "top",
+            height: 120,
+          }}
+        >
+          <img
+            alt="Your Company"
+            src="https://i.postimg.cc/htCbfgrh/freepik-the-style-is-candid-image-photography-with-natural-94126-1.jpg"
+            style={{
+              height: 70,
+              objectFit: "contain",
+            }}
+          />
+          <Typography variant="h6" color="secondary" sx={{ mt: 1 }}>
+            Your Fertilizer
+          </Typography>
+        </Box>
+        <List>
+          {menuItems.map((item) => (
+            <ListItem
+              button
+              key={item.key}
+              component={Link}
+              to={item.link}
+              selected={location.pathname === item.link}
+              sx={{
+                "&.Mui-selected": { backgroundColor: "#005700" },
+                "&:hover": { backgroundColor: "#007f00" },
+              }}
             >
-                {/* Logo */}
-                <div
-                    className="flex shrink-0 items-center"
-                    style={{ padding: "16px", textAlign: "center" }}
-                >
-                    <img
-                        alt="Your Company"
-                        src="https://i.postimg.cc/htCbfgrh/freepik-the-style-is-candid-image-photography-with-natural-94126-1.jpg"
-                        className="h-8 w-auto"
-                    />
-                    <p style={{ color: "white" }}>&nbsp;Your Fertilizer</p>
+              <ListItemIcon sx={{ color: "#ffffff" }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
 
-
-                </div>
-
-                <div className="demo-logo-vertical" />
-                <Menu
-                    theme="light"
-                    mode="inline"
-                    selectedKeys={[location.pathname]}
-                    items={menuItems}
-                    style={{
-                        backgroundColor: colorCustom,
-                        fontFamily: fontFamilyCustom,
-                    }}
-                />
-            </Sider>
-
-            {/* Main Layout */}
-            <Layout>
-                {/* Header */}
-                <Header style={{ padding: "2px 16px", background: "transparent", fontFamily: fontFamilyCustom }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Button
-                            type="text"
-                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                            onClick={() => setCollapsed(!collapsed)}
-                            style={{ fontSize: "16px", width: 50, height: 50 }}
-                        />
-                        <Stack direction="row" spacing={2} style={{ marginRight: "18px" }}>
-                            <Avatar src="https://i.postimg.cc/nLJjFW8M/getpersonimage.jpg" />
-                        </Stack>
-                    </div>
-                </Header>
-
-                {/* Content Area */}
-                <Content style={{ margin: "0 16px", fontFamily: fontFamilyCustom }}>
-                    <Breadcrumb
-                        style={{ margin: "16px px" }}
-                        items={generateBreadcrumbItems()}
-                    />
-                    <div
-                        style={{
-                            padding: 24,
-                            minHeight: 360,
-                            borderRadius: borderRadiusLG,
-                            backgroundColor: "transparent",
-                            fontFamily: fontFamilyCustom,
-                        }}
-                    >
-                        <Outlet />
-                    </div>
-                </Content>
-            </Layout>
-        </Layout>
-    );
-};
-
-Navigation.propTypes = {
-    children: PropTypes.node,
+      {/* Main Content */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          transition: "margin 0.3s ease-out",
+          marginLeft: isDrawerOpen ? "240px" : "0px",
+        }}
+      >
+        <Toolbar /> {/* Push Content Down */}
+        <Outlet />
+      </Box>
+    </Box>
+  );
 };
 
 export default Navigation;
