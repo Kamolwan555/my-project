@@ -193,12 +193,10 @@ function MediaCard({ card }) {
         </Grid>
       </CardContent>
 
-      {/* Divider แบ่งข้อมูลกับปุ่ม */}
-      <Divider sx={{ margin: '4px 0', borderColor: 'black' }} />
+      <Divider />
 
       <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        {/* เพิ่มข้อความ "รายละเอียด" ก่อนปุ่ม */}
-        <Typography variant="body2" sx={{ mr: 1 }}>
+        <Typography sx={{ color: 'text.secondary' }}>
           รายละเอียด
         </Typography>
         <IconButton
