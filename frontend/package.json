@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "proxy": "https://osd101.ldd.go.th",
-
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -24,7 +23,7 @@
     "prop-types": "^15.8.1",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "^5.0.1",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.2",
     "recharts": "^2.15.0",
@@ -50,5 +49,4 @@
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   }
-  
 }

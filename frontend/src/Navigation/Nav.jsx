@@ -11,6 +11,7 @@ import {
   IconButton,
   Box,
   Typography,
+  Divider,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -22,6 +23,7 @@ import {
   DataUsage as DataUsageIcon,
   Recommend as RecommendIcon,
   Logout as LogoutIcon,
+  AccountBox as AccountBoxIcon,
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -115,6 +117,9 @@ const Navigation = () => {
             backgroundColor: "#08bb00",
             color: "#ffffff",
             transition: "width 0.3s ease-out",
+            display: "flex",
+            flexDirection: "column",
+            height: "100%", // Ensure the drawer takes full height
           },
         }}
       >
@@ -141,24 +146,47 @@ const Navigation = () => {
             Your Fertilizer
           </Typography>
         </Box>
-        <List>
-          {menuItems.map((item) => (
-            <ListItem
-              button
-              key={item.key}
-              component={Link}
-              to={item.link}
-              selected={location.pathname === item.link}
-              sx={{
-                "&.Mui-selected": { backgroundColor: "#005700" },
-                "&:hover": { backgroundColor: "#007f00" },
-              }}
-            >
-              <ListItemIcon sx={{ color: "#ffffff" }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
-            </ListItem>
-          ))}
-        </List>
+        
+        {/* Menu Items */}
+        <Box sx={{ flexGrow: 1 }}>
+          <List>
+            {menuItems.map((item) => (
+              <ListItem
+                button
+                key={item.key}
+                component={Link}
+                to={item.link}
+                selected={location.pathname === item.link}
+                sx={{
+                  "&.Mui-selected": { backgroundColor: "#005700" },
+                  "&:hover": { backgroundColor: "#007f00" },
+                }}
+              >
+                <ListItemIcon sx={{ color: "#ffffff" }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+
+        {/* Divider above User Config */}
+        <Divider sx={{ my: 2 }} />
+
+        {/* User Config Button */}
+        <ListItem
+          button
+          key="/userconfig"
+          component={Link}
+          to="/userconfig"
+          sx={{
+            "&:hover": { backgroundColor: "#007f00" },
+          }}
+        >
+          <ListItemIcon sx={{ color: "#ffffff" }}>
+            <AccountBoxIcon />
+          </ListItemIcon>
+          <ListItemText primary="การตั้งค่าผู้ใช้" />
+        </ListItem>
       </Drawer>
 
       {/* Main Content */}

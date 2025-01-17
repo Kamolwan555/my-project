@@ -13,6 +13,8 @@ import Login from "./Authentication/Login/Login";
 import Register from "./Authentication/Login/Register";
 import Logout from "./Authentication/Login/logout";
 import CustomerFer from "./DashboardContent/CustomerFer";
+import UserConfig from "./DashboardContent/UserConfig";
+import EditUser from "./DashboardContent/EditUser";
 // import { PrivateRoute } from "./component/PrivateRoute";
 
 const App = () => {
@@ -31,6 +33,8 @@ const App = () => {
                 <Route path="/recommend" element={<Recommend />} />
                 <Route path="/soildata" element={<Soildata />} />
                 <Route path="/logout" element={<Logout />} />
+                <Route path="/userconfig" element={<UserConfig />} />
+                <Route path="/edituser/:userid" element={<EditUser />} />
             </Route>
             <Route path="/register" element={<Register />} />
       </Routes>
