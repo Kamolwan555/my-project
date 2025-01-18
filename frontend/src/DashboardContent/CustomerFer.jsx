@@ -119,7 +119,7 @@ export default function App() {
               Nitrogen
             </Typography>
             <Typography variant="h5" fontWeight="bold">
-              350,809
+              50
             </Typography>
           </CardContent>
         </Card>
@@ -130,7 +130,7 @@ export default function App() {
               Phosphorus
             </Typography>
             <Typography variant="h5" fontWeight="bold">
-              186,072
+              65
             </Typography>
           </CardContent>
         </Card>
@@ -141,7 +141,7 @@ export default function App() {
               Potassium
             </Typography>
             <Typography variant="h5" fontWeight="bold">
-              120,043
+              98
             </Typography>
           </CardContent>
         </Card>
@@ -152,7 +152,7 @@ export default function App() {
               Temp
             </Typography>
             <Typography variant="h5" fontWeight="bold">
-              48.07%
+              24
             </Typography>
           </CardContent>
         </Card>
@@ -163,7 +163,7 @@ export default function App() {
               EC
             </Typography>
             <Typography variant="h5" fontWeight="bold">
-              48.07%
+              9.62
             </Typography>
           </CardContent>
         </Card>
@@ -174,7 +174,7 @@ export default function App() {
               PH
             </Typography>
             <Typography variant="h5" fontWeight="bold">
-              48.07%
+              60
             </Typography>
           </CardContent>
         </Card>

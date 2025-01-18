@@ -6,6 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import { Select, Form } from "antd";
 
 const { Option } = Select;
+
 const theme = createTheme({
     typography: {
         fontFamily: "Noto Sans Thai, serif",
@@ -22,12 +23,15 @@ function EditUser() {
     return (
         <ThemeProvider theme={theme}>
             <div>
-                <IconButton className="icon-button" onClick={handleBackClick}>
-                    <ArrowBackIcon />
-                </IconButton>
+                {/* Header Container */}
+                <div className="header-container">
+                    <IconButton className="icon-button" onClick={handleBackClick}>
+                        <ArrowBackIcon />
+                    </IconButton>
+                    <h3 className="user-form">แก้ไขข้อมูลส่วนตัว</h3>
+                </div>
 
-                <h3 className="user-form">แก้ไขข้อมูลส่วนตัว</h3>
-
+                {/* Form Container */}
                 <div className="form-container">
                     <div className="form-header">
                         <p className="form-description">ข้อมูลส่วนตัวผู้ใช้</p>
@@ -37,14 +41,13 @@ function EditUser() {
                         <form className="form-field">
                             {/* User ID */}
                             <div className="form-group">
-                                <label htmlFor="userid" className="userid-label">
+                                <label htmlFor="userid" className="email-label">
                                     User ID
                                 </label>
                                 <Form.Item
                                     name="username"
                                     rules={[
                                         {
-                                            type: "text",
                                             required: true,
                                             message: "กรุณาใส่ User ID ของคุณ!",
                                         },
@@ -53,7 +56,7 @@ function EditUser() {
                                     <input
                                         type="text"
                                         id="userid"
-                                        className="userid-Input"
+                                        className="email-input"
                                         placeholder="User ID"
                                     />
                                 </Form.Item>
@@ -70,7 +73,6 @@ function EditUser() {
                                             name="firstName"
                                             rules={[
                                                 {
-                                                    type: "text",
                                                     required: true,
                                                     message: "กรุณาใส่ชื่อของคุณ!",
                                                 },
@@ -95,7 +97,6 @@ function EditUser() {
                                             name="lastName"
                                             rules={[
                                                 {
-                                                    type: "text",
                                                     required: true,
                                                     message: "กรุณาใส่นามสกุลของคุณ!",
                                                 },
@@ -130,7 +131,7 @@ function EditUser() {
                                     <input
                                         type="email"
                                         id="email"
-                                        className="email-Input"
+                                        className="email-input"
                                         placeholder="อีเมล"
                                     />
                                 </Form.Item>
@@ -145,7 +146,6 @@ function EditUser() {
                                     name="phone"
                                     rules={[
                                         {
-                                            type: "tel",
                                             required: true,
                                             message: "กรุณาใส่เบอร์โทรศัพท์ของคุณ!",
                                         },
@@ -160,6 +160,7 @@ function EditUser() {
                                 </Form.Item>
                             </div>
 
+                            {/* Role */}
                             <div className="form-group">
                                 <label htmlFor="role" className="role-label">
                                     Role
@@ -185,13 +186,9 @@ function EditUser() {
                                 </Form.Item>
                             </div>
 
-
                             {/* Submit Button */}
                             <div>
-                                <button
-                                    type="submit"
-                                    className="submit-button"
-                                >
+                                <button type="submit" className="submit-button">
                                     บันทึก
                                 </button>
                             </div>
