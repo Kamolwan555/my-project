@@ -1,91 +1,213 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { Table, Card, Typography, Modal, Button, ConfigProvider } from "antd";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../DashboardContent/css/index.css";
 
-const Dashboard = () => {
-    const [orders, setOrders] = useState([]);
-    const [summary, setSummary] = useState({});
-    const [error, setError] = useState(null);
+const { Title } = Typography;
 
-    useEffect(() => {
-        // Fetch data from the backend API
-        const fetchOrders = async () => {
-            try {
-                const response = await fetch('/dashboard', {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer YOUR_JWT_TOKEN_HERE`, // Replace with a valid JWT token
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                setOrders(data.orders || []);
-                setSummary(data.summary || {});
-            } catch (err) {
-                setError(err.message);
-            }
-        };
-
-        fetchOrders();
-    }, []);
-
-    return (
-        <div>
-            <h1>Dashboard</h1>
-
-            {error ? (
-                <div style={{ color: 'red' }}>Error: {error}</div>
-            ) : (
-                <>
-                    {/* Summary Section */}
-                    <div>
-                        <h2>Order Summary</h2>
-                        <p>Total Orders Today: {summary.total_orders_today || 0}</p>
-                        <p>Total Orders: {summary.total_orders || 0}</p>
-                        <p>In Progress: {summary.in_progress_count || 0}</p>
-                        <p>Completed: {summary.completed_count || 0}</p>
-                    </div>
-
-                    {/* Orders List Section */}
-                    <div>
-                        <h2>Orders</h2>
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Address</th>
-                                    <th>Date</th>
-                                    <th>Number</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {orders.length > 0 ? (
-                                    orders.map((order) => (
-                                        <tr key={order.id}>
-                                            <td>{order.id}</td>
-                                            <td>{order.name}</td>
-                                            <td>{order.address}</td>
-                                            <td>{order.date}</td>
-                                            <td>{order.number}</td>
-                                            <td>{order.status}</td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="6">No orders found</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </>
-            )}
-        </div>
-    );
+const getStatusColor = (status) => {
+  switch (status) {
+    case "In progress":
+      return "#FFA500"; // Orange
+    case "Completed":
+      return "#32CD32"; // Lime Green
+    case "Pending":
+      return "#F0E68C"; // Khaki
+    case "Canceled":
+      return "#f80000"; // Red
+    default:
+      return "#D3D3D3"; // Gray for unknown status
+  }
 };
 
-export default Dashboard;
+const columns = [
+  {
+    title: "",
+    key: "statusDot",
+    render: (_, record) => (
+      <span
+        style={{
+          display: "inline-block",
+          width: 10,
+          height: 10,
+          borderRadius: "50%",
+          backgroundColor: getStatusColor(record.status),
+          marginRight: 8,
+        }}
+      ></span>
+    ),
+  },
+  {
+    title: "ชื่อ",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "ที่อยู่",
+    dataIndex: "address",
+    key: "address",
+  },
+  {
+    title: "ข้อมูล",
+    dataIndex: "data",
+    key: "data",
+  },
+  {
+    title: "วันที่",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "อีเมล",
+    dataIndex: "email",
+    key: "email",
+  },
+  {
+    title: "เบอร์โทร",
+    dataIndex: "number",
+    key: "number",
+  },
+  {
+    title: "สถานะ",
+    dataIndex: "status",
+    key: "status",
+  },
+];
+
+const Home = () => {
+  const [data, setData] = useState();
+  const [statusModal, setStatusModal] = useState({ visible: false, status: "" });
+
+  useEffect(() => {
+    const fetchDashboard = () => {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        toast.error("กรุณาล็อกอินก่อน");
+        return;
+      }
+
+      fetch(`http://127.0.0.1:5000/dashboard`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Use the JWT token
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch dashboard data:", err);
+        });
+    };
+
+    fetchDashboard();
+  }, []);
+
+  const handleRowClick = (record) => {
+    setStatusModal({ visible: true, status: record.status });
+  };
+
+  const closeModal = () => {
+    setStatusModal({ visible: false, status: "" });
+  };
+
+  if (!data) return <span>Loading data...</span>;
+
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: "'Noto Sans Thai', sans-serif",
+        },
+      }}
+    >
+      <div style={{ padding: 30 }}>
+        <ToastContainer />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: "20px",
+            padding: "20px",
+          }}
+        >
+          {[
+            {
+              title: "Order วันนี้",
+              value: data?.summary.total_orders_today || 0,
+              color: "#08bb00",
+            },
+            {
+                title: "รายการที่รอการตอบรับ",
+                value: data?.summary.in_progress_count || 0,
+                color: "#08bb00",
+            },
+            {
+              title: "sensor avilable",
+              value: data?.summary.status_free || 0,
+              color: "#08bb00",
+            },
+            {
+              title: "sensor in used",
+              value: data?.summary.in_progress_count || 0,
+              color: "#08bb00",
+            },
+            // {
+            //   title: "รายการที่เสร็จสิ้นแล้ว",
+            //   value: data?.completed_count || 0,
+            //   color: "#08bb00",
+            // },
+          ].map((item, index) => (
+            <div key={index}>
+              <Card
+                bordered={false}
+                style={{
+                  textAlign: "center",
+                  backgroundColor: item.color,
+                  padding: 8,
+                  boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                  borderRadius: 10,
+                  color: "white",
+                }}
+              >
+                <h2>{item.title}</h2>
+                <p style={{ fontSize: "24px", fontWeight: "bold" }}>{item.value}</p>
+              </Card>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 30 }}>
+          <Title level={5} style={{ marginBottom: 20 }}>
+            คำสั่งซื้อ
+          </Title>
+          <Table
+            className="custom-font-table"
+            dataSource={data.orders}
+            columns={columns}
+            rowKey="id"
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record),
+            })}
+          />
+        </div>
+        <Modal
+          title="Order Status"
+          visible={statusModal.visible}
+          onCancel={closeModal}
+          footer={[
+            <Button key="close" onClick={closeModal}>
+              Close
+            </Button>,
+          ]}
+        >
+          <p>{statusModal.status}</p>
+        </Modal>
+      </div>
+    </ConfigProvider>
+  );
+};
+
+export default Home;

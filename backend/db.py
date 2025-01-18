@@ -29,7 +29,7 @@ class User(Model):
 class Order(Model):
     __tablename__ = 'order'
 
-    order_id = Column(Integer, primary_key=True)
+    order_id = Column(Integer, primary_key=True,autoincrement=True)
     name = Column(String(100))
     address = Column(String(100))
     plant = Column(String(100))
@@ -37,7 +37,7 @@ class Order(Model):
     quantity = Column(String(100))
     order_date = Column(DateTime, default=func.now())  
     order_status = Column(String(100))
-    fertilizer_id = Column(Integer, ForeignKey('fertilizer.fertilizer_id'), nullable=False)
+    # fertilizer_id = Column(Integer, ForeignKey('fertilizer.fertilizer_id'), nullable=False)
 
     sensors = relationship('Sensor', back_populates='order')
 

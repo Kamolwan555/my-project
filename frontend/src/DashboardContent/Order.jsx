@@ -1,5 +1,6 @@
 import "../DashboardContent/css/index.css";
 import { Table, Modal, Button, Form, ConfigProvider } from "antd";
+import { Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -31,7 +32,7 @@ const columns = [
           width: 10,
           height: 10,
           borderRadius: "50%",
-          backgroundColor: getStatusColor(record.status),
+          backgroundColor: getStatusColor(record.order_status),
           marginRight: 8,
         }}
       ></span>
@@ -39,11 +40,11 @@ const columns = [
   },
   { title: "ชื่อ", dataIndex: "name", key: "name" },
   { title: "ที่อยู่", dataIndex: "address", key: "address" },
-  { title: "ข้อมูล", dataIndex: "data", key: "data" },
+  { title: "พืช", dataIndex: "plant", key: "plant" },
+  { title: "เบอร์โทร", dataIndex: "plant_number", key: "plant_number" },
+  { title: "จำนวน", dataIndex: "quantity", key: "quantity" },
   { title: "วันที่", dataIndex: "order_date", key: "order_date" },
-  { title: "อีเมล", dataIndex: "email", key: "email" },
-  { title: "เบอร์โทร", dataIndex: "number", key: "number" },
-  { title: "สถานะ", dataIndex: "status", key: "status" },
+  { title: "สถานะ", dataIndex: "order_status", key: "order_status" },
 ];
 
 const Order = () => {
@@ -51,6 +52,8 @@ const Order = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addOrderModalOpen, setAddOrderModalOpen] = useState(false);
+  const [crops, setCrops] = useState([]);
+  const [selectedCrop, setSelectedCrop] = useState("");
 
   const [form] = Form.useForm();
 
@@ -78,7 +81,22 @@ const Order = () => {
 
     fetchOrders();
   }, []);
+  useEffect(() => {
+    fetchCrops();
+  }, []);
 
+  const fetchCrops = async () => {
+    try {
+      const response = await axios.get("/cal/api/crop.php");
+      setCrops(response.data);
+    } catch (error) {
+      console.error("Error fetching crop data:", error);
+    }
+  };
+
+  const handleChange = (event) => {
+    setSelectedCrop(event.target.value);
+  };
   const handleRowClick = (record) => {
     setSelectedOrder(record);
     setIsModalOpen(true);
@@ -152,9 +170,14 @@ const Order = () => {
         {selectedOrder ? (
           <div>
             <p><strong>ชื่อ:</strong> {selectedOrder.name}</p>
-            <p><strong>สถานะ:</strong> {selectedOrder.status}</p>
-            <p><strong>อีเมล:</strong> {selectedOrder.email}</p>
-            <p><strong>เบอร์โทร:</strong> {selectedOrder.number}</p>
+            <p><strong>ที่อยู่:</strong> {selectedOrder.address}</p>
+            <p><strong>พืช:</strong> {selectedOrder.plant}</p>
+            <p><strong>เบอร์โทร:</strong> {selectedOrder.plant_number}</p>
+            <p><strong>จำนวน:</strong> {selectedOrder.quantity}</p>
+            <p><strong>วันที่:</strong> {selectedOrder.order_date}</p>
+            <p><strong>สถานะ:</strong> {selectedOrder.order_status}</p>
+
+
           </div>
         ) : (
           <p>No order selected</p>
@@ -172,10 +195,13 @@ const Order = () => {
           form={form}
           onFinish={handleAddOrderSubmit}
           layout="vertical"
+          style={{ display: "flex", flexWrap: "wrap", gap: 16 }}
+          
         >
           <Form.Item
             name="name"
             label="ชื่อผู้ซื้อ"
+            
             rules={[{ required: true, message: "โปรดระบุชื่อผู้ซื้อ!" }]}
           >
             <input type="text" placeholder="ชื่อผู้ซื้อ" />
@@ -184,15 +210,32 @@ const Order = () => {
             name="address"
             label="ที่อยู่"
             rules={[{ required: true, message: "โปรดระบุที่อยู่!" }]}
+            style={{ marginBottom: 0 }}
           >
             <input type="text" placeholder="ที่อยู่" />
           </Form.Item>
           <Form.Item
             name="data"
-            label="ข้อมูลคำสั่งซื้อ"
-            rules={[{ required: true, message: "โปรดระบุข้อมูลคำสั่งซื้อ!" }]}
+            label="พืช"
+            rules={[{ required: true, message: "โปรดระบุข้อมูลพืช!" }]}
+            style={{ marginBottom: 0 }}
           >
-            <input type="text" placeholder="ข้อมูลคำสั่งซื้อ" />
+            <Select 
+              value={selectedCrop}
+              onChange={handleChange}
+              fullWidth
+              displayEmpty
+              
+            >
+              <MenuItem value="" disabled>
+                เลือกพืช
+              </MenuItem>
+              {crops.map((crop) => (
+                <MenuItem key={crop.id} value={crop.id}>
+                  {crop.name}
+                </MenuItem>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item
             name="number"
@@ -202,11 +245,11 @@ const Order = () => {
             <input type="text" placeholder="เบอร์โทรศัพท์" />
           </Form.Item>
           <Form.Item
-            name="email"
-            label="อีเมล"
-            rules={[{ type: "email", required: true, message: "โปรดระบุอีเมลของคุณ!" }]}
+            name="quantity"
+            label="จำนวน"
+            rules={[{ type: "text", required: true, message: "โปรดระบุจำนวนของคุณ!" }]}
           >
-            <input type="email" placeholder="อีเมล" />
+            <input type="text" placeholder="จำนวน" />
           </Form.Item>
           <Button type="primary" htmlType="submit">
             บันทึก

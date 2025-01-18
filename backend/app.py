@@ -160,31 +160,32 @@ def place_order():
         address = data.get('address')
         order_data = data.get('data')
         number = data.get('number')
-        email = data.get('email')
+        quantity = data.get('quantity')
 
-        if not all([name, address, order_data, number, email]):
+        if not all([name, address, order_data, number, quantity]):
             return jsonify({'error': 'All fields are required'}), 400
 
-        if '@' not in email or '.' not in email:#เชื่อมหน้าบ้านเเล้วลบออก
-            return jsonify({'error': 'Invalid email format'}), 400
-
+       
         # Set order time to the current time
         # order_time = datetime.utcnow()
         with get_db() as db_session:
+            last_order = db_session.query(Order).order_by(Order.order_id.desc()).first()
+            next_id = (last_order.order_id if last_order else 0) + 1
             # Create new order
             new_order = Order(
+                order_id=next_id,
                 name=name,
                 address=address,
-                data=order_data,
-                number=number,
-                email=email,
+                plant=order_data,
+                plant_number=number,
+                quantity=quantity,
                 # order_time=order_time
-                status="Pending"
+                order_status="Pending"
             )
             db_session.add(new_order)
             db_session.commit()
 
-            return jsonify({'message': 'Order placed successfully', 'order_id': new_order.id}), 201
+            return jsonify({'message': 'Order placed successfully',}), 201
     except Exception as e:
         return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
 
@@ -198,14 +199,14 @@ def get_all_orders():
         orders_list = []
         for order in orders:
             orders_list.append({
-                'id': order.id,
+               'id': order.order_id,
                 'name': order.name,
                 'address': order.address,
-                'data': order.data,
-                'number': order.number,
-                'email': order.email,
-                'order_date': order.order_date.isoformat() if order.order_date else None,  # แปลงเป็น ISO 8601
-                'status': order.status
+                'plant': order.plant,
+                'order_date': order.order_date.isoformat() if order.order_date else None,
+                'plant_number': order.plant_number,
+                'quantity': order.quantity,
+                'order_status': order.order_status
             })
 
         return jsonify({'orders': orders_list}), 200
@@ -228,7 +229,7 @@ def get_orders_today_summary():
 
             # Get all orders for summary
             all_orders = db_session.query(Order).all()
-
+            sensor_data = db_session.query(Sensor).all()
             # Convert all orders to a list of dicts
             orders_list = [
                 {
@@ -236,29 +237,39 @@ def get_orders_today_summary():
                     'name': order.name,
                     'address': order.address,
                     'date': order.order_date.isoformat() if order.order_date else None,
-                    'number': order.number,
+                    # 'number': order.number,
                     'status': order.order_status
                 } for order in all_orders
             ]
+            # sensor_list = [
+            #     {
+            #         # 'id': sensor.sensor_id,
+            #         # 'name': sens,
+            #         # 'address': order.address,
+            #         # 'date': order.order_date.isoformat() if order.order_date else None,
+            #         # # 'number': order.number,
+            #         'status': sensor.sensor_status
+            #     } for sensor in sensor_data
+            # ]
 
             # Summaries
             total_orders_today = len(orders_today)
-            total_orders = len(all_orders)  # Total orders
+            # total_orders = len(all_orders)  # Total orders
             in_progress_count = len([
                 order for order in all_orders
-                if order.order_status and order.order_status.lower() == "in progress"
+                if order.order_status and order.order_status.lower() == "pending"
             ])
-            completed_count = len([
-                order for order in all_orders
-                if order.order_status and order.order_status.lower() == "completed"
+            status_free = len([
+                sensor for sensor in sensor_data
+                if sensor.sensor_status and sensor.sensor_status.lower() == "inactive"
             ])
-
+           
             return jsonify({
                 'summary': {
                     'total_orders_today': total_orders_today,
-                    'total_orders': total_orders,
                     'in_progress_count': in_progress_count,
-                    'completed_count': completed_count
+                    'status_free' : status_free
+                    
                 },
                 'orders': orders_list  # Full list of orders
             }), 200
