@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const App = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://osd101.ldd.go.th/api/crop.php')
+    axios
+      .get('/cal/api/fertilizer.php?cropID=17&N=สูง&P=ต่ำ&K=ปานกลาง')
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
+        setData(response.data);
       })
-      .then((data) => setData(data))
-      .catch((error) => setError(error));
+      .catch((error) => {
+        setError(error);
+      });
   }, []);
 
   return (
