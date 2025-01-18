@@ -146,7 +146,7 @@ input:focus {
 }
 
 .custom-font-table {
-    font-family: 'Noto Sans Thai', sans-serif;
+    font-family: "Noto Sans Thai", sans-serif;
 }
 
 .container {
@@ -167,7 +167,7 @@ input:focus {
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
     padding: 0.75rem 0.75rem;
-    font-family: 'Noto Sans Thai', sans-serif;
+    font-family: "Noto Sans Thai", sans-serif;
 }
 
 .subtitle {
@@ -189,4 +189,178 @@ input:focus {
 .text {
     margin-top: 0.5rem;
     color: #6b7280;
+}
+
+/* EditUser */
+.icon-button {
+    font-family: "Noto Sans Thai", serif;
+    margin-bottom: 20px;
+}
+
+.user-form {
+    font-family: "Noto Sans Thai", serif;
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 0.75rem;
+    font-family: "Noto Sans Thai", serif;
+}
+
+.form-header {
+    background-color: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-family: "Noto Sans Thai", serif;
+}
+
+.form-description {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-family: "Noto Sans Thai", serif;
+}
+
+.form-body {
+    padding: 1rem;
+    font-family: "Noto Sans Thai", serif;
+}
+
+.form-field {
+    font-family: "Noto Sans Thai", serif;
+    margin-top: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: "Noto Sans Thai", serif;
+    color: #374151;
+}
+
+.form-input {
+    margin-top: 0.25rem;
+    display: block;
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    font-size: 0.875rem;
+    font-family: "Noto Sans Thai", serif;
+    padding: 0.5rem;
+    outline: none;
+}
+
+.form-input:focus {
+    font-family: "Noto Sans Thai", serif;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(141, 228, 115, 0.5);
+}
+
+.submit-button {
+    padding: 6px 12px;
+    background-color: #32cd32;
+    color: white;
+    font-family: "Noto Sans Thai", serif;
+    font-size: 1rem;
+    font-weight: 400;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid transparent;
+}
+
+.submit-button:hover {
+    background-color: #32cd32;
+}
+
+.submit-button:focus {
+    font-family: "Noto Sans Thai", serif;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(141, 228, 115, 0.5);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    /* Ensure spacing between form groups */
+}
+
+.userid-label,
+.email-label,
+.phone-label,
+.role-label,
+.firstName-label,
+.lastName-label {
+    font-family: "Noto Sans Thai", serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.userid-Input,
+.email-Input,
+.phone-input,
+.firstName-input,
+.lastName-input {
+    margin-top: 0.25rem;
+    display: block;
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    font-size: 0.875rem;
+    font-family: "Noto Sans Thai", serif;
+    padding: 0.5rem;
+    outline: none;
+}
+
+.userid-Input:focus,
+.email-Input:focus,
+.phone-input:focus,
+.role-select:focus,
+.firstName-input:focus,
+.lastName-input:focus {
+    outline-color: #32cd32;
+}
+
+.submit-button {
+    padding: 6px 12px;
+    background-color: #32cd32;
+    color: white;
+    font-family: "Noto Sans Thai", serif;
+    font-size: 1rem;
+    font-weight: 400;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid transparent;
+}
+
+.submit-button:hover {
+    background-color: #32cd32;
+}
+
+.submit-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(141, 228, 115, 0.5);
 }
