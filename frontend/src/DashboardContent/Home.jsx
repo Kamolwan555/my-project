@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Card, Typography, Modal, Button, ConfigProvider } from "antd";
+import { Table, Card, Typography, Modal, Tag, Button, ConfigProvider } from "antd";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../DashboardContent/css/index.css";
@@ -32,52 +32,65 @@ const columns = [
           width: 10,
           height: 10,
           borderRadius: "50%",
-          backgroundColor: getStatusColor(record.status),
+          backgroundColor: getStatusColor(record.order_status),
           marginRight: 8,
         }}
       ></span>
     ),
   },
   {
-    title: "ชื่อ",
+    title: "Order ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
+    title: "Customer Name",
     dataIndex: "name",
     key: "name",
   },
   {
-    title: "ที่อยู่",
+    title: "Address",
     dataIndex: "address",
     key: "address",
   },
   {
-    title: "ข้อมูล",
-    dataIndex: "data",
-    key: "data",
+    title: "Plant",
+    dataIndex: "plant",
+    key: "plant",
   },
   {
-    title: "วันที่",
-    dataIndex: "date",
-    key: "date",
+    title: "Order Date",
+    dataIndex: "order_date",
+    key: "order_date",
+    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
   },
   {
-    title: "อีเมล",
-    dataIndex: "email",
-    key: "email",
+    title: "Plant Number",
+    dataIndex: "plant_number",
+    key: "plant_number",
   },
   {
-    title: "เบอร์โทร",
-    dataIndex: "number",
-    key: "number",
+    title: "Quantity",
+    dataIndex: "quantity",
+    key: "quantity",
   },
   {
-    title: "สถานะ",
-    dataIndex: "status",
-    key: "status",
+    title: "Status",
+    dataIndex: "order_status",
+    key: "order_status",
+    render: (status) => {
+      let color = "blue";
+      if (status === "Pending") color = "orange";
+      if (status === "Completed") color = "green";
+      if (status === "Cancelled") color = "red";
+      return <Tag color={color}>{status}</Tag>;
+    },
   },
 ];
 
 const Home = () => {
-  const [data, setData] = useState();
-  const [statusModal, setStatusModal] = useState({ visible: false, status: "" });
+  const [data, setData] = useState(null);  // เริ่มต้น data เป็น null เพื่อรอการโหลดข้อมูล
+  const [statusModal, setStatusModal] = useState({ visible: false, orderDetails: {} });
 
   useEffect(() => {
     const fetchDashboard = () => {
@@ -91,12 +104,12 @@ const Home = () => {
       fetch(`http://127.0.0.1:5000/dashboard`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`, // Use the JWT token
+          Authorization: `Bearer ${accessToken}`, // ใช้ JWT token
         },
       })
         .then((res) => res.json())
         .then((res) => {
-          setData(res);
+          setData(res);  // ตั้งค่า data จาก response
         })
         .catch((err) => {
           console.error("Failed to fetch dashboard data:", err);
@@ -107,14 +120,19 @@ const Home = () => {
   }, []);
 
   const handleRowClick = (record) => {
-    setStatusModal({ visible: true, status: record.status });
+    setStatusModal({
+      visible: true,
+      orderDetails: record,  // ส่งข้อมูลออเดอร์ทั้งหมดเข้ามาใน modal
+    });
   };
 
   const closeModal = () => {
-    setStatusModal({ visible: false, status: "" });
+    setStatusModal({ visible: false, orderDetails: {} });
   };
 
-  if (!data) return <span>Loading data...</span>;
+  if (!data) return <span>Loading data...</span>;  // ถ้ายังไม่มีข้อมูลจะแสดงข้อความนี้
+
+  const { orderDetails } = statusModal;
 
   return (
     <ConfigProvider
@@ -134,33 +152,26 @@ const Home = () => {
             padding: "20px",
           }}
         >
-          {[
-            {
-              title: "Order วันนี้",
-              value: data?.summary.total_orders_today || 0,
-              color: "#08bb00",
-            },
-            {
-                title: "รายการที่รอการตอบรับ",
-                value: data?.summary.in_progress_count || 0,
-                color: "#08bb00",
-            },
-            {
-              title: "sensor avilable",
-              value: data?.summary.status_free || 0,
-              color: "#08bb00",
-            },
-            {
-              title: "sensor in used",
-              value: data?.summary.in_progress_count || 0,
-              color: "#08bb00",
-            },
-            // {
-            //   title: "รายการที่เสร็จสิ้นแล้ว",
-            //   value: data?.completed_count || 0,
-            //   color: "#08bb00",
-            // },
-          ].map((item, index) => (
+          {[{
+            title: "Order วันนี้",
+            value: data?.summary.total_orders_today || 0,
+            color: "#08bb00",
+          },
+          {
+            title: "รายการที่รอการตอบรับ",
+            value: data?.summary.in_progress_count || 0,
+            color: "#08bb00",
+          },
+          {
+            title: "sensor avilable",
+            value: data?.summary.status_free || 0,
+            color: "#08bb00",
+          },
+          {
+            title: "sensor in used",
+            value: data?.summary.in_progress_count || 0,
+            color: "#08bb00",
+          }].map((item, index) => (
             <div key={index}>
               <Card
                 bordered={false}
@@ -180,9 +191,7 @@ const Home = () => {
           ))}
         </div>
         <div style={{ marginTop: 30 }}>
-          <Title level={5} style={{ marginBottom: 20 }}>
-            คำสั่งซื้อ
-          </Title>
+          <Title level={5} style={{ marginBottom: 20 }}>คำสั่งซื้อ</Title>
           <Table
             className="custom-font-table"
             dataSource={data.orders}
@@ -194,16 +203,22 @@ const Home = () => {
           />
         </div>
         <Modal
-          title="Order Status"
+          title={`Order ID: ${orderDetails.id}`}
           visible={statusModal.visible}
           onCancel={closeModal}
           footer={[
-            <Button key="close" onClick={closeModal}>
-              Close
-            </Button>,
+            <Button key="close" onClick={closeModal}>Close</Button>,
           ]}
         >
-          <p>{statusModal.status}</p>
+          <div>
+            <p><strong>Customer Name:</strong> {orderDetails.name}</p>
+            <p><strong>Address:</strong> {orderDetails.address}</p>
+            <p><strong>Plant:</strong> {orderDetails.plant}</p>
+            <p><strong>Order Date:</strong> {orderDetails.order_date ? new Date(orderDetails.order_date).toLocaleDateString() : "N/A"}</p>
+            <p><strong>Plant Number:</strong> {orderDetails.plant_number}</p>
+            <p><strong>Quantity:</strong> {orderDetails.quantity}</p>
+            <p><strong>Status:</strong> {orderDetails.order_status}</p>
+          </div>
         </Modal>
       </div>
     </ConfigProvider>

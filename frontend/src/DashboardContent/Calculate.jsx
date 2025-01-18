@@ -7,7 +7,7 @@ const App = () => {
 
   useEffect(() => {
     axios
-      .get('/cal/api/fertilizer.php?cropID=17&N=สูง&P=ต่ำ&K=ปานกลาง')
+      .get('/cหal/api/fertilizer.php?cropID=17&N=สูง&P=ต่ำ&K=ปานกลาง')
       .then((response) => {
         setData(response.data);
       })
@@ -18,7 +18,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>API Data</h1>
+      <h1>Data</h1>
       {error && <p>Error: {error.message}</p>}
       {data ? (
         <pre>{JSON.stringify(data, null, 2)}</pre>

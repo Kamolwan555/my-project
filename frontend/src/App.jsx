@@ -15,6 +15,9 @@ import Logout from "./Authentication/Login/logout";
 import CustomerFer from "./DashboardContent/CustomerFer";
 import UserConfig from "./DashboardContent/UserConfig";
 import EditUser from "./DashboardContent/EditUser";
+import Configmenu from "./DashboardContent/configmenu";
+import Orderconfig from "./DashboardContent/orderconfig";
+import EditOrder from "./DashboardContent/EditOrder";
 // import { PrivateRoute } from "./component/PrivateRoute";
 
 const App = () => {
@@ -35,6 +38,10 @@ const App = () => {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/userconfig" element={<UserConfig />} />
                 <Route path="/edituser/:userid" element={<EditUser />} />
+                <Route path="/configmenu" element={<Configmenu />} />
+                <Route path="/orderconfig" element={<Orderconfig />} />
+                <Route path="/editorder/:orderId" element={<EditOrder />} /> {/* เพิ่ม Route สำหรับ EditOrder */}
+
             </Route>
             <Route path="/register" element={<Register />} />
       </Routes>

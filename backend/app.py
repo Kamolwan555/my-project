@@ -148,7 +148,76 @@ def login():
             'role_name': role_name
         }), 200
 
+@app.route('/order/<string:order_id>', methods=['GET'])
+@jwt_required()
+def get_order(order_id):
+    with get_db() as db_session:
+        order = db_session.query(Order).filter_by(order_id=order_id).first()
 
+        if not order:
+            return jsonify({'error': 'Order not found'}), 404
+
+        order_data = {
+            'id': order.order_id,
+            'name': order.name,
+            'address': order.address,
+            'plant': order.plant,
+            'plant_number': order.plant_number,
+            'quantity': order.quantity,
+            'order_status': order.order_status,
+            'order_date': order.order_date.isoformat() if order.order_date else None
+        }
+
+        return jsonify({'order': order_data}), 200
+
+@app.route('/order/<string:order_id>', methods=['PUT'])
+@jwt_required()
+def update_order(order_id):
+    data = request.get_json()
+    name = data.get('name')
+    address = data.get('address')
+    order_data = data.get('data')
+    number = data.get('number')
+    quantity = data.get('quantity')
+    order_status = data.get('order_status')
+
+    if not name or not address or not order_data or not number or not quantity or not order_status:
+        return jsonify({'error': 'All fields are required'}), 400
+
+    with get_db() as db_session:
+        order = db_session.query(Order).filter_by(order_id=order_id).first()
+
+        if not order:
+            return jsonify({'error': 'Order not found'}), 404
+
+        # Validate order status
+        valid_statuses = ['Pending', 'Processing', 'Shipped', 'Completed', 'Cancelled']
+        if order_status not in valid_statuses:
+            return jsonify({'error': 'Invalid order status'}), 400
+
+        # Update the order fields
+        order.name = name
+        order.address = address
+        order.plant = order_data
+        order.plant_number = number
+        order.quantity = quantity
+        order.order_status = order_status
+
+        db_session.commit()
+
+        # Prepare updated order data
+        updated_order_data = {
+            'id': order.order_id,
+            'name': order.name,
+            'address': order.address,
+            'plant': order.plant,
+            'plant_number': order.plant_number,
+            'quantity': order.quantity,
+            'order_status': order.order_status,
+            'order_date': order.order_date.isoformat() if order.order_date else None
+        }
+
+        return jsonify({'message': 'Order updated successfully', 'order': updated_order_data}), 200
 
 # Route to place an order
 @app.route('/order', methods=['POST'])
@@ -210,7 +279,6 @@ def get_all_orders():
             })
 
         return jsonify({'orders': orders_list}), 200
-
 @app.route('/dashboard', methods=['GET'])
 @jwt_required()  # Ensure that a valid JWT is required to access the route
 def get_orders_today_summary():
@@ -233,12 +301,14 @@ def get_orders_today_summary():
             # Convert all orders to a list of dicts
             orders_list = [
                 {
-                    'id': order.order_id,
-                    'name': order.name,
-                    'address': order.address,
-                    'date': order.order_date.isoformat() if order.order_date else None,
-                    # 'number': order.number,
-                    'status': order.order_status
+            'id': order.order_id,
+            'name': order.name,
+            'address': order.address,
+            'plant': order.plant,
+            'plant_number': order.plant_number,
+            'quantity': order.quantity,
+            'order_status': order.order_status,
+            'order_date': order.order_date.isoformat() if order.order_date else None
                 } for order in all_orders
             ]
             # sensor_list = [

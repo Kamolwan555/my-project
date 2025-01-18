@@ -21,7 +21,7 @@ import {
   Terrain as TerrainIcon,
   EmojiNature as EmojiNatureIcon,
   DataUsage as DataUsageIcon,
-  Recommend as RecommendIcon,
+  // Recommend as RecommendIcon,
   Logout as LogoutIcon,
   AccountBox as AccountBoxIcon,
 } from "@mui/icons-material";
@@ -54,12 +54,12 @@ const menuItems = [
     icon: <DataUsageIcon />,
     link: "/soildata",
   },
-  {
-    key: "/recommend",
-    label: "คำแนะนำ",
-    icon: <RecommendIcon />,
-    link: "/recommend",
-  },
+  // {
+  //   key: "/recommend",
+  //   label: "คำแนะนำ",
+  //   icon: <RecommendIcon />,
+  //   link: "/recommend",
+  // },
   {
     key: "/logout",
     label: "ออกจากระบบ",
@@ -138,13 +138,13 @@ const Navigation = () => {
             alt="Your Company"
             src="https://i.postimg.cc/htCbfgrh/freepik-the-style-is-candid-image-photography-with-natural-94126-1.jpg"
             style={{
-              height: 70,
+              height: 90,
               objectFit: "contain",
             }}
           />
-          <Typography variant="h6" color="secondary" sx={{ mt: 1 }}>
+          {/* <Typography variant="h6" color="secondary" sx={{ mt: 1 }}>
             Your Fertilizer
-          </Typography>
+          </Typography> */}
         </Box>
         
         {/* Menu Items */}
@@ -177,7 +177,7 @@ const Navigation = () => {
           button
           key="/userconfig"
           component={Link}
-          to="/userconfig"
+          to="/configmenu"
           sx={{
             "&:hover": { backgroundColor: "#007f00" },
           }}
