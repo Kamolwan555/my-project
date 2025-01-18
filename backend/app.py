@@ -282,56 +282,19 @@ def get_all_orders():
 @app.route('/dashboard', methods=['GET'])
 @jwt_required()  # Ensure that a valid JWT is required to access the route
 def get_orders_today_summary():
-    from datetime import datetime, timezone
-    
-    # Calculate today's time range in UTC
-    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    # today_end = datetime.now(timezone.utc).replace(hour=23, minute=59, second=59, microsecond=999999)
-    
-    with get_db() as db_session:
-        # Filter orders for today's date
-        orders_today = (
-            db_session.query(Order)
-            .filter(Order.order_date >= today_start, Order.order_date <= today_end)
-            .all()
-        )
-        
-        # Get all orders for summary
-        all_orders = db_session.query(Order).all()
-        
-        # Convert all orders to a list of dicts
-        orders_list = [{
-            'id': order.order_id,
-            'name': order.name,
-            'address': order.address,
-            'data': order.order_date,
-            'number': order.number,
-            '': order.order_status,
-            # 'order_date': order.order_date.isoformat() if order.order_date else None,
-            'status': order.order_status
-        } for order in all_orders]
+    try:
+        # Calculate today's time range in UTC
+        today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = datetime.now(timezone.utc).replace(hour=23, minute=59, second=59, microsecond=999999)
 
-        # Summaries
-        total_orders_today = len(orders_today)
-        all_order = len(all_orders)  # total orders
-        in_progress_count = len([
-            order for order in all_orders
-            if order.status and order.order_status.lower() == "in progress"
-        ])
-        completed_count = len([
-            order for order in all_orders
-            if order.status and order.status.lower() == "completed"
-        ])
+        with get_db() as db_session:
+            # Filter orders for today's date
+            orders_today = (
+                db_session.query(Order)
+                .filter(Order.order_date >= today_start, Order.order_date <= today_end)
+                .all()
+            )
 
-<<<<<<< HEAD
-        return jsonify({
-            'total_orders_today': total_orders_today,
-            'all_order': all_order,
-            'in_progress_count': in_progress_count,
-            'completed_count': completed_count,
-            'orders': orders_list  # Full list of orders
-        }), 200
-=======
             # Get all orders for summary
             all_orders = db_session.query(Order).all()
             sensor_data = db_session.query(Sensor).all()
@@ -383,7 +346,6 @@ def get_orders_today_summary():
 
     except Exception as e:
         return jsonify({'error': 'An error occurred while processing the request.', 'message': str(e)}), 500
->>>>>>> 11f3d0d653ee3f83f304f6cb712e8f23243b17a9
 
 
 
