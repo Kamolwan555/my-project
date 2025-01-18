@@ -101,9 +101,9 @@ export default function SignUpPage() {
           layout="vertical"
           requiredMark="optional"
         >
-           <div className="form-group">
+          <div className="form-group">
             <label htmlFor="username" className="username-label">
-              อีเมล
+              ชื่อผู้ใช้
             </label>
             <Form.Item
               name="username"
