@@ -191,10 +191,16 @@ input:focus {
     color: #6b7280;
 }
 
-/* EditUser */
+/* Header Container */
+.header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* ระยะห่างระหว่าง header กับฟอร์ม */
+}
+
 .icon-button {
-    font-family: "Noto Sans Thai", serif;
-    margin-bottom: 20px;
+    margin-right: 8px; /* ระยะห่างระหว่างไอคอนและข้อความ */
+    /* รักษาหรือปรับแต่งสไตล์เพิ่มเติมถ้าจำเป็น */
 }
 
 .user-form {
@@ -202,10 +208,11 @@ input:focus {
     font-size: 1.125rem;
     font-weight: bold;
     color: #1f2937;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin: 0; /* ลบ margin-top และ margin-bottom */
+    /* ลบ display: flex และ align-items: center */
 }
 
+/* ฟอร์มต่างๆ คงเดิม */
 .form-container {
     display: flex;
     flex-direction: column;
@@ -264,7 +271,6 @@ input:focus {
 }
 
 .form-input:focus {
-    font-family: "Noto Sans Thai", serif;
     outline: none;
     box-shadow: 0 0 0 3px rgba(141, 228, 115, 0.5);
 }
@@ -290,14 +296,12 @@ input:focus {
 }
 
 .submit-button:focus {
-    font-family: "Noto Sans Thai", serif;
     outline: none;
     box-shadow: 0 0 0 3px rgba(141, 228, 115, 0.5);
 }
 
 .form-group {
     margin-bottom: 1rem;
-    /* Ensure spacing between form groups */
 }
 
 .userid-label,
@@ -314,8 +318,8 @@ input:focus {
     margin-bottom: 0.5rem;
 }
 
-.userid-Input,
-.email-Input,
+.userid-input,
+.email-input,
 .phone-input,
 .firstName-input,
 .lastName-input {
@@ -331,36 +335,11 @@ input:focus {
     outline: none;
 }
 
-.userid-Input:focus,
-.email-Input:focus,
+.userid-input:focus,
+.email-input:focus,
 .phone-input:focus,
 .role-select:focus,
 .firstName-input:focus,
 .lastName-input:focus {
     outline-color: #32cd32;
-}
-
-.submit-button {
-    padding: 6px 12px;
-    background-color: #32cd32;
-    color: white;
-    font-family: "Noto Sans Thai", serif;
-    font-size: 1rem;
-    font-weight: 400;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid transparent;
-}
-
-.submit-button:hover {
-    background-color: #32cd32;
-}
-
-.submit-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(141, 228, 115, 0.5);
 }
