@@ -163,12 +163,12 @@ const Home = () => {
             color: "#08bb00",
           },
           {
-            title: "sensor avilable",
+            title: "เซนเซอร์ที่ว่าง",
             value: data?.summary.status_free || 0,
             color: "#08bb00",
           },
           {
-            title: "sensor in used",
+            title: "เซนเซอร์ที่ใช้งาน",
             value: data?.summary.in_progress_count || 0,
             color: "#08bb00",
           }].map((item, index) => (
