@@ -1,208 +1,220 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import {
-  Drawer,
-  AppBar,
-  Toolbar,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
-  Box,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, } from "@mui/material";
 import {
   Menu as MenuIcon,
-  Home as HomeIcon,
-  Calculate as CalculateIcon,
-  ShoppingCart as ShoppingCartIcon,
-  Terrain as TerrainIcon,
-  EmojiNature as EmojiNatureIcon,
-  DataUsage as DataUsageIcon,
-  // Recommend as RecommendIcon,
-  Logout as LogoutIcon,
-  AccountBox as AccountBoxIcon,
+  DashboardRounded as DashboardRoundedIcon,
+  CalculateRounded as CalculateRoundedIcon,
+  ShoppingCartRounded as ShoppingCartRoundedIcon,
+  TerrainRounded as TerrainRoundedIcon,
+  LocalFloristRounded as LocalFloristRoundedIcon,
+  DataUsageRounded as DataUsageRoundedIcon,
+  LogoutRounded as LogoutRoundedIcon,
+  AccountBoxRounded as AccountBoxRoundedIcon,
 } from "@mui/icons-material";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-const menuItems = [
-  { key: "/home", label: "หน้าหลัก", icon: <HomeIcon />, link: "/home" },
-  {
-    key: "/calculate",
-    label: "คำนวณ",
-    icon: <CalculateIcon />,
-    link: "/calculate",
-  },
-  {
-    key: "/order",
-    label: "คำสั่งซื้อ",
-    icon: <ShoppingCartIcon />,
-    link: "/order",
-  },
-  { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainIcon />, link: "/soil" },
-  {
-    key: "/fertilizer",
-    label: "ตรวจสอบปุ๋ย",
-    icon: <EmojiNatureIcon />,
-    link: "/fertilizer",
-  },
-  {
-    key: "/soildata",
-    label: "ชุดข้อมูลดิน",
-    icon: <DataUsageIcon />,
-    link: "/soildata",
-  },
-  // {
-  //   key: "/recommend",
-  //   label: "คำแนะนำ",
-  //   icon: <RecommendIcon />,
-  //   link: "/recommend",
-  // },
-  {
-    key: "/logout",
-    label: "ออกจากระบบ",
-    icon: <LogoutIcon />,
-    link: "/logout",
-  },
-];
-
-const theme = createTheme({
+const demoTheme = createTheme({
   typography: {
-    fontFamily: 'Noto Sans Thai, serif',
+    fontFamily: "'Sarabun', sans-serif",
+    h6: { fontWeight: 700 },
+    body1: { fontWeight: 400 },
+    button: { fontWeight: 500 },
+  },
+  palette: {
+    primary: { main: "#FFFFFF" },
+    background: { default: "#E8F5E9" },
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          background: "linear-gradient(90deg, #38b000, #70e000)",
+          color: "#FFFFFF",
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: "#FFFFFF", 
+          "&:hover": {
+            backgroundColor: "#008000", 
+            borderRadius: "4px", 
+          },
+        },
+      },
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
   },
 });
+
+// Menu items for the drawer
+const menuItems = [
+  { kind: 'header', title: 'เมนูหลัก' }, 
+  { key: "/home", label: "หน้าหลัก", icon: <DashboardRoundedIcon />, link: "/home" },
+  { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/calculate" },
+  { key: "/order", label: "คำสั่งซื้อ", icon: <ShoppingCartRoundedIcon />, link: "/order" },
+  { kind: 'header', title: 'ตรวจสอบข้อมูล' }, // เพิ่ม header
+  { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainRoundedIcon />, link: "/soil" },
+  { key: "/fertilizer", label: "ตรวจสอบปุ๋ย", icon: <LocalFloristRoundedIcon />, link: "/fertilizer" },
+  { key: "/soildata", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soildata" },
+  { kind: 'header', title: 'การตั้งค่า' }, // เพิ่ม header
+  { key: "/logout", label: "ออกจากระบบ", icon: <LogoutRoundedIcon />, link: "/logout" },
+];
 
 const Navigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const location = useLocation();
+  const isSmallScreen = useMediaQuery(demoTheme.breakpoints.down("sm"));
+
+  useEffect(() => {
+    if (isSmallScreen) {
+      setIsDrawerOpen(false);
+    }
+  }, [isSmallScreen]);
+
+  const handleMenuItemClick = () => {
+    if (isSmallScreen) {
+      setIsDrawerOpen(false);
+    }
+  };
 
   return (
-    <ThemeProvider theme={theme}>
-    <Box sx={{ display: "flex" }}>
-      {/* AppBar */}
-      <AppBar
-        position="fixed"
-        color="white"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1, // Ensure AppBar is above Drawer
-          marginLeft: isDrawerOpen ? "220px" : "0", // Adjust margin-left when Drawer is open
-          width: isDrawerOpen ? "calc(100% - 220px)" : "100%", // Adjust width of AppBar
-          transition: "margin 0.3s ease-out, width 0.3s ease-out",
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            ระบบจัดการปุ๋ย
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    <ThemeProvider theme={demoTheme}>
+      {/* Add Sarabun font from Google Fonts */}
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
 
-      {/* Drawer */}
-      <Drawer
-        variant="persistent"
-        open={isDrawerOpen}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: 220,
-            backgroundColor: "#08bb00",
-            color: "#ffffff",
-            transition: "width 0.3s ease-out",
-            display: "flex",
-            flexDirection: "column",
-            height: "100%", // Ensure the drawer takes full height
-          },
-        }}
-      >
-        <Box
+      <Box sx={{ display: "flex" }}>
+        {/* AppBar */}
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+              <MenuIcon />
+            </IconButton>
+            <img
+              src="https://img2.imgbiz.com/imgbiz/Green-Modern-Scope-Gardening-Logo-Design-2.png"
+              alt="logo"
+              style={{ height: 40, marginRight: 10 }}
+            />
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Fertilizer
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        {/* Drawer */}
+        <Drawer
+          variant={isSmallScreen ? "temporary" : "persistent"}
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
           sx={{
-            textAlign: "center",
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "top",
-            height: 120,
+            width: isDrawerOpen ? 220 : 0,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: 220,
+              color: "#38b000", // text menu color
+              transition: "width 0.3s ease-out",
+              height: "calc(100% - 64px)",
+              position: "fixed",
+              top: 64, // Position below the AppBar
+              zIndex: (theme) => theme.zIndex.drawer,
+            },
           }}
         >
-          <img
-            alt="Your Company"
-            src="https://i.postimg.cc/htCbfgrh/freepik-the-style-is-candid-image-photography-with-natural-94126-1.jpg"
-            style={{
-              height: 90,
-              objectFit: "contain",
+          {/* Menu Items */}
+          <Box sx={{ flexGrow: 1 }}>
+            <List>
+              {menuItems.map((item) => {
+                if (item.kind === 'header') {
+                  // แสดง header
+                  return (
+                    <Typography
+                      key={item.title}
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 700,
+                        color: "#38b000",
+                        padding: "16px 16px 8px 16px",
+                        textTransform: "uppercase",
+                        fontSize: "14px", 
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
+                  );
+                } else {
+                  // แสดง menu items
+                  return (
+                    <ListItemButton
+                      key={item.key}
+                      component={Link}
+                      to={item.link}
+                      selected={location.pathname === item.link}
+                      onClick={handleMenuItemClick}
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#38b000",
+                          color: "#FFFFFF",
+                        },
+                        "&:hover": { backgroundColor: "#f6f6f6", color: "#38b000" },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: "inherit" }}>{item.icon}</ListItemIcon>
+                      <ListItemText primary={item.label} />
+                    </ListItemButton>
+                  );
+                }
+              })}
+            </List>
+          </Box>
+
+          <Divider />
+
+          {/* User Config Button */}
+          <ListItem
+            button
+            key="/userconfig"
+            component={Link}
+            to="/configmenu"
+            onClick={handleMenuItemClick}
+            sx={{
+              "&.Mui-selected": {
+                backgroundColor: "#38b000",
+                color: "#FFFFFF",
+              },
+              "&:hover": { backgroundColor: "#f6f6f6", color: "#38b000" },
             }}
-          />
-          {/* <Typography variant="h6" color="secondary" sx={{ mt: 1 }}>
-            Your Fertilizer
-          </Typography> */}
-        </Box>
-        
-        {/* Menu Items */}
-        <Box sx={{ flexGrow: 1 }}>
-          <List>
-            {menuItems.map((item) => (
-              <ListItem
-                button
-                key={item.key}
-                component={Link}
-                to={item.link}
-                selected={location.pathname === item.link}
-                sx={{
-                  "&.Mui-selected": { backgroundColor: "#005700" },
-                  "&:hover": { backgroundColor: "#007f00" },
-                }}
-              >
-                <ListItemIcon sx={{ color: "#ffffff" }}>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <AccountBoxRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="การตั้งค่าผู้ใช้" />
+          </ListItem>
+        </Drawer>
 
-        {/* Divider above User Config */}
-        <Divider sx={{ my: 2 }} />
-
-        {/* User Config Button */}
-        <ListItem
-          button
-          key="/userconfig"
-          component={Link}
-          to="/configmenu"
+        {/* Main Content */}
+        <Box
+          component="main"
           sx={{
-            "&:hover": { backgroundColor: "#007f00" },
+            flexGrow: 1,
+            p: 3,
+            width: isSmallScreen ? "100%" : `calc(100% - ${isDrawerOpen ? 220 : 0}px)`,
+            transition: "width 0.3s ease-out",
           }}
         >
-          <ListItemIcon sx={{ color: "#ffffff" }}>
-            <AccountBoxIcon />
-          </ListItemIcon>
-          <ListItemText primary="การตั้งค่าผู้ใช้" />
-        </ListItem>
-      </Drawer>
-
-      {/* Main Content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          transition: "margin 0.3s ease-out",
-          marginLeft: isDrawerOpen ? "240px" : "0px",
-        }}
-      >
-        <Toolbar /> {/* Push Content Down */}
-        <Outlet />
+          <Toolbar /> {/* Push content down below the AppBar */}
+          <Outlet />
+        </Box>
       </Box>
-    </Box>
     </ThemeProvider>
   );
 };

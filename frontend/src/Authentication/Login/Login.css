@@ -4,7 +4,7 @@
     font-size: 0.875rem;
     font-weight: 600;
     color: #1f2937;
-    font-family: 'Noto Sans Thai', sans-serif;
+    font-family: 'Sarabun', sans-serif; /* Updated to Sarabun */
 }
 
 .email-input,
@@ -13,7 +13,7 @@
     border: 1px solid #d1d5db;
     color: #1f2937;
     font-size: 0.875rem;
-    font-family: 'Noto Sans Thai', sans-serif;
+    font-family: 'Sarabun', sans-serif; /* Updated to Sarabun */
     border-radius: 0.5rem;
     display: block;
     width: 100%;

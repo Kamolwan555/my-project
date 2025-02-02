@@ -53,7 +53,7 @@ export default function SignUpPage() {
         : `${token.paddingXL}px ${token.padding}px`,
       maxWidth: "380px",
       width: "100%",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
     },
     section: {
       display: "flex",
@@ -62,29 +62,29 @@ export default function SignUpPage() {
       height: screens.sm ? "100vh" : "auto",
       backgroundColor: token.colorBgContainer,
       padding: screens.md ? `${token.sizeXXL}px 0` : "0",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
     },
     header: {
       textAlign: "center",
       marginBottom: token.marginXL,
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
     },
     title: {
       fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3,
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
     },
     text: {
       color: token.colorTextSecondary,
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
     },
     signupLink: {
       marginTop: token.marginLG,
       textAlign: "center",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
     },
     forgotPassword: {
       float: "right",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
     },
   };
 
@@ -120,6 +120,7 @@ export default function SignUpPage() {
                 id="username"
                 className="username-Input"
                 placeholder="ชื่อผู้ใช้"
+                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
               />
             </Form.Item>
           </div>
@@ -142,6 +143,7 @@ export default function SignUpPage() {
                 id="email"
                 className="email-Input"
                 placeholder="อีเมล"
+                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
               />
             </Form.Item>
           </div>
@@ -164,6 +166,7 @@ export default function SignUpPage() {
                 id="phone"
                 className="phone-input"
                 placeholder="เบอร์โทรศัพท์"
+                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
               />
             </Form.Item>
           </div>
@@ -188,6 +191,7 @@ export default function SignUpPage() {
                     id="firstName"
                     className="firstName-input"
                     placeholder="ชื่อ"
+                    style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
                   />
                 </Form.Item>
               </div>
@@ -212,6 +216,7 @@ export default function SignUpPage() {
                     id="lastName"
                     className="lastName-input"
                     placeholder="นามสกุล"
+                    style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
                   />
                 </Form.Item>
               </div>
@@ -235,6 +240,7 @@ export default function SignUpPage() {
                 id="password"
                 className="password-Input"
                 placeholder="รหัสผ่าน"
+                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
               />
             </Form.Item>
           </div>
@@ -259,6 +265,7 @@ export default function SignUpPage() {
                 id="confirm-password"
                 className="confirm-password-Input"
                 placeholder="ยืนยันรหัสผ่าน"
+                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
               />
             </Form.Item>
           </div>
@@ -272,7 +279,7 @@ export default function SignUpPage() {
                 backgroundColor: "#32CD32",
                 borderColor: "#32CD32",
                 color: "#fff",
-                fontFamily: "'Noto Sans Thai', sans-serif",
+                fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
               }}
             >
               ลงทะเบียน
@@ -280,7 +287,7 @@ export default function SignUpPage() {
             <div style={styles.signupLink}>
               <Text style={styles.text}>มีบัญชีอยู่แล้วหรือ?</Text>{" "}
               <Link href="/" style={{
-                color: "#32CD32", fontFamily: "'Noto Sans Thai', sans-serif",
+                color: "#32CD32", fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
               }}>
                 เข้าสู่ระบบ
               </Link>

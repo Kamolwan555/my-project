@@ -11,6 +11,7 @@ export default function Login() {
   const { token } = useToken();
   const screens = useBreakpoint();
   const navigate = useNavigate();
+
   const login = (usernameOrEmail, password, callback) => {
     fetch(`http://127.0.0.1:5000/login`, {
       method: "POST",
@@ -34,6 +35,7 @@ export default function Login() {
         alert("something went wrong");
       });
   };
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
     login(values.email, values.password, () => {
@@ -45,7 +47,7 @@ export default function Login() {
     section: {
       display: "flex",
       minHeight: "100vh",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Apply Sarabun font
     },
     container: {
       margin: "0 auto",
@@ -57,26 +59,26 @@ export default function Login() {
       justifyContent: "center",
       alignItems: "center",
       flex: 1,
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Apply Sarabun font
     },
     header: {
       marginBottom: token.marginLG,
       textAlign: "center",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Apply Sarabun font
     },
     title: {
       fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3,
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Apply Sarabun font
     },
     text: {
       color: token.colorTextSecondary,
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Apply Sarabun font
     },
     footer: {
       marginTop: token.marginLG,
       textAlign: "center",
       width: "100%",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Apply Sarabun font
     },
     imageSection: {
       flex: 1,
@@ -85,7 +87,7 @@ export default function Login() {
       backgroundPosition: "center",
       height: "100vh",
       display: screens.md ? "block" : "none",
-      fontFamily: "'Noto Sans Thai', sans-serif",
+      fontFamily: "'Sarabun', sans-serif", // Apply Sarabun font
     },
   };
 
@@ -109,7 +111,7 @@ export default function Login() {
             layout="vertical"
             requiredMark={false}
           >
-            <label htmlFor="email" className="email-label" style={{ marginBottom: "0px" }}>
+            <label htmlFor="email" className="email-label" style={{ marginBottom: "0px", fontFamily: "'Sarabun', sans-serif" }}>
               อีเมล
             </label>
             <Form.Item
@@ -127,10 +129,10 @@ export default function Login() {
                 id="email"
                 className="email-input"
                 placeholder="ชื่อผู้ใช้หรืออีเมล"
-                style={{ fontFamily: "'Noto Sans Thai', sans-serif" }}
+                style={{ fontFamily: "'Sarabun', sans-serif" }}
               />
             </Form.Item>
-            <label htmlFor="password" className="password-label" style={{ marginBottom: "0px" }}>
+            <label htmlFor="password" className="password-label" style={{ marginBottom: "0px", fontFamily: "'Sarabun', sans-serif" }}>
               รหัสผ่าน
             </label>
             <Form.Item
@@ -147,14 +149,12 @@ export default function Login() {
                 id="password"
                 className="password-input"
                 placeholder="รหัสผ่าน"
-                style={{ fontFamily: "'Noto Sans Thai', sans-serif" }}
+                style={{ fontFamily: "'Sarabun', sans-serif" }}
               />
             </Form.Item>
             <Form.Item>
               <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox
-                  style={{ fontFamily: "'Noto Sans Thai', sans-serif" }}
-                >
+                <Checkbox style={{ fontFamily: "'Sarabun', sans-serif" }}>
                   จดจำฉันไว้
                 </Checkbox>
               </Form.Item>
@@ -168,7 +168,7 @@ export default function Login() {
                   backgroundColor: "#32CD32",
                   borderColor: "#32CD32",
                   color: "#fff",
-                  fontFamily: "'Noto Sans Thai', sans-serif",
+                  fontFamily: "'Sarabun', sans-serif",
                 }}
               >
                 เข้าสู่ระบบ
@@ -179,7 +179,7 @@ export default function Login() {
                   href="/register"
                   style={{
                     color: "#32CD32",
-                    fontFamily: "'Noto Sans Thai', sans-serif",
+                    fontFamily: "'Sarabun', sans-serif",
                   }}
                 >
                   ลงทะเบียน
