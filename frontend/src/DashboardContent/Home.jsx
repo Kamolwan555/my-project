@@ -3,6 +3,7 @@ import { Table, Card, Typography, Modal, Tag, Button, ConfigProvider } from "ant
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../DashboardContent/css/index.css";
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 
 const { Title } = Typography;
 
@@ -138,7 +139,7 @@ const Home = () => {
     <ConfigProvider
       theme={{
         token: {
-          fontFamily: "'Noto Sans Thai', sans-serif",
+          fontFamily: "'Sarabun', sans-serif", // Use Sarabun font
         },
       }}
     >
@@ -152,46 +153,72 @@ const Home = () => {
             padding: "20px",
           }}
         >
-          {[{
-            title: "Order วันนี้",
-            value: data?.summary.total_orders_today || 0,
-            color: "#08bb00",
-          },
-          {
-            title: "รายการที่รอการตอบรับ",
-            value: data?.summary.in_progress_count || 0,
-            color: "#08bb00",
-          },
-          {
-            title: "เซนเซอร์ที่ว่าง",
-            value: data?.summary.status_free || 0,
-            color: "#08bb00",
-          },
-          {
-            title: "เซนเซอร์ที่ใช้งาน",
-            value: data?.summary.in_progress_count || 0,
-            color: "#08bb00",
-          }].map((item, index) => (
+          {[
+            {
+              title: "รายการวันนี้",
+              value: data?.summary.total_orders_today || 0,
+              color: "#1e96fc",
+              icon: <ShoppingCartRoundedIcon />
+            },
+            {
+              title: "รายการที่รอการตอบรับ",
+              value: data?.summary.in_progress_count || 0,
+              color: "#38b000",
+            },
+            {
+              title: "เซนเซอร์ที่ว่าง",
+              value: data?.summary.status_free || 0,
+              color: "#ff8800",
+            },
+            {
+              title: "เซนเซอร์ที่ใช้งาน",
+              value: data?.summary.in_progress_count || 0,
+              color: "#f25c54",
+            },
+          ].map((item, index) => (
             <div key={index}>
               <Card
                 bordered={false}
                 style={{
-                  textAlign: "center",
                   backgroundColor: item.color,
                   padding: 8,
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                  boxShadow: "0 4px 8px rgb(255, 255, 255)",
                   borderRadius: 10,
-                  color: "white",
+                  color: "white", // Change this to black
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                 }}
               >
-                <h2>{item.title}</h2>
-                <p style={{ fontSize: "24px", fontWeight: "bold" }}>{item.value}</p>
+                <h2
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "700",
+                    textAlign: "left",
+                    color: "white",
+                  }}
+                >
+                  {item.title}
+                </h2>
+                <p
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "700",
+                    textAlign: "right",
+                    color: "white",
+                  }}
+                >
+                  {item.value}
+                </p>
               </Card>
             </div>
           ))}
         </div>
         <div style={{ marginTop: 30 }}>
-          <Title level={5} style={{ marginBottom: 20 }}>คำสั่งซื้อ</Title>
+          <Title level={5} style={{ marginBottom: 20 }}>
+            คำสั่งซื้อ
+          </Title>
           <Table
             className="custom-font-table"
             dataSource={data.orders}
@@ -207,17 +234,36 @@ const Home = () => {
           visible={statusModal.visible}
           onCancel={closeModal}
           footer={[
-            <Button key="close" onClick={closeModal}>Close</Button>,
+            <Button key="close" onClick={closeModal}>
+              Close
+            </Button>,
           ]}
         >
           <div>
-            <p><strong>Customer Name:</strong> {orderDetails.name}</p>
-            <p><strong>Address:</strong> {orderDetails.address}</p>
-            <p><strong>Plant:</strong> {orderDetails.plant}</p>
-            <p><strong>Order Date:</strong> {orderDetails.order_date ? new Date(orderDetails.order_date).toLocaleDateString() : "N/A"}</p>
-            <p><strong>Plant Number:</strong> {orderDetails.plant_number}</p>
-            <p><strong>Quantity:</strong> {orderDetails.quantity}</p>
-            <p><strong>Status:</strong> {orderDetails.order_status}</p>
+            <p>
+              <strong>Customer Name:</strong> {orderDetails.name}
+            </p>
+            <p>
+              <strong>Address:</strong> {orderDetails.address}
+            </p>
+            <p>
+              <strong>Plant:</strong> {orderDetails.plant}
+            </p>
+            <p>
+              <strong>Order Date:</strong>{" "}
+              {orderDetails.order_date
+                ? new Date(orderDetails.order_date).toLocaleDateString()
+                : "N/A"}
+            </p>
+            <p>
+              <strong>Plant Number:</strong> {orderDetails.plant_number}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {orderDetails.quantity}
+            </p>
+            <p>
+              <strong>Status:</strong> {orderDetails.order_status}
+            </p>
           </div>
         </Modal>
       </div>

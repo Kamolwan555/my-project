@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, } from "@mui/material";
 import {
   Menu as MenuIcon,
-  DashboardRounded as DashboardRoundedIcon,
+  HomeRounded as HomeRoundedIcon,
   CalculateRounded as CalculateRoundedIcon,
   ShoppingCartRounded as ShoppingCartRoundedIcon,
   TerrainRounded as TerrainRoundedIcon,
@@ -11,8 +11,11 @@ import {
   DataUsageRounded as DataUsageRoundedIcon,
   LogoutRounded as LogoutRoundedIcon,
   AccountBoxRounded as AccountBoxRoundedIcon,
+  Notifications as NotificationsRoundedIcon,
+  Person as PersonRoundedIcon,
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Swal from "sweetalert2"; // นำเข้า SweetAlert2
 
 const demoTheme = createTheme({
   typography: {
@@ -38,10 +41,6 @@ const demoTheme = createTheme({
       styleOverrides: {
         root: {
           color: "#FFFFFF", 
-          "&:hover": {
-            backgroundColor: "#008000", 
-            borderRadius: "4px", 
-          },
         },
       },
     },
@@ -57,23 +56,23 @@ const demoTheme = createTheme({
   },
 });
 
-// Menu items for the drawer
 const menuItems = [
   { kind: 'header', title: 'เมนูหลัก' }, 
-  { key: "/home", label: "หน้าหลัก", icon: <DashboardRoundedIcon />, link: "/home" },
+  { key: "/home", label: "หน้าหลัก", icon: <HomeRoundedIcon />, link: "/home" },
   { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/calculate" },
   { key: "/order", label: "คำสั่งซื้อ", icon: <ShoppingCartRoundedIcon />, link: "/order" },
-  { kind: 'header', title: 'ตรวจสอบข้อมูล' }, // เพิ่ม header
+  { kind: 'header', title: 'ตรวจสอบข้อมูล' }, 
   { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainRoundedIcon />, link: "/soil" },
   { key: "/fertilizer", label: "ตรวจสอบปุ๋ย", icon: <LocalFloristRoundedIcon />, link: "/fertilizer" },
   { key: "/soildata", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soildata" },
-  { kind: 'header', title: 'การตั้งค่า' }, // เพิ่ม header
+  { kind: 'header', title: 'การตั้งค่า' }, 
   { key: "/logout", label: "ออกจากระบบ", icon: <LogoutRoundedIcon />, link: "/logout" },
 ];
 
 const Navigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate(); // ใช้ useNavigate สำหรับการ redirect
   const isSmallScreen = useMediaQuery(demoTheme.breakpoints.down("sm"));
 
   useEffect(() => {
@@ -88,13 +87,40 @@ const Navigation = () => {
     }
   };
 
+  // ฟังก์ชันสำหรับการออกจากระบบ
+  const handleLogout = (event) => {
+    event.preventDefault(); 
+    Swal.fire({
+      title: "คุณแน่ใจหรือไม่?",
+      text: "คุณต้องการออกจากระบบหรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#38b000",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ออกจากระบบ",
+      cancelButtonText: "ยกเลิก",
+      customClass: {
+        popup: 'sarabun-font', // เพิ่มคลาสสำหรับ font family
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/"); 
+      }
+    });
+  };
+
   return (
     <ThemeProvider theme={demoTheme}>
-      {/* Add Sarabun font from Google Fonts */}
       <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
+      <style>
+        {`
+          .sarabun-font {
+            font-family: 'Sarabun', sans-serif !important;
+          }
+        `}
+      </style>
 
       <Box sx={{ display: "flex" }}>
-        {/* AppBar */}
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           <Toolbar>
             <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
@@ -106,12 +132,21 @@ const Navigation = () => {
               style={{ height: 40, marginRight: 10 }}
             />
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Fertilizer
+              ปุ๋ยชีวอินทรีย์
             </Typography>
+
+            {/* ปุ่ม Notification และ Profile */}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton color="inherit" aria-label="notifications">
+                <NotificationsRoundedIcon />
+              </IconButton>
+              <IconButton color="inherit" aria-label="profile">
+                <PersonRoundedIcon />
+              </IconButton>
+            </Box>
           </Toolbar>
         </AppBar>
 
-        {/* Drawer */}
         <Drawer
           variant={isSmallScreen ? "temporary" : "persistent"}
           open={isDrawerOpen}
@@ -121,21 +156,19 @@ const Navigation = () => {
             flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: 220,
-              color: "#38b000", // text menu color
+              color: "#38b000",
               transition: "width 0.3s ease-out",
               height: "calc(100% - 64px)",
               position: "fixed",
-              top: 64, // Position below the AppBar
+              top: 64,
               zIndex: (theme) => theme.zIndex.drawer,
             },
           }}
         >
-          {/* Menu Items */}
           <Box sx={{ flexGrow: 1 }}>
             <List>
               {menuItems.map((item) => {
                 if (item.kind === 'header') {
-                  // แสดง header
                   return (
                     <Typography
                       key={item.title}
@@ -152,14 +185,13 @@ const Navigation = () => {
                     </Typography>
                   );
                 } else {
-                  // แสดง menu items
                   return (
                     <ListItemButton
                       key={item.key}
                       component={Link}
                       to={item.link}
                       selected={location.pathname === item.link}
-                      onClick={handleMenuItemClick}
+                      onClick={item.key === "/logout" ? handleLogout : handleMenuItemClick} // เรียก handleLogout เมื่อคลิกที่ "ออกจากระบบ"
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#38b000",
@@ -179,7 +211,6 @@ const Navigation = () => {
 
           <Divider />
 
-          {/* User Config Button */}
           <ListItem
             button
             key="/userconfig"
@@ -201,7 +232,6 @@ const Navigation = () => {
           </ListItem>
         </Drawer>
 
-        {/* Main Content */}
         <Box
           component="main"
           sx={{
@@ -211,7 +241,7 @@ const Navigation = () => {
             transition: "width 0.3s ease-out",
           }}
         >
-          <Toolbar /> {/* Push content down below the AppBar */}
+          <Toolbar />
           <Outlet />
         </Box>
       </Box>
