@@ -1,11 +1,28 @@
 import { useEffect, useState } from "react";
-import { Table, Card, Typography, Modal, Tag, Button, ConfigProvider } from "antd";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Card,
+  Typography,
+  Modal,
+  Button,
+  CircularProgress,
+  Chip,
+  Box,
+} from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../DashboardContent/css/index.css";
-import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
-
-const { Title } = Typography;
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
+import HourglassBottomRoundedIcon from "@mui/icons-material/HourglassBottomRounded";
+import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
+import SensorsOffRoundedIcon from "@mui/icons-material/SensorsOffRounded";
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -26,7 +43,7 @@ const columns = [
   {
     title: "",
     key: "statusDot",
-    render: (_, record) => (
+    render: (record) => (
       <span
         style={{
           display: "inline-block",
@@ -39,59 +56,43 @@ const columns = [
       ></span>
     ),
   },
+  { title: "รหัสสินค้า", field: "id" },
+  { title: "ชื่อลูกค้า", field: "name" },
+  { title: "ที่อยู่", field: "address" },
+  { title: "พืช", field: "plant" },
   {
-    title: "Order ID",
-    dataIndex: "id",
-    key: "id",
+    title: "วันที่สั่งซื้อ",
+    field: "order_date",
+    render: (record) =>
+      record.order_date
+        ? new Date(record.order_date).toLocaleDateString()
+        : "N/A",
   },
+  { title: "รหัสของพืช", field: "plant_number" },
+  { title: "คุณภาพ", field: "quantity" },
   {
-    title: "Customer Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
-  },
-  {
-    title: "Plant",
-    dataIndex: "plant",
-    key: "plant",
-  },
-  {
-    title: "Order Date",
-    dataIndex: "order_date",
-    key: "order_date",
-    render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
-  },
-  {
-    title: "Plant Number",
-    dataIndex: "plant_number",
-    key: "plant_number",
-  },
-  {
-    title: "Quantity",
-    dataIndex: "quantity",
-    key: "quantity",
-  },
-  {
-    title: "Status",
-    dataIndex: "order_status",
-    key: "order_status",
-    render: (status) => {
-      let color = "blue";
-      if (status === "Pending") color = "orange";
-      if (status === "Completed") color = "green";
-      if (status === "Cancelled") color = "red";
-      return <Tag color={color}>{status}</Tag>;
+    title: "สถานะ",
+    field: "order_status",
+    render: (record) => {
+      let color = "primary";
+      if (record.order_status === "Pending") color = "warning";
+      if (record.order_status === "Completed") color = "success";
+      if (
+        record.order_status === "Canceled" ||
+        record.order_status === "Cancelled"
+      )
+        color = "error";
+      return <Chip label={record.order_status} color={color} />;
     },
   },
 ];
 
 const Home = () => {
-  const [data, setData] = useState(null);  // เริ่มต้น data เป็น null เพื่อรอการโหลดข้อมูล
-  const [statusModal, setStatusModal] = useState({ visible: false, orderDetails: {} });
+  const [data, setData] = useState({ summary: {}, orders: [] });
+  const [statusModal, setStatusModal] = useState({
+    visible: false,
+    orderDetails: {},
+  });
 
   useEffect(() => {
     const fetchDashboard = () => {
@@ -105,15 +106,16 @@ const Home = () => {
       fetch(`http://127.0.0.1:5000/dashboard`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`, // ใช้ JWT token
+          Authorization: `Bearer ${accessToken}`,
         },
       })
         .then((res) => res.json())
         .then((res) => {
-          setData(res);  // ตั้งค่า data จาก response
+          setData(res);
         })
         .catch((err) => {
           console.error("Failed to fetch dashboard data:", err);
+          toast.error("Failed to fetch data. Please try again later.");
         });
     };
 
@@ -123,7 +125,7 @@ const Home = () => {
   const handleRowClick = (record) => {
     setStatusModal({
       visible: true,
-      orderDetails: record,  // ส่งข้อมูลออเดอร์ทั้งหมดเข้ามาใน modal
+      orderDetails: record,
     });
   };
 
@@ -131,143 +133,172 @@ const Home = () => {
     setStatusModal({ visible: false, orderDetails: {} });
   };
 
-  if (!data) return <span>Loading data...</span>;  // ถ้ายังไม่มีข้อมูลจะแสดงข้อความนี้
+  if (!data)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          margin: "20px auto",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
 
   const { orderDetails } = statusModal;
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          fontFamily: "'Sarabun', sans-serif", // Use Sarabun font
-        },
-      }}
-    >
-      <div style={{ padding: 30 }}>
-        <ToastContainer />
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "20px",
-            padding: "20px",
+    <div style={{ padding: 30 }}>
+      <ToastContainer />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "20px",
+          padding: "20px",
+        }}
+      >
+        {[
+          {
+            title: "รายการวันนี้",
+            value: data?.summary.total_orders_today || 0,
+            color: "#1e96fc",
+            icon: <ShoppingCartRoundedIcon />,
+          },
+          {
+            title: "รายการที่รอการตอบรับ",
+            value: data?.summary.in_progress_count || 0,
+            color: "#38b000",
+            icon: <HourglassBottomRoundedIcon />,
+          },
+          {
+            title: "เซนเซอร์ที่ว่าง",
+            value: data?.summary.status_free || 0,
+            color: "#ff8800",
+            icon: <SensorsRoundedIcon />,
+          },
+          {
+            title: "เซนเซอร์ที่ใช้งาน",
+            value: data?.summary.in_progress_count || 0,
+            color: "#f25c54",
+            icon: <SensorsOffRoundedIcon />,
+          },
+        ].map((item) => (
+          <Card
+            key={item.title}
+            sx={{
+              backgroundColor: item.color,
+              padding: 2,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              borderRadius: 2,
+              color: "white",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {item.icon}
+              <Typography variant="h6" sx={{ fontWeight: 700, color: "white" }}>
+                {item.title}
+              </Typography>
+            </div>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 700, textAlign: "right", color: "white" }}
+            >
+              {item.value}
+            </Typography>
+          </Card>
+        ))}
+      </div>
+      <div style={{ marginTop: 30 }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            marginTop: 2,
+            borderRadius: 2,
+            overflow: "hidden",
           }}
         >
-          {[
-            {
-              title: "รายการวันนี้",
-              value: data?.summary.total_orders_today || 0,
-              color: "#1e96fc",
-              icon: <ShoppingCartRoundedIcon />
-            },
-            {
-              title: "รายการที่รอการตอบรับ",
-              value: data?.summary.in_progress_count || 0,
-              color: "#38b000",
-            },
-            {
-              title: "เซนเซอร์ที่ว่าง",
-              value: data?.summary.status_free || 0,
-              color: "#ff8800",
-            },
-            {
-              title: "เซนเซอร์ที่ใช้งาน",
-              value: data?.summary.in_progress_count || 0,
-              color: "#f25c54",
-            },
-          ].map((item, index) => (
-            <div key={index}>
-              <Card
-                bordered={false}
-                style={{
-                  backgroundColor: item.color,
-                  padding: 8,
-                  boxShadow: "0 4px 8px rgb(255, 255, 255)",
-                  borderRadius: 10,
-                  color: "white", // Change this to black
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "700",
-                    textAlign: "left",
-                    color: "white",
-                  }}
-                >
-                  {item.title}
-                </h2>
-                <p
-                  style={{
-                    fontSize: "24px",
-                    fontWeight: "700",
-                    textAlign: "right",
-                    color: "white",
-                  }}
-                >
-                  {item.value}
-                </p>
-              </Card>
+          <Box
+            sx={{
+              padding: 2,
+              backgroundColor: "#38b000",
+              borderBottom: "1px solid #e0e0e0",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <AssignmentRoundedIcon sx={{ color: "white" }} />
+              <Typography variant="h6" sx={{ fontWeight: 700, color: "white" }}>
+                คำสั่งซื้อ
+              </Typography>
             </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 30 }}>
-          <Title level={5} style={{ marginBottom: 20 }}>
-            คำสั่งซื้อ
-          </Title>
-          <Table
-            className="custom-font-table"
-            dataSource={data.orders}
-            columns={columns}
-            rowKey="id"
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record),
-            })}
-          />
-        </div>
-        <Modal
-          title={`Order ID: ${orderDetails.id}`}
-          visible={statusModal.visible}
-          onCancel={closeModal}
-          footer={[
-            <Button key="close" onClick={closeModal}>
-              Close
-            </Button>,
-          ]}
-        >
-          <div>
-            <p>
-              <strong>Customer Name:</strong> {orderDetails.name}
-            </p>
-            <p>
-              <strong>Address:</strong> {orderDetails.address}
-            </p>
-            <p>
-              <strong>Plant:</strong> {orderDetails.plant}
-            </p>
-            <p>
-              <strong>Order Date:</strong>{" "}
-              {orderDetails.order_date
-                ? new Date(orderDetails.order_date).toLocaleDateString()
-                : "N/A"}
-            </p>
-            <p>
-              <strong>Plant Number:</strong> {orderDetails.plant_number}
-            </p>
-            <p>
-              <strong>Quantity:</strong> {orderDetails.quantity}
-            </p>
-            <p>
-              <strong>Status:</strong> {orderDetails.order_status}
-            </p>
-          </div>
-        </Modal>
+          </Box>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#f1ffe5" }}>
+                {" "}
+                {/* กำหนดสีพื้นหลังของแถวหัวตาราง */}
+                {columns.map((col) => (
+                  <TableCell
+                    key={col.field || col.key}
+                    sx={{ color: "#38b000", fontWeight: "700" }}
+                  >
+                    {col.title}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data?.orders.map((row) => (
+                <TableRow key={row.id} onClick={() => handleRowClick(row)}>
+                  {columns.map((col) => (
+                    <TableCell key={col.field || col.key}>
+                      {col.render ? col.render(row) : row[col.field]}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
-    </ConfigProvider>
+      <Modal open={statusModal.visible} onClose={closeModal}>
+        <Paper sx={{ padding: 3, margin: "auto", maxWidth: 500 }}>
+          <Typography variant="h6">Order ID: {orderDetails.id}</Typography>
+          <Typography>
+            <strong>Customer Name:</strong> {orderDetails.name}
+          </Typography>
+          <Typography>
+            <strong>Address:</strong> {orderDetails.address}
+          </Typography>
+          <Typography>
+            <strong>Plant:</strong> {orderDetails.plant}
+          </Typography>
+          <Typography>
+            <strong>Order Date:</strong>{" "}
+            {orderDetails.order_date
+              ? new Date(orderDetails.order_date).toLocaleDateString()
+              : "N/A"}
+          </Typography>
+          <Typography>
+            <strong>Plant Number:</strong> {orderDetails.plant_number}
+          </Typography>
+          <Typography>
+            <strong>Quantity:</strong> {orderDetails.quantity}
+          </Typography>
+          <Typography>
+            <strong>Status:</strong> {orderDetails.order_status}
+          </Typography>
+          <Button onClick={closeModal} sx={{ marginTop: 2 }}>
+            Close
+          </Button>
+        </Paper>
+      </Modal>
+    </div>
   );
 };
 
