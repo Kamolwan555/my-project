@@ -27,15 +27,15 @@ import SensorsOffRoundedIcon from "@mui/icons-material/SensorsOffRounded";
 const getStatusColor = (status) => {
   switch (status) {
     case "In progress":
-      return "#FFA500"; // Orange
+      return "#1e96fc"; 
     case "Completed":
-      return "#32CD32"; // Lime Green
+      return "#38b000"; 
     case "Pending":
-      return "#F0E68C"; // Khaki
+      return "#ffc300"; 
     case "Canceled":
-      return "#f80000"; // Red
+      return "#f80000"; 
     default:
-      return "#D3D3D3"; // Gray for unknown status
+      return "#D3D3D3"; 
   }
 };
 
@@ -56,7 +56,7 @@ const columns = [
       ></span>
     ),
   },
-  { title: "รหัสสินค้า", field: "id" },
+  { title: "#", field: "id" },
   { title: "ชื่อลูกค้า", field: "name" },
   { title: "ที่อยู่", field: "address" },
   { title: "พืช", field: "plant" },
@@ -69,7 +69,7 @@ const columns = [
         : "N/A",
   },
   { title: "รหัสของพืช", field: "plant_number" },
-  { title: "คุณภาพ", field: "quantity" },
+  { title: "จำนวน", field: "quantity" },
   {
     title: "สถานะ",
     field: "order_status",
@@ -156,7 +156,7 @@ const Home = () => {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
           gap: "20px",
-          padding: "20px",
+          padding: "2px",
         }}
       >
         {[
@@ -240,12 +240,14 @@ const Home = () => {
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f1ffe5" }}>
-                {" "}
-                {/* กำหนดสีพื้นหลังของแถวหัวตาราง */}
                 {columns.map((col) => (
                   <TableCell
                     key={col.field || col.key}
-                    sx={{ color: "#38b000", fontWeight: "700" }}
+                    sx={{
+                      color: "#38b000",
+                      fontWeight: "700",
+                      fontSize: "14px", // ปรับขนาดฟอนต์ให้ใหญ่ขึ้น
+                    }}
                   >
                     {col.title}
                   </TableCell>
@@ -253,10 +255,25 @@ const Home = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.orders.map((row) => (
-                <TableRow key={row.id} onClick={() => handleRowClick(row)}>
+              {data?.orders.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  onClick={() => handleRowClick(row)}
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff", // สลับสีพื้นหลัง
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5", // สีพื้นหลังเมื่อโฮเวอร์
+                    },
+                  }}
+                >
                   {columns.map((col) => (
-                    <TableCell key={col.field || col.key}>
+                    <TableCell
+                      key={col.field || col.key}
+                      sx={{
+                        borderBottom: "1px solid #e0e0e0", // เส้นขอบด้านล่างของแต่ละเซลล์
+                        color: "#333", // สีข้อความ
+                      }}
+                    >
                       {col.render ? col.render(row) : row[col.field]}
                     </TableCell>
                   ))}
