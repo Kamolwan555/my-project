@@ -167,7 +167,9 @@ const Order = () => {
       toast.error("กรุณาเลือกพืช");
       return;
     }
-
+ // ปริ้นท์ค่า payload ออกมา
+ const payload = { ...values, plant: selectedCrop };
+ console.log("Payload:", payload);  // เพิ่มการปริ้นท์ payload
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.post(
@@ -320,7 +322,7 @@ const Order = () => {
                 <strong>พืช:</strong> {selectedOrder.plant}
               </p>
               <p>
-                <strong>เบอร์โทร:</strong> {selectedOrder.plant_number}
+                <strong>เบอร์โทร:</strong> {selectedOrder.number}
               </p>
               <p>
                 <strong>จำนวน:</strong> {selectedOrder.quantity}
