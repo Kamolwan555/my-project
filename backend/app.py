@@ -230,7 +230,7 @@ def place_order():
         plant = data.get('plant')
         number = data.get('phone')
         quantity = data.get('quantity')
-        if not all([name, address, number]):
+        if not all([name, address, plant, number, quantity]):
             return jsonify({'error': 'All fields are required'}), 400
         
        
@@ -332,12 +332,17 @@ def get_orders_today_summary():
                 sensor for sensor in sensor_data
                 if sensor.sensor_status and sensor.sensor_status.lower() == "inactive"
             ])
+            status_progress = len([
+                sensor for sensor in sensor_data
+                if sensor.sensor_status and sensor.sensor_status.lower() == "active"
+            ])
            
             return jsonify({
                 'summary': {
                     'total_orders_today': total_orders_today,
                     'in_progress_count': in_progress_count,
-                    'status_free' : status_free
+                    'status_free' : status_free,
+                    'status_progress' : status_progress
                     
                 },
                 'orders': orders_list  # Full list of orders

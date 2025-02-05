@@ -70,8 +70,8 @@ const columns = [
         ? new Date(record.order_date).toLocaleDateString()
         : "N/A",
   },
-  { title: "รหัสของพืช", field: "plant_number" },
-  { title: "จำนวน", field: "quantity" },
+  { title: "เบอร์โทร", field: "plant_number" },
+  { title: <span style={{ display: 'block', textAlign: 'left' }}>จำนวน(กิโลกรัม)</span>, field: "quantity" },
   {
     title: "สถานะ",
     field: "order_status",
@@ -211,6 +211,7 @@ const Order = () => {
           borderRadius: 2,
           overflow: "hidden",
           boxShadow: 3, // เพิ่มเงาให้ตาราง
+          
         }}
       >
         <Box
@@ -237,6 +238,7 @@ const Order = () => {
               color: "#38b000",
               "&:hover": {
                 backgroundColor: "#e9ecef",
+                
               },
             }}
           >
@@ -279,6 +281,8 @@ const Order = () => {
                     sx={{
                       borderBottom: "1px solid #e0e0e0",
                       color: "#333", 
+                      textAlign: "left",  // เพิ่มการจัดตำแหน่งหัวข้อตารางให้อยู่กลาง
+
                     }}
                   >
                     {col.render ? col.render(row) : row[col.field]}
