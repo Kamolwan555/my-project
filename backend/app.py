@@ -227,13 +227,12 @@ def place_order():
         data = request.get_json()
         name = data.get('name')
         address = data.get('address')
-        order_data = data.get('data')
-        number = data.get('number')
+        plant = data.get('plant')
+        number = data.get('phone')
         quantity = data.get('quantity')
-
-        if not all([name, address, order_data, number, quantity]):
+        if not all([name, address, plant, number, quantity]):
             return jsonify({'error': 'All fields are required'}), 400
-
+        
        
         # Set order time to the current time
         # order_time = datetime.utcnow()
@@ -245,10 +244,10 @@ def place_order():
                 order_id=next_id,
                 name=name,
                 address=address,
-                plant=order_data,
+                plant=plant,
                 plant_number=number,
                 quantity=quantity,
-                # order_time=order_time
+                # order_time=order_time,
                 order_status="Pending"
             )
             db_session.add(new_order)
@@ -333,12 +332,17 @@ def get_orders_today_summary():
                 sensor for sensor in sensor_data
                 if sensor.sensor_status and sensor.sensor_status.lower() == "inactive"
             ])
+            status_progress = len([
+                sensor for sensor in sensor_data
+                if sensor.sensor_status and sensor.sensor_status.lower() == "active"
+            ])
            
             return jsonify({
                 'summary': {
                     'total_orders_today': total_orders_today,
                     'in_progress_count': in_progress_count,
-                    'status_free' : status_free
+                    'status_free' : status_free,
+                    'status_progress' : status_progress
                     
                 },
                 'orders': orders_list  # Full list of orders
