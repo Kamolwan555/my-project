@@ -180,7 +180,7 @@ const Home = () => {
           },
           {
             title: "เซนเซอร์ที่ใช้งาน",
-            value: data?.summary.in_progress_count || 0,
+            value: data?.summary.status_progress || 0,
             color: "#f25c54",
             icon: <SensorsOffRoundedIcon />,
           },

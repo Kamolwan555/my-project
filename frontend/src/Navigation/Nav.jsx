@@ -32,7 +32,7 @@ const demoTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background: " #38b000",
+          background: "rgb(4, 126, 14)",
           // background: "linear-gradient(90deg, #38b000, #70e000)",
           color: "#FFFFFF",
         },

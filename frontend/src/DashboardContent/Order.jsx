@@ -75,8 +75,8 @@ const columns = [
         ? new Date(record.order_date).toLocaleDateString()
         : "N/A",
   },
-  { title: "รหัสของพืช", field: "plant_number" },
-  { title: "จำนวน", field: "quantity" },
+  { title: "เบอร์โทร", field: "plant_number" },
+  { title: <span style={{ display: 'block', textAlign: 'left' }}>จำนวน(กิโลกรัม)</span>, field: "quantity" },
   {
     title: "สถานะ",
     field: "order_status",
@@ -178,7 +178,9 @@ const Order = () => {
       toast.error("กรุณาเลือกพืช");
       return;
     }
-
+ // ปริ้นท์ค่า payload ออกมา
+ const payload = { ...values, plant: selectedCrop };
+ console.log("Payload:", payload);  // เพิ่มการปริ้นท์ payload
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.post(
@@ -219,7 +221,7 @@ const Order = () => {
           marginTop: 2,
           borderRadius: 2,
           overflow: "hidden",
-          boxShadow: 3,
+          boxShadow: 3, // เพิ่มเงาให้ตาราง
         }}
       >
         <Box
@@ -246,6 +248,7 @@ const Order = () => {
               color: "#38b000",
               "&:hover": {
                 backgroundColor: "#e9ecef",
+                
               },
             }}
           >
@@ -287,7 +290,9 @@ const Order = () => {
                     key={col.field || col.key}
                     sx={{
                       borderBottom: "1px solid #e0e0e0",
-                      color: "#333",
+                      color: "#333", 
+                      textAlign: "left",  // เพิ่มการจัดตำแหน่งหัวข้อตารางให้อยู่กลาง
+
                     }}
                   >
                     {col.render ? col.render(row) : row[col.field]}
@@ -331,7 +336,7 @@ const Order = () => {
                 <strong>พืช:</strong> {selectedOrder.plant}
               </p>
               <p>
-                <strong>เบอร์โทร:</strong> {selectedOrder.plant_number}
+                <strong>เบอร์โทร:</strong> {selectedOrder.number}
               </p>
               <p>
                 <strong>จำนวน:</strong> {selectedOrder.quantity}
