@@ -14,17 +14,22 @@ import {
   Box,
   Select,
   MenuItem,
-  TextField,
+  Grid,
   Pagination,
   InputLabel,
   FormControl,
+  IconButton,
+  Stack,
+  OutlinedInput,
+  // FormHelperText,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -94,9 +99,15 @@ const crops = [
   { id: "72", name: "กระเทียม หอมแดง และหอมหัวใหญ่" },
   { id: "9", name: "ข้าวนาปรัง/ข้าวไม่ไวแสง" },
   { id: "10", name: "ข้าวนาปี/ข้าวไวแสง" },
-  { id: "70", name: "ข้าวโพดฝักสด (ข้าวโพดหวาน ข้าวโพดข้าวเหนียว และข้าวโพดฝักอ่อน)" },
+  {
+    id: "70",
+    name: "ข้าวโพดฝักสด (ข้าวโพดหวาน ข้าวโพดข้าวเหนียว และข้าวโพดฝักอ่อน)",
+  },
   { id: "71", name: "ข้าวโพดเลี้ยงสัตว์" },
-  { id: "65", name: "คะน้า ผักกาดหัว กะหล่ำปลี กะหล่ำดอก บรอกโคลี่ ผักกาดขาวปลี" },
+  {
+    id: "65",
+    name: "คะน้า ผักกาดหัว กะหล่ำปลี กะหล่ำดอก บรอกโคลี่ ผักกาดขาวปลี",
+  },
   { id: "52", name: "เงาะ" },
   { id: "17", name: "ทุเรียน" },
   { id: "19", name: "ปาล์มน้ำมัน" },
@@ -149,7 +160,7 @@ const Order = () => {
     fetchOrders();
   }, []);
 
-  const handleChange = (event) => {
+  const handleCropChange = (event) => {
     setSelectedCrop(event.target.value);
   };
 
@@ -208,7 +219,7 @@ const Order = () => {
           marginTop: 2,
           borderRadius: 2,
           overflow: "hidden",
-          boxShadow: 3, // เพิ่มเงาให้ตาราง
+          boxShadow: 3,
         }}
       >
         <Box
@@ -251,7 +262,7 @@ const Order = () => {
                     color: "#38b000",
                     fontWeight: "700",
                     fontSize: "14px",
-                    borderBottom: "2px solid #38b000", // เพิ่มเส้นขอบด้านล่าง
+                    borderBottom: "2px solid #38b000",
                   }}
                 >
                   {col.title}
@@ -265,9 +276,9 @@ const Order = () => {
                 key={row.id}
                 onClick={() => handleRowClick(row)}
                 sx={{
-                  backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff", 
+                  backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
                   "&:hover": {
-                    backgroundColor: "#f5f5f5", 
+                    backgroundColor: "#f5f5f5",
                   },
                 }}
               >
@@ -276,7 +287,7 @@ const Order = () => {
                     key={col.field || col.key}
                     sx={{
                       borderBottom: "1px solid #e0e0e0",
-                      color: "#333", 
+                      color: "#333",
                     }}
                   >
                     {col.render ? col.render(row) : row[col.field]}
@@ -358,6 +369,19 @@ const Order = () => {
             borderRadius: 2,
           }}
         >
+          <IconButton
+            aria-label="close"
+            onClick={() => setAddOrderModalOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseRoundedIcon />
+          </IconButton>
+
           <Typography variant="h6" sx={{ mb: 3 }}>
             เพิ่มคำสั่งซื้อใหม่
           </Typography>
@@ -365,57 +389,78 @@ const Order = () => {
             onSubmit={handleAddOrderSubmit}
             style={{ display: "flex", flexDirection: "column", gap: 16 }}
           >
-            <TextField
-              name="name"
-              label="ชื่อผู้ซื้อ"
-              variant="outlined"
-              required
-              placeholder="ชื่อผู้ซื้อ"
-              fullWidth
-              sx={{ mb: 2 }}
-            />
+            {/* ช่องอินพุตชื่อผู้ซื้อ */}
+            <Grid item xs={12}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="name">ชื่อผู้ซื้อ</InputLabel>
+                <OutlinedInput
+                  fullWidth
+                  id="name"
+                  type="text"
+                  name="name"
+                  placeholder="ชื่อผู้ซื้อ"
+                  autoFocus
+                />
+              </Stack>
+            </Grid>
 
-            <TextField
-              name="address"
-              label="ที่อยู่"
-              variant="outlined"
-              required
-              placeholder="ที่อยู่"
-              multiline
-              rows={3}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
+            {/* ช่องอินพุตที่อยู่ */}
+            <Grid item xs={12}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="address">ที่อยู่</InputLabel>
+                <OutlinedInput
+                  fullWidth
+                  id="address"
+                  type="text"
+                  name="address"
+                  placeholder="ที่อยู่"
+                  multiline
+                  rows={3}
+                  autoFocus
+                />
+              </Stack>
+            </Grid>
 
-            <TextField
-              name="phone"
-              label="เบอร์โทรศัพท์"
-              variant="outlined"
-              required
-              placeholder="เบอร์โทรศัพท์"
-              fullWidth
-              sx={{ mb: 2 }}
-            />
+            {/* ช่องอินพุตเบอร์โทรศัพท์ */}
+            <Grid item xs={12}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="phone">เบอร์โทรศัพท์</InputLabel>
+                <OutlinedInput
+                  fullWidth
+                  id="phone"
+                  type="text"
+                  name="phone"
+                  placeholder="เบอร์โทรศัพท์"
+                  autoFocus
+                />
+              </Stack>
+            </Grid>
 
-            <TextField
-              name="quantity"
-              label="จำนวน"
-              variant="outlined"
-              required
-              placeholder="จำนวน"
-              type="number"
-              fullWidth
-              sx={{ mb: 2 }}
-            />
+            {/* ช่องอินพุตจำนวน */}
+            <Grid item xs={12}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="quantity">จำนวน</InputLabel>
+                <OutlinedInput
+                  fullWidth
+                  id="quantity"
+                  type="number"
+                  name="quantity"
+                  placeholder="จำนวน"
+                  autoFocus
+                />
+              </Stack>
+            </Grid>
 
+            {/* Dropdown เลือกพืช */}
             <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
               <InputLabel>เลือกพืช</InputLabel>
               <Select
                 name="plant"
                 value={selectedCrop}
-                onChange={handleChange}
+                onChange={handleCropChange}
                 required
                 label="เลือกพืช"
+                autoFocus
               >
                 <MenuItem value="" disabled>
                   เลือกพืช
