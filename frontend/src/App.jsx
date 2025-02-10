@@ -19,36 +19,36 @@ import Configmenu from "./DashboardContent/configmenu";
 import Orderconfig from "./DashboardContent/orderconfig";
 import EditOrder from "./DashboardContent/EditOrder";
 import Soilcard from "./DashboardContent/Soilcard";
-
+import Cropcal from "./DashboardContent/Cropcal"
 // import { PrivateRoute } from "./component/PrivateRoute";
 
 const App = () => {
   return (
     <BrowserRouter>
 
-      <Routes>
-          <Route path="/" element={<Login />} />
-          <Route element={<Navigation />}>
-                <Route path="/home" element={<Home />} />
-                <Route path="/calculate" element={<Calculate />} />
-                <Route path="/fertilizer" element={<Fertilizer />} />
-                <Route path="/customerfer" element={<CustomerFer />} />
-                <Route path="/order" element={<Order />} />
-                <Route path="/soil" element={<Soil />} />
-                <Route path="/recommend" element={<Recommend />} />
-                <Route path="/soildata" element={<Soildata />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/userconfig" element={<UserConfig />} />
-                <Route path="/edituser/:userid" element={<EditUser />} />
-                <Route path="/configmenu" element={<Configmenu />} />
-                <Route path="/orderconfig" element={<Orderconfig />} />
-                <Route path="/editorder/:orderId" element={<EditOrder />} /> {/* เพิ่ม Route สำหรับ EditOrder */}
-                <Route path="/soilcard" element={<Soilcard />} />
-                <Route path="/soil/:id" element={<Soildata />} />
-            </Route>
-            <Route path="/register" element={<Register />} />
+<Routes>
+        <Route path="/" element={<Login />} />
+        <Route element={<Navigation />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/fertilizer" element={<Fertilizer />} />
+          <Route path="/customerfer" element={<CustomerFer />} />
+          <Route path="/order" element={<Order />} />
+          <Route path="/soil" element={<Soil />} />
+          <Route path="/recommend" element={<Recommend />} />
+          <Route path="/soildata" element={<Soildata />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/userconfig" element={<UserConfig />} />
+          <Route path="/edituser/:userid" element={<EditUser />} />
+          <Route path="/configmenu" element={<Configmenu />} />
+          <Route path="/orderconfig" element={<Orderconfig />} />
+          <Route path="/editorder/:orderId" element={<EditOrder />} />
+          <Route path="/soilcard" element={<Soilcard />} />
+          <Route path="/soil/:id" element={<Soildata />} />
+          <Route path="/cropcal" element={<Cropcal />} />
+          <Route path="/calculate/:cropID/:N/:P/:K" element={<Calculate />} />
+        </Route>
+        <Route path="/register" element={<Register />} />
       </Routes>
-
     </BrowserRouter>
   );
 };

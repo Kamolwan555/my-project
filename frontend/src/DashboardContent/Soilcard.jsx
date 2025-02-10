@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, Typography, Grid, Pagination, CardMedia } from "@mui/material";
+import { Card, CardContent, Typography, Grid, Pagination, CardMedia, Select, MenuItem, InputLabel, FormControl, Box } from "@mui/material";
 
 const SoilCard = () => {
   const navigate = useNavigate();
@@ -136,69 +136,108 @@ const SoilCard = () => {
     },
 ], []);
 
-  // Define the handleCardClick function properly
-  const handleCardClick = (id) => {
-    navigate(`/soil/${id}`);
-  };
+const [page, setPage] = useState(1);
+const [itemsPerPage, setItemsPerPage] = useState(8); // Default to 8 items per page
 
-  return (
-    <div>
-      <Grid container spacing={2} justifyContent="center">
-        {soilData.map((soil, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card
+const handlePageChange = (event, value) => {
+  setPage(value);
+};
+
+const handleItemsPerPageChange = (event) => {
+  setItemsPerPage(event.target.value);
+  setPage(1); // Reset to first page when items per page change
+};
+
+const currentItems = soilData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
+const handleCardClick = (id) => {
+  navigate(`/soil/${id}`);
+};
+
+return (
+  <div>
+    {/* Grid for the soil data */}
+    <Grid container spacing={2} justifyContent="center">
+      {currentItems.map((soil, index) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+          <Card
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              cursor: "pointer",
+              boxShadow: "none", 
+              borderRadius: 2, 
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)", 
+              },
+            }}
+            onClick={() => handleCardClick(index)} 
+          >
+            <CardMedia
+              component="img"
+              alt={soil.name}
+              height="140"
+              image={soil.image}
               sx={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                cursor: "pointer",
-                boxShadow: 3, // Add a shadow for a more defined card appearance
-                borderRadius: 2, // Rounded corners
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                "&:hover": {
-                  transform: "scale(1.05)", // Add scale effect on hover
-                  boxShadow: 6, // Stronger shadow on hover
-                },
+                borderTopLeftRadius: 2,
+                borderTopRightRadius: 2,
+                objectFit: "cover",
               }}
-              onClick={() => handleCardClick(index)} // Trigger the function on click
-            >
-              <CardMedia
-                component="img"
-                alt={soil.name}
-                height="140"
-                image={soil.image}
-                sx={{
-                  borderTopLeftRadius: 2,
-                  borderTopRightRadius: 2,
-                  objectFit: "cover", // Ensure image fits nicely
-                }}
-              />
-              <CardContent sx={{ flexGrow: 1, padding: 2 }}>
-                <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-                  {soil.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {soil.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+            />
+            <CardContent sx={{ flexGrow: 1, padding: 1 }}>
+              <Typography variant="h6" component="div" sx={{ fontWeight: 600, fontSize: 16 }}>
+                {soil.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: 14 }}>
+                {soil.description}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+
+    {/* Pagination and Items per page at the top-right */}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        marginTop: 2,
+        marginBottom: 2,
+      }}
+    >
+      <FormControl sx={{ minWidth: 80 }}>
+        <InputLabel sx={{ fontSize: 14 }}>Items</InputLabel>
+        <Select
+          value={itemsPerPage}
+          onChange={handleItemsPerPageChange}
+          label="Items"
+          sx={{ fontSize: 14, height: 30 }}
+        >
+          <MenuItem value={8}>8</MenuItem>
+          <MenuItem value={12}>12</MenuItem>
+          <MenuItem value={16}>16</MenuItem>
+        </Select>
+      </FormControl>
+
       <Pagination
-        count={Math.ceil(soilData.length / 8)} // Calculate the number of pages based on data length
-        page={1} // Change this value as needed
-        onChange={() => {}}
+        count={Math.ceil(soilData.length / itemsPerPage)}
+        page={page}
+        onChange={handlePageChange}
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: 3,
-          marginBottom: 3, // Add space below pagination
+          "& .MuiPaginationItem-root": {
+            fontSize: 14,
+          },
+          marginLeft: 2,
         }}
       />
-    </div>
-  );
+    </Box>
+  </div>
+);
 };
 
 export default SoilCard;
