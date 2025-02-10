@@ -65,7 +65,7 @@ const menuItems = [
   { kind: 'header', title: 'ตรวจสอบข้อมูล' }, 
   { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainRoundedIcon />, link: "/soil" },
   { key: "/fertilizer", label: "ตรวจสอบปุ๋ย", icon: <LocalFloristRoundedIcon />, link: "/fertilizer" },
-  { key: "/soildata", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soildata" },
+  { key: "/soilcard", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soilcard" },
   { kind: 'header', title: 'การตั้งค่า' }, 
   { key: "/logout", label: "ออกจากระบบ", icon: <LogoutRoundedIcon />, link: "/logout" },
 ];

@@ -1,9 +1,11 @@
-import { useParams } from "react-router-dom";
-import { Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, Typography, Grid, Pagination, CardMedia } from "@mui/material";
 
-const Soildata = () => {
-  const { id } = useParams(); // รับ id จาก URL
-  const soilData = [
+const SoilCard = () => {
+  const navigate = useNavigate();
+  
+  const soilData = useMemo(() => [
     {
       name: "ชุดดินที่ 1",
       description: "ดินทรายจัด เหมาะสำหรับพืชไร่ เช่น อ้อย มันสำปะหลัง",
@@ -132,30 +134,71 @@ const Soildata = () => {
       fullDescription:
         "ชุดดินที่ 16 เป็นดินทรายปนดินเหนียว เหมาะสำหรับการปลูกพืชทนแล้ง เช่น กระบองเพชร",
     },
-  ];
+], []);
 
-  const soil = soilData[id]; // ใช้ id เพื่อค้นหาชุดดินที่เลือก
+  // Define the handleCardClick function properly
+  const handleCardClick = (id) => {
+    navigate(`/soil/${id}`);
+  };
 
   return (
     <div>
-      <Card sx={{ maxWidth: 600, margin: "auto" }}>
-        <CardMedia
-          component="img"
-          image={soil.image}
-          alt={soil.name}
-          sx={{ width: "100%", height: 300, objectFit: "cover" }}
-        />
-        <CardContent>
-          <Typography variant="h5" component="div">
-            {soil.name}
-          </Typography>
-          <Typography variant="body1" color="text.primary">
-            {soil.fullDescription}
-          </Typography>
-        </CardContent>
-      </Card>
+      <Grid container spacing={2} justifyContent="center">
+        {soilData.map((soil, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <Card
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                cursor: "pointer",
+                boxShadow: 3, // Add a shadow for a more defined card appearance
+                borderRadius: 2, // Rounded corners
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.05)", // Add scale effect on hover
+                  boxShadow: 6, // Stronger shadow on hover
+                },
+              }}
+              onClick={() => handleCardClick(index)} // Trigger the function on click
+            >
+              <CardMedia
+                component="img"
+                alt={soil.name}
+                height="140"
+                image={soil.image}
+                sx={{
+                  borderTopLeftRadius: 2,
+                  borderTopRightRadius: 2,
+                  objectFit: "cover", // Ensure image fits nicely
+                }}
+              />
+              <CardContent sx={{ flexGrow: 1, padding: 2 }}>
+                <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+                  {soil.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {soil.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+      <Pagination
+        count={Math.ceil(soilData.length / 8)} // Calculate the number of pages based on data length
+        page={1} // Change this value as needed
+        onChange={() => {}}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: 3,
+          marginBottom: 3, // Add space below pagination
+        }}
+      />
     </div>
   );
 };
 
-export default Soildata;
+export default SoilCard;
