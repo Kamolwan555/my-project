@@ -60,7 +60,7 @@ const demoTheme = createTheme({
 const menuItems = [
   { kind: 'header', title: 'เมนูหลัก' }, 
   { key: "/home", label: "หน้าหลัก", icon: <HomeRoundedIcon />, link: "/home" },
-  { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/calculate" },
+  { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/cropcal" },
   { key: "/order", label: "คำสั่งซื้อ", icon: <ShoppingCartRoundedIcon />, link: "/order" },
   { kind: 'header', title: 'ตรวจสอบข้อมูล' }, 
   { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainRoundedIcon />, link: "/soil" },
