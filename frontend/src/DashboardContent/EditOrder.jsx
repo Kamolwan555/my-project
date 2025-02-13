@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Form, Input, Button, message, Spin } from "antd";
+import { Box, Button, CircularProgress, Container, Grid, TextField, Typography, Paper } from "@mui/material";
+import { ArrowBack as ArrowBackIcon } from "@mui/icons-material"; // นำเข้า ArrowBackIcon
+import { message } from "antd";
 
 const EditOrder = () => {
   const { orderId } = useParams(); // ใช้ useParams เพื่อดึงค่า orderId จาก URL
+  const navigate = useNavigate(); // ใช้ useNavigate สำหรับการนำทาง
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +42,11 @@ const EditOrder = () => {
     fetchOrder();
   }, [orderId]);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const values = Object.fromEntries(formData.entries());
+
     try {
       const token = localStorage.getItem('access_token'); // รับ JWT จาก localStorage
       if (!token) {
@@ -64,40 +71,127 @@ const EditOrder = () => {
     }
   };
 
-  if (loading) return <Spin size="large" style={{ display: "block", margin: "50px auto" }} />;
+  if (loading) return <CircularProgress style={{ display: "block", margin: "50px auto" }} />;
 
   return (
-    <div className="container">
-      <h2>แก้ไขคำสั่งซื้อ</h2>
-      <Form initialValues={order} onFinish={handleSubmit}>
-        <Form.Item name="name" label="Customer Name" rules={[{ required: true, message: "กรุณากรอกชื่อผู้สั่งซื้อ" }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item name="address" label="Address" rules={[{ required: true, message: "กรุณากรอกที่อยู่" }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item name="plant" label="Plant" rules={[{ required: true, message: "กรุณากรอกชื่อโรงงาน" }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item name="order_date" label="Order Date" rules={[{ required: true, message: "กรุณากรอกวันที่คำสั่งซื้อ" }]}>
-          <Input type="date" />
-        </Form.Item>
-        <Form.Item name="plant_number" label="Plant Number" rules={[{ required: true, message: "กรุณากรอกหมายเลขโรงงาน" }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item name="quantity" label="Quantity" rules={[{ required: true, message: "กรุณากรอกจำนวน" }]}>
-          <Input type="number" />
-        </Form.Item>
-        <Form.Item name="order_status" label="Status" rules={[{ required: true, message: "กรุณากรอกสถานะคำสั่งซื้อ" }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            บันทึก
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+    <Container maxWidth="md">
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          marginBottom: 2,
+          marginTop: 1, // เพิ่ม marginTop เพื่อขยับปุ่มขึ้นด้านบน
+        }}
+      >
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate(-1)}
+          sx={{
+            color: '#38b000',
+            fontWeight: 'bold',
+            textTransform: 'none',
+            '&:hover': {
+              backgroundColor: 'rgba(56, 176, 0, 0.1)',
+            },
+          }}
+        >
+          ย้อนกลับ
+        </Button>
+      </Box>
+      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, color: "black" }}>
+          แก้ไขคำสั่งซื้อ
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="name"
+                name="name"
+                label="Customer Name"
+                defaultValue={order?.name || ''}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="address"
+                name="address"
+                label="Address"
+                defaultValue={order?.address || ''}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="plant"
+                name="plant"
+                label="Plant"
+                defaultValue={order?.plant || ''}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="order_date"
+                name="order_date"
+                label="Order Date"
+                type="date"
+                defaultValue={order?.order_date ? new Date(order.order_date).toISOString().split('T')[0] : ''}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="plant_number"
+                name="plant_number"
+                label="Plant Number"
+                defaultValue={order?.plant_number || ''}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="quantity"
+                name="quantity"
+                label="Quantity"
+                type="number"
+                defaultValue={order?.quantity || ''}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="order_status"
+                name="order_status"
+                label="Status"
+                defaultValue={order?.order_status || ''}
+                required
+              />
+            </Grid>
+          </Grid>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ mt: 3, mb: 2, width: '150px' }}
+            >
+              บันทึก
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 

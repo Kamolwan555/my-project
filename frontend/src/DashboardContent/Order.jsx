@@ -179,7 +179,7 @@ const Order = () => {
       return;
     }
  // ปริ้นท์ค่า payload ออกมา
- const payload = { ...values, plant: selectedCrop };
+const payload = { ...values, plant: selectedCrop };
  console.log("Payload:", payload);  // เพิ่มการปริ้นท์ payload
     try {
       const accessToken = localStorage.getItem("accessToken");
