@@ -1,6 +1,28 @@
-import { useState } from "react";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { Container, Typography, MenuItem, Select, Button, FormControl, InputLabel, Box } from "@mui/material";
+import {
+  Container,
+  Typography,
+  MenuItem,
+  Button,
+  FormControl,
+  Box,
+  TextField,
+  Grid,
+} from "@mui/material";
+import { useState } from "react";
+
+// สร้าง theme และกำหนดสี primary เป็น #38b000
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#38b000", // เปลี่ยนสี primary เป็น #38b000
+    },
+  },
+  typography: {
+    fontFamily: "Sarabun, sans-serif",
+  },
+});
 
 const cropData = [
   { id: "75", name: "ไม่ระบุพืช" },
@@ -28,7 +50,7 @@ const cropData = [
   { id: "36", name: "สับปะรด" },
   { id: "62", name: "หน่อไม้ฝรั่ง" },
   { id: "68", name: "อ้อยตอ" },
-  { id: "69", name: "อ้อยปลูก" }
+  { id: "69", name: "อ้อยปลูก" },
 ];
 
 const CropSelector = () => {
@@ -38,7 +60,8 @@ const CropSelector = () => {
   const [P, setP] = useState("");
   const [K, setK] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (!cropID || !N || !P || !K) {
       alert("กรุณาเลือกข้อมูลให้ครบทุกช่อง");
       return;
@@ -47,41 +70,83 @@ const CropSelector = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ textAlign: "center", mt: 5 }}>
-      <Typography variant="h4" gutterBottom>
-        เลือกพืชและค่าธาตุอาหาร
-      </Typography>
+    <ThemeProvider theme={theme}>
+      <Container>
+        {/* Header Container */}
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <FormControl fullWidth>
-          <InputLabel shrink>เลือกพืช</InputLabel>
-          <Select value={cropID} onChange={(e) => setCropID(e.target.value)} notched>
-            {cropData.map((crop) => (
-              <MenuItem key={crop.id} value={crop.id}>
-                {crop.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {/* Form Container */}
+        <Box sx={{ bgcolor: "background.paper", p: 4, borderRadius: 2 }}>
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" component="p">
+              เลือกพืชและค่าธาตุอาหาร
+            </Typography>
+          </Box>
 
-        {[{ label: "ไนโตรเจน (N)", value: N, setter: setN },
-          { label: "ฟอสฟอรัส (P)", value: P, setter: setP },
-          { label: "โพแทสเซียม (K)", value: K, setter: setK }].map((item, index) => (
-          <FormControl fullWidth key={index}>
-            <InputLabel shrink>{item.label}</InputLabel>
-            <Select value={item.value} onChange={(e) => item.setter(e.target.value)} notched>
-              <MenuItem value="ต่ำ">ต่ำ</MenuItem>
-              <MenuItem value="ปานกลาง">ปานกลาง</MenuItem>
-              <MenuItem value="สูง">สูง</MenuItem>
-            </Select>
-          </FormControl>
-        ))}
+          <Box component="form" onSubmit={handleSubmit}>
+            {/* Crop Selector */}
+            <Box sx={{ mb: 2 }}>
+              <FormControl fullWidth>
+                <TextField
+                  select
+                  label="เลือกพืช"
+                  value={cropID}
+                  onChange={(e) => setCropID(e.target.value)}
+                  variant="outlined"
+                  required
+                >
+                  {cropData.map((crop) => (
+                    <MenuItem key={crop.id} value={crop.id}>
+                      {crop.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </FormControl>
+            </Box>
 
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          คำนวณปุ๋ย
-        </Button>
-      </Box>
-    </Container>
+            {/* Nutrient Inputs */}
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              {[
+                { label: "ไนโตรเจน (N)", value: N, setter: setN },
+                { label: "ฟอสฟอรัส (P)", value: P, setter: setP },
+                { label: "โพแทสเซียม (K)", value: K, setter: setK },
+              ].map((item, index) => (
+                <Grid item xs={12} key={index}>
+                  <FormControl fullWidth>
+                    <TextField
+                      select
+                      label={item.label}
+                      value={item.value}
+                      onChange={(e) => item.setter(e.target.value)}
+                      variant="outlined"
+                      required
+                    >
+                      <MenuItem value="ต่ำ">ต่ำ</MenuItem>
+                      <MenuItem value="ปานกลาง">ปานกลาง</MenuItem>
+                      <MenuItem value="สูง">สูง</MenuItem>
+                    </TextField>
+                  </FormControl>
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Submit Button */}
+            <Box>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  color: "#ffffff",
+                  backgroundColor: "#38b000",
+                  "&:hover": { backgroundColor: "#2c8c00" },
+                }}
+              >
+                คำนวณปุ๋ย
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 };
 

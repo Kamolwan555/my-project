@@ -12,7 +12,7 @@ import Divider from '@mui/material/Divider';
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'Noto Sans Thai, serif',
+    fontFamily: 'Sarabun, sans-serif',
   },
 });
 
