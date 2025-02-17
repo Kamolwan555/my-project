@@ -1,67 +1,33 @@
-// import { useEffect, useState } from 'react';
-// import axios from 'axios';
-
-// const App = () => {
-//   const [data, setData] = useState(null);
-//   const [error, setError] = useState(null);
-
-//   useEffect(() => {
-//     axios
-//       .get('/cal/api/fertilizer.php?cropID=17&N=สูง&P=ต่ำ&K=ปานกลาง')
-//       .then((response) => {
-//         setData(response.data);
-//       })
-//       .catch((error) => {
-//         setError(error);
-//       });
-//   }, []);
-
-//   return (
-//     <div>
-//       <h1>Data</h1>
-//       {error && <p>Error: {error.message}</p>}
-//       {data ? (
-//         <pre>{JSON.stringify(data, null, 2)}</pre>
-//       ) : (
-//         <p>Loading...</p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default App;
-// function Recommend() {
-//   return (
-//       <div>
-//           <h2>This is Calculate Page.</h2>
-//       </div>
-//   );
-// }
-
-// export default Recommend;
-// import React from 'react';
 import { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Paper, CircularProgress, Box } from '@mui/material';
+import { Container, Typography, Grid, Paper, CircularProgress, Box, Button } from '@mui/material';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Calculate = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { cropID, N, P, K } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (cropID && N && P && K) {
-      axios.get(`/cal/api/fertilizer.php?cropID=${cropID}&N=${N}&P=${P}&K=${K}`)
-        .then((response) => {
-          setData(response.data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-          setLoading(false);
-        });
+    if (!cropID || !N || !P || !K) {
+      setError(new Error('Missing parameters'));
+      setLoading(false);
+      return;
     }
+
+    axios.get(`/cal/api/fertilizer.php?cropID=${cropID}&N=${N}&P=${P}&K=${K}`)
+      .then((response) => {
+        setData(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setError(error);
+        setLoading(false);
+      });
   }, [cropID, N, P, K]);
 
   if (loading) {
@@ -73,7 +39,7 @@ const Calculate = () => {
     );
   }
 
-  if (!data) {
+  if (error || !data) {
     return (
       <Container maxWidth={false} style={{ textAlign: 'center', marginTop: '50px' }}>
         <Typography variant="h6" color="error">ไม่สามารถดึงข้อมูลได้</Typography>
@@ -83,13 +49,28 @@ const Calculate = () => {
 
   return (
     <Container maxWidth={false} style={{ padding: '20px' }}>
+      <Button
+        startIcon={<ArrowBackIcon />}
+        onClick={() => navigate(-1)}
+        sx={{
+          color: '#38b000',
+          fontWeight: 'bold',
+          textTransform: 'none',
+          '&:hover': {
+            backgroundColor: 'rgba(56, 176, 0, 0.1)',
+          },
+        }}
+      >
+        ย้อนกลับ
+      </Button>
+
       <Typography variant="h4" align="center" gutterBottom color="black">
         ผลการวิเคราะห์การใช้ปุ๋ย
       </Typography>
-      <Typography variant="h5" align="center" gutterBottom color="black">
+      <Typography variant="h5" align="center" gutterBottom color="black" mb={4}>
         ชนิดพืช: {data.cropName}
       </Typography>
-      
+
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Paper elevation={4} style={{ padding: '20px', backgroundColor: '#f3f4f6' }}>
@@ -120,9 +101,9 @@ const Calculate = () => {
       <Paper elevation={4} style={{ padding: '20px', marginTop: '20px', backgroundColor: '#ede7f6' }}>
         <Typography variant="h6" color="black">คำแนะนำการใช้ปุ๋ย</Typography>
         <Box style={{ paddingLeft: '15px', borderLeft: '4px solid black' }}>
-          <div dangerouslySetInnerHTML={{ __html: data.note1 }} />
-          <div dangerouslySetInnerHTML={{ __html: data.note2 }} />
-          <div dangerouslySetInnerHTML={{ __html: data.note3 }} />
+          {data.note1 && <div dangerouslySetInnerHTML={{ __html: data.note1 }} />}
+          {data.note2 && <div dangerouslySetInnerHTML={{ __html: data.note2 }} />}
+          {data.note3 && <div dangerouslySetInnerHTML={{ __html: data.note3 }} />}
         </Box>
       </Paper>
     </Container>
@@ -130,4 +111,3 @@ const Calculate = () => {
 };
 
 export default Calculate;
-
