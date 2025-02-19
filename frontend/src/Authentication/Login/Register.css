@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun&display=swap');
+
 .email-label,
+.username-label,
 .phone-label,
 .password-label,
 .confirm-password-label,
@@ -13,6 +16,7 @@
 }
 
 .email-Input,
+.username-Input,
 .phone-input,
 .password-Input,
 .confirm-password-Input,

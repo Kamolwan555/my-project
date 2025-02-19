@@ -1,9 +1,19 @@
 import "./Register.css";
 import { Button, Form, Grid, theme, Typography, message } from "antd";
+import Swal from 'sweetalert2'; // Import SweetAlert2
+import { ThemeProvider } from "@mui/material/styles";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
 const { Text, Title, Link } = Typography;
+const demoTheme = {
+  typography: {
+    fontFamily: "'Sarabun', sans-serif",
+    h6: { fontWeight: 700 },
+    body1: { fontWeight: 400 },
+    button: { fontWeight: 500 },
+  }
+};
 
 export default function SignUpPage() {
   const { token } = useToken();
@@ -31,10 +41,24 @@ export default function SignUpPage() {
       );
 
       if (response.ok) {
-        const data = await response.json();
-        message.success(data.message); // Show success message
-        // Redirect to login page
-        window.location.href = "/";
+        // Show SweetAlert2 success message with Sarabun font
+        Swal.fire({
+          title: 'สมัครสมาชิกสำเร็จ!',
+          icon: 'success',
+          confirmButtonText: 'เข้าสู่ระบบ',
+          confirmButtonColor: '#32CD32',
+          customClass: {
+            popup: 'sarabun-font', // Apply Sarabun font to the popup
+            title: 'sarabun-font', // Apply Sarabun font to the title
+            content: 'sarabun-font', // Apply Sarabun font to the content
+            confirmButton: 'sarabun-font', // Apply Sarabun font to the confirm button
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect to login page
+            window.location.href = "/";
+          }
+        });
       } else {
         const errorData = await response.json();
         message.error(errorData.error); // Show error message
@@ -89,6 +113,15 @@ export default function SignUpPage() {
   };
 
   return (
+     <ThemeProvider theme={demoTheme}>
+          <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
+          <style>
+            {`
+              .sarabun-font {
+                font-family: 'Sarabun', sans-serif !important;
+              }
+            `}
+          </style>
     <section style={styles.section}>
       <div className="wrapper">
         <div style={styles.header}>
@@ -261,7 +294,7 @@ export default function SignUpPage() {
               ]}
             >
               <input
-                type="confirm-password"
+                type="password"
                 id="confirm-password"
                 className="confirm-password-Input"
                 placeholder="ยืนยันรหัสผ่าน"
@@ -296,5 +329,6 @@ export default function SignUpPage() {
         </Form>
       </div>
     </section>
+    </ThemeProvider>
   );
 }

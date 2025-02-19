@@ -1,6 +1,9 @@
-import PropTypes from 'prop-types';
-import { Box, Card, CardContent, Typography, Alert } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import { Box, Card, CardContent, Typography, Alert, Button } from "@mui/material";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const soilData = [
   { soil_temperature: 21, soil_moisture: 43, ec: 4.54, ph: 6, nitrogen: 90, potassium: 75, phosphorus: 38 },
@@ -27,23 +30,19 @@ const soilData = [
 const nowData = soilData[0];
 const finalData = soilData[soilData.length - 1];
 
-// เตรียมข้อมูล 3 รายการ: N, P, K
+const theme = createTheme({
+  typography: {
+    fontFamily: "'Sarabun', sans-serif",
+    h6: { fontWeight: 700 },
+    body1: { fontWeight: 400 },
+    button: { fontWeight: 500 },
+  },
+});
+
 const chartData = [
-  {
-    name: 'Nitrogen',
-    now: nowData.nitrogen,
-    final: finalData.nitrogen,
-  },
-  {
-    name: 'Phosphorus',
-    now: nowData.phosphorus,
-    final: finalData.phosphorus,
-  },
-  {
-    name: 'Potassium',
-    now: nowData.potassium,
-    final: finalData.potassium,
-  },
+  { name: "ไนโตรเจน", now: nowData.nitrogen, final: finalData.nitrogen },
+  { name: "ฟอสฟอรัส", now: nowData.phosphorus, final: finalData.phosphorus },
+  { name: "โพแทสเซียม", now: nowData.potassium, final: finalData.potassium },
 ];
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -95,188 +94,115 @@ function SurveyAlertItem({ id, title }) {
 SurveyAlertItem.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  createdAt: PropTypes.string,
 };
 
 export default function App() {
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    navigate(-1); // ย้อนกลับไปยังหน้าก่อนหน้า
+  };
+
   return (
-    <Box sx={{ p: 2 }}>
-      <Box 
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(6, 1fr)', 
-          },
-          gap: 2,
-          mb: 3
-        }}
-      >
-        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-          <CardContent>
-            <Typography variant="h6" color="text.secondary">
-              Nitrogen
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              50
-            </Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-          <CardContent>
-            <Typography variant="h6" color="text.secondary">
-              Phosphorus
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              65
-            </Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-          <CardContent>
-            <Typography variant="h6" color="text.secondary">
-              Potassium
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              98
-            </Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-          <CardContent>
-            <Typography variant="h6" color="text.secondary">
-              Temp
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              24
-            </Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-          <CardContent>
-            <Typography variant="h6" color="text.secondary">
-              EC
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              9.62
-            </Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-          <CardContent>
-            <Typography variant="h6" color="text.secondary">
-              PH
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              60
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
-
-      {/* ส่วนของ Dashboard (Chart + Alert) */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: {
-            xs: 'column', 
-            md: 'row', 
-          },
-          gap: 2,
-          alignItems: 'flex-start',
-        }}
-      >
-        {/* Chart */}
-        <Box sx={{ flex: 1 }}>
-          <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-                Soil Data Dashboard
-              </Typography>
-
-              <Box sx={{ width: '100%', height: 300 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    layout="vertical"
-                    data={chartData}
-                    margin={{ top: 20, right: 20, bottom: 20, left: 80 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" />
-                    <Tooltip content={<CustomTooltip />} />
-
-                    <Bar dataKey="now" stackId="stack" barSize={20}>
-                      {chartData.map((entry) => {
-                        let darkColor = '#1565C0'; // น้ำเงินเข้ม
-                        if (entry.name === 'Phosphorus') {
-                          darkColor = '#F9A825'; // เหลืองเข้ม
-                        } else if (entry.name === 'Potassium') {
-                          darkColor = '#388E3C'; // เขียวเข้ม
-                        }
-                        return <Cell key={`now-${entry.name}`} fill={darkColor} />;
-                      })}
-                    </Bar>
-
-                    <Bar dataKey="final" stackId="stack" barSize={20}>
-                      {chartData.map((entry) => {
-                        let lightColor = '#90CAF9'; // น้ำเงินอ่อน
-                        if (entry.name === 'Phosphorus') {
-                          lightColor = '#FFF59D'; // เหลืองอ่อน
-                        } else if (entry.name === 'Potassium') {
-                          lightColor = '#C8E6C9'; // เขียวอ่อน
-                        }
-                        return <Cell key={`final-${entry.name}`} fill={lightColor} />;
-                      })}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-
-        {/* Alert */}
-        <Box 
-          sx={{ 
-            width: {
-              xs: '100%',
-              md: 320
-            }
+    <ThemeProvider theme={theme}>
+      <Box sx={{ p: 2 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={handleBackClick}
+          sx={{
+            color: "#38b000",
+            fontWeight: "bold",
+            textTransform: "none",
+            "&:hover": { backgroundColor: "rgba(56, 176, 0, 0.1)" },
           }}
         >
-          <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                Alert
-              </Typography>
+          ย้อนกลับ
+        </Button>
 
-              <SurveyAlertItem
-                id="240622-002"
-                title="Alert"
-              />
-              <SurveyAlertItem
-                id="240622-003"
-                title="Alert"
-              />
-              <SurveyAlertItem
-                id="240622-004"
-                title="Alert"
-              />
-              <SurveyAlertItem
-                id="240622-005"
-                title="Alert"
-              />
-            </CardContent>
-          </Card>
+        <Box sx={{ p: 2 }}>
+          <Box 
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateRows: 'repeat(2, 1fr)',
+              gap: 2,
+              mb: 3
+            }}
+          >
+            {/* Cards */}
+            {[
+              { title: "ไนโตรเจน", value: finalData.nitrogen, bgcolor: '#FFCCCC' },
+              { title: "ฟอสฟอรัส", value: finalData.phosphorus, bgcolor: '#CCFFCC' },
+              { title: "โพแทสเซียม", value: finalData.potassium, bgcolor: '#CCCCFF' },
+              { title: "อุณหภูมิ", value: finalData.soil_temperature, bgcolor: '#FFFFCC' },
+              { title: "ค่าการนำไฟฟ้า", value: finalData.ec, bgcolor: '#FFCCFF' },
+              { title: "ค่าความเป็นกรดด่าง", value: finalData.ph, bgcolor: '#CCFFFF' },
+            ].map((item, index) => (
+              <Card key={index} sx={{ borderRadius: 2, boxShadow: 2, bgcolor: item.bgcolor }}>
+                <CardContent>
+                  <Typography variant="h6" color="text.secondary">
+                    {item.title}
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold">
+                    {item.value}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+
+          {/* Chart and Alert Section */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 2,
+              alignItems: 'flex-start',
+            }}
+          >
+            {/* Chart */}
+            <Box sx={{ flex: 1 }}>
+              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+                    Soil Data Dashboard
+                  </Typography>
+                  <Box sx={{ width: '100%', height: 300 }}>
+                    <BarChart
+                      dataset={chartData}
+                      xAxis={[{ scaleType: 'band', dataKey: 'name' }]}
+                      series={[
+                        { dataKey: 'now', label: 'Now' },
+                        { dataKey: 'final', label: 'Final' },
+                      ]}
+                      height={300}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+
+            {/* Alert */}
+            <Box sx={{ width: { xs: '100%', md: 320 } }}>
+              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
+                    Alert
+                  </Typography>
+                  {[
+                    { id: "240622-002", title: "Alert 1" },
+                    { id: "240622-003", title: "Alert 2" },
+                    { id: "240622-004", title: "Alert 3" },
+                    { id: "240622-005", title: "Alert 4" },
+                  ].map((alert, index) => (
+                    <SurveyAlertItem key={index} id={alert.id} title={alert.title} />
+                  ))}
+                </CardContent>
+              </Card>
+            </Box>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 }

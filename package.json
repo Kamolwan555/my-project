@@ -4,6 +4,7 @@
     "@emotion/styled": "^11.14.0",
     "@fontsource/noto-sans-thai": "^5.1.1",
     "@mui/material": "^6.4.0",
+    "@mui/x-charts": "^7.27.0",
     "@toolpad/core": "^0.12.0",
     "sweetalert2": "^11.15.10"
   }

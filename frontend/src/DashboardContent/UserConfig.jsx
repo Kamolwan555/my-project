@@ -6,6 +6,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // นำเข้า
 const SimpleTable = () => {
     const navigate = useNavigate();
 
+    const handleBackClick = () => {
+        navigate("/configmenu");
+    };
+
     const columns = [
         {
             title: '#',
@@ -73,13 +77,13 @@ const SimpleTable = () => {
             >
                 <Button
                     startIcon={<ArrowBackIcon />}
-                    onClick={() => navigate(-1)}
+                    onClick={handleBackClick}
                     sx={{
-                        color: '#38b000',
-                        fontWeight: 'bold',
-                        textTransform: 'none',
-                        '&:hover': {
-                            backgroundColor: 'rgba(56, 176, 0, 0.1)',
+                        color: "#38b000",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        "&:hover": {
+                            backgroundColor: "rgba(56, 176, 0, 0.1)",
                         },
                     }}
                 >

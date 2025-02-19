@@ -11,6 +11,11 @@ import {
     CircularProgress,
     Box,
     Button,
+    Pagination,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +25,8 @@ const OrderTable = () => {
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1); // หน้าปัจจุบัน
+    const [itemsPerPage, setItemsPerPage] = useState(12); // จำนวนรายการต่อหน้า
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -55,6 +62,17 @@ const OrderTable = () => {
             default:
                 return "#D3D3D3";
         }
+    };
+
+    // ฟังก์ชันจัดการการเปลี่ยนหน้า
+    const handlePageChange = (event, value) => {
+        setPage(value);
+    };
+
+    // ฟังก์ชันจัดการการเปลี่ยนจำนวนรายการต่อหน้า
+    const handleItemsPerPageChange = (event) => {
+        setItemsPerPage(event.target.value);
+        setPage(1); // รีเซ็ตไปที่หน้าแรกเมื่อเปลี่ยนจำนวนรายการต่อหน้า
     };
 
     const columns = [
@@ -112,7 +130,7 @@ const OrderTable = () => {
                     display: 'flex',
                     justifyContent: 'flex-start',
                     marginBottom: 2,
-                    marginTop: 1, // เพิ่ม marginTop เพื่อขยับปุ่มขึ้นด้านบน
+                    marginTop: 1,
                 }}
             >
                 <Button
@@ -130,47 +148,90 @@ const OrderTable = () => {
                     ย้อนกลับ
                 </Button>
             </Box>
+
             {loading ? (
                 <CircularProgress style={{ display: "block", margin: "50px auto" }} />
             ) : (
-                <TableContainer 
-                component={Paper}
-                sx={{
-                    borderRadius: 2,
-                    overflow: "hidden",
-                    boxShadow: 3, // เพิ่มเงาให้ตาราง
-                }}>
-                    <Table>
-                    <TableHead>
-                        <TableRow sx={{ backgroundColor: "#f1ffe5" }}>
-                            {columns.map((col) => (
-                                <TableCell
-                                    key={col.field || col.key}
-                                    sx={{
-                                        color: "#38b000",
-                                        fontWeight: "700",
-                                        fontSize: "14px",
-                                        borderBottom: "2px solid #38b000",
-                                    }}
-                                >
-                                    {col.title}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                        <TableBody>
-                            {orders.map((order) => (
-                                <TableRow key={order.id} hover onClick={() => navigate(`/editorder/${order.id}`)}>
-                                    {columns.map((column) => (
-                                        <TableCell key={column.field}>
-                                            {column.render ? column.render(order) : order[column.field]}
+                <>
+                    <TableContainer 
+                        component={Paper}
+                        sx={{
+                            borderRadius: 2,
+                            overflow: "hidden",
+                            boxShadow: 3,
+                        }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow sx={{ backgroundColor: "#f1ffe5" }}>
+                                    {columns.map((col) => (
+                                        <TableCell
+                                            key={col.field || col.key}
+                                            sx={{
+                                                color: "#38b000",
+                                                fontWeight: "700",
+                                                fontSize: "14px",
+                                                borderBottom: "2px solid #38b000",
+                                            }}
+                                        >
+                                            {col.title}
                                         </TableCell>
                                     ))}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {orders
+                                    .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                                    .map((order) => (
+                                        <TableRow key={order.id} hover onClick={() => navigate(`/editorder/${order.id}`)}>
+                                            {columns.map((column) => (
+                                                <TableCell key={column.field}>
+                                                    {column.render ? column.render(order) : order[column.field]}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    {/* Pagination และ Items per page ที่ด้านล่างขวา */}
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                            marginTop: 2,
+                            marginBottom: 2,
+                        }}
+                    >
+                        <FormControl sx={{ minWidth: 80 }}>
+                            <InputLabel sx={{ fontSize: 14 }}>Items</InputLabel>
+                            <Select
+                                value={itemsPerPage}
+                                onChange={handleItemsPerPageChange}
+                                label="Items"
+                                sx={{ fontSize: 14, height: 30 }}
+                            >
+                                <MenuItem value={5}>5</MenuItem>
+                                <MenuItem value={10}>10</MenuItem>
+                                <MenuItem value={15}>15</MenuItem>
+                                <MenuItem value={20}>20</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <Pagination
+                            count={Math.ceil(orders.length / itemsPerPage)}
+                            page={page}
+                            onChange={handlePageChange}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    fontSize: 14,
+                                },
+                                marginLeft: 2,
+                            }}
+                        />
+                    </Box>
+                </>
             )}
         </div>
     );

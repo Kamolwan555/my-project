@@ -13,12 +13,11 @@ import {
   Chip,
   Box,
   MenuItem,
-  Pagination,
   FormControl,
   IconButton,
   TextField,
   Select,
-  InputLabel
+  InputLabel,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -144,8 +143,6 @@ const Order = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addOrderModalOpen, setAddOrderModalOpen] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -212,16 +209,6 @@ const Order = () => {
     }
   };
 
-  const totalPages = Math.ceil(data.length / rowsPerPage);
-
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
-
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
-
   return (
     <ThemeProvider theme={theme}>
       <div style={{ marginTop: 30 }}>
@@ -285,7 +272,7 @@ const Order = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {currentRows.map((row, index) => (
+              {data.map((row, index) => (
                 <TableRow
                   key={row.id}
                   onClick={() => handleRowClick(row)}
@@ -312,22 +299,6 @@ const Order = () => {
               ))}
             </TableBody>
           </Table>
-          {/* Pagination */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 2,
-            }}
-          >
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </Box>
         </TableContainer>
 
         {/* Order Details Modal */}

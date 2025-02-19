@@ -120,7 +120,7 @@ function MediaCard({ card }) {
             color: getStatusColor(),
           }}
         >
-          Order ID: {card.orderId ?? 'ว่าง'}
+          ออเดอร์ที่: {card.orderId ?? 'ว่าง'}
         </Typography>
         <Grid container spacing={0.5}>
           <Grid item xs={6}>
