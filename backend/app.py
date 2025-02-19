@@ -88,7 +88,7 @@ def register():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         # Default role assignment
-        default_role_id = 1001  # Assuming 1001 is the role_id for the default role
+        default_role_id = 1  # Assuming 1001 is the role_id for the default role
 
         # Check if the default role exists in the Role table
         default_role = db_session.query(Role).filter_by(role_id=default_role_id).first()
