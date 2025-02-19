@@ -12,11 +12,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-// สร้าง theme และกำหนดสี primary เป็น #38b000
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#38b000", // เปลี่ยนสี primary เป็น #38b000
+      main: "#38b000", 
     },
   },
   typography: {
@@ -120,9 +119,11 @@ const CropSelector = () => {
                       variant="outlined"
                       required
                     >
+                      <MenuItem value="ต่ำมาก">ต่ำมาก</MenuItem>
                       <MenuItem value="ต่ำ">ต่ำ</MenuItem>
                       <MenuItem value="ปานกลาง">ปานกลาง</MenuItem>
                       <MenuItem value="สูง">สูง</MenuItem>
+                      <MenuItem value="สูงมาก">สูงมาก</MenuItem>
                     </TextField>
                   </FormControl>
                 </Grid>
