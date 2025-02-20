@@ -14,6 +14,7 @@ import {
   CircularProgress,
   Chip,
   Box,
+  Divider,
   Pagination,
   FormControl,
   InputLabel,
@@ -342,36 +343,101 @@ const Home = () => {
         </Box>
       </div>
       <Modal open={statusModal.visible} onClose={closeModal}>
-        <Paper sx={{ padding: 3, margin: "auto", maxWidth: 500 }}>
-          <Typography variant="h6">Order ID: {orderDetails.id}</Typography>
-          <Typography>
-            <strong>Customer Name:</strong> {orderDetails.name}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: { xs: '90%', sm: '80%', md: '600px' },
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 3,
+            borderRadius: 2,
+            maxHeight: '90vh',
+            overflowY: 'auto',
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#38b000' }}>
+            รายละเอียดคำสั่งซื้อ
           </Typography>
-          <Typography>
-            <strong>Address:</strong> {orderDetails.address}
-          </Typography>
-          <Typography>
-            <strong>Plant:</strong> {orderDetails.plant}
-          </Typography>
-          <Typography>
-            <strong>Order Date:</strong>{" "}
-            {orderDetails.order_date
-              ? new Date(orderDetails.order_date).toLocaleDateString()
-              : "N/A"}
-          </Typography>
-          <Typography>
-            <strong>Plant Number:</strong> {orderDetails.plant_number}
-          </Typography>
-          <Typography>
-            <strong>Quantity:</strong> {orderDetails.quantity}
-          </Typography>
-          <Typography>
-            <strong>Status:</strong> {orderDetails.order_status}
-          </Typography>
-          <Button onClick={closeModal} sx={{ marginTop: 2 }}>
-            Close
-          </Button>
-        </Paper>
+          <Divider sx={{ mb: 2 }} />
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                ออเดอร์ที่:
+              </Typography>
+              <Typography variant="body1">{orderDetails.id}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                ชื่อลูกค้า:
+              </Typography>
+              <Typography variant="body1">{orderDetails.name}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                ที่อยู่:
+              </Typography>
+              <Typography variant="body1">{orderDetails.address}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                พืช:
+              </Typography>
+              <Typography variant="body1">{orderDetails.plant}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                วันที่สั่งซื้อ:
+              </Typography>
+              <Typography variant="body1">
+                {orderDetails.order_date
+                  ? new Date(orderDetails.order_date).toLocaleDateString()
+                  : 'N/A'}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                รหัสของพืช:
+              </Typography>
+              <Typography variant="body1">{orderDetails.plant_number}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                จำนวน:
+              </Typography>
+              <Typography variant="body1">{orderDetails.quantity}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                สถานะ:
+              </Typography>
+              <Chip
+                label={orderDetails.order_status}
+                sx={{
+                  backgroundColor: getStatusColor(orderDetails.order_status),
+                  color: 'white',
+                }}
+              />
+            </Box>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button
+              onClick={closeModal}
+              variant="contained"
+              sx={{
+                color: "#ffffff",
+                backgroundColor: "#38b000",
+                "&:hover": { backgroundColor: "#2c8c00" },
+              }}
+            >
+              ปิด
+            </Button>
+          </Box>
+        </Box>
       </Modal>
     </div>
   );
