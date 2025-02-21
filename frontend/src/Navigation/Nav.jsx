@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
-import { Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, } from "@mui/material";
+import { Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, Menu, MenuItem } from "@mui/material";
 import {
   Menu as MenuIcon,
   HomeRounded as HomeRoundedIcon,
@@ -72,6 +72,7 @@ const menuItems = [
 
 const Navigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null); // State สำหรับควบคุมการเปิดปิดเมนูโปรไฟล์
   const location = useLocation();
   const navigate = useNavigate(); // ใช้ useNavigate สำหรับการ redirect
   const isSmallScreen = useMediaQuery(demoTheme.breakpoints.down("sm"));
@@ -110,6 +111,16 @@ const Navigation = () => {
     });
   };
 
+  // ฟังก์ชันสำหรับเปิดเมนูโปรไฟล์
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // ฟังก์ชันสำหรับปิดเมนูโปรไฟล์
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <ThemeProvider theme={demoTheme}>
       <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -141,10 +152,33 @@ const Navigation = () => {
               <IconButton color="inherit" aria-label="notifications">
                 <NotificationsRoundedIcon />
               </IconButton>
-              <IconButton color="inherit" aria-label="profile">
+              <IconButton 
+                color="inherit" 
+                aria-label="profile" 
+                onClick={handleProfileMenuOpen}
+              >
                 <PersonRoundedIcon />
               </IconButton>
             </Box>
+
+            {/* เมนูโปรไฟล์ */}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleProfileMenuClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem onClick={handleProfileMenuClose}>โปรไฟล์</MenuItem>
+              <MenuItem onClick={handleProfileMenuClose}>การตั้งค่า</MenuItem>
+              <MenuItem onClick={handleLogout}>ออกจากระบบ</MenuItem>
+            </Menu>
           </Toolbar>
         </AppBar>
 

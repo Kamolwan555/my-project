@@ -113,7 +113,7 @@ export default function SignUpPage() {
   };
 
   return (
-     <ThemeProvider theme={demoTheme}>
+    <ThemeProvider theme={demoTheme}>
           <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
           <style>
             {`

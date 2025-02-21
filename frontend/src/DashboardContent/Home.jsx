@@ -14,6 +14,12 @@ import {
   CircularProgress,
   Chip,
   Box,
+  Divider,
+  Pagination,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,15 +33,15 @@ import SensorsOffRoundedIcon from "@mui/icons-material/SensorsOffRounded";
 const getStatusColor = (status) => {
   switch (status) {
     case "In progress":
-      return "#1e96fc"; 
+      return "#1e96fc";
     case "Completed":
-      return "#38b000"; 
+      return "#38b000";
     case "Pending":
-      return "#ffc300"; 
+      return "#ffc300";
     case "Canceled":
-      return "#f80000"; 
+      return "#f80000";
     default:
-      return "#D3D3D3"; 
+      return "#D3D3D3";
   }
 };
 
@@ -93,6 +99,8 @@ const Home = () => {
     visible: false,
     orderDetails: {},
   });
+  const [page, setPage] = useState(1); // เพิ่ม state สำหรับหน้าปัจจุบัน
+  const [itemsPerPage, setItemsPerPage] = useState(10); // เพิ่ม state สำหรับจำนวนรายการต่อหน้า
 
   useEffect(() => {
     const fetchDashboard = () => {
@@ -131,6 +139,17 @@ const Home = () => {
 
   const closeModal = () => {
     setStatusModal({ visible: false, orderDetails: {} });
+  };
+
+  // ฟังก์ชันจัดการการเปลี่ยนหน้า
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  // ฟังก์ชันจัดการการเปลี่ยนจำนวนรายการต่อหน้า
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(event.target.value);
+    setPage(1); // รีเซ็ตไปที่หน้าแรกเมื่อเปลี่ยนจำนวนรายการต่อหน้า
   };
 
   if (!data)
@@ -246,7 +265,7 @@ const Home = () => {
                     sx={{
                       color: "#38b000",
                       fontWeight: "700",
-                      fontSize: "14px", // ปรับขนาดฟอนต์ให้ใหญ่ขึ้น
+                      fontSize: "14px",
                     }}
                   >
                     {col.title}
@@ -255,65 +274,170 @@ const Home = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.orders.map((row, index) => (
-                <TableRow
-                  key={row.id}
-                  onClick={() => handleRowClick(row)}
-                  sx={{
-                    backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff", // สลับสีพื้นหลัง
-                    "&:hover": {
-                      backgroundColor: "#f5f5f5", // สีพื้นหลังเมื่อโฮเวอร์
-                    },
-                  }}
-                >
-                  {columns.map((col) => (
-                    <TableCell
-                      key={col.field || col.key}
-                      sx={{
-                        borderBottom: "1px solid #e0e0e0", // เส้นขอบด้านล่างของแต่ละเซลล์
-                        color: "#333", // สีข้อความ
-                      }}
-                    >
-                      {col.render ? col.render(row) : row[col.field]}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              {data?.orders
+                .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                .map((row, index) => (
+                  <TableRow
+                    key={row.id}
+                    onClick={() => handleRowClick(row)}
+                    sx={{
+                      backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                      "&:hover": {
+                        backgroundColor: "#f5f5f5",
+                      },
+                    }}
+                  >
+                    {columns.map((col) => (
+                      <TableCell
+                        key={col.field || col.key}
+                        sx={{
+                          borderBottom: "1px solid #e0e0e0",
+                          color: "#333",
+                        }}
+                      >
+                        {col.render ? col.render(row) : row[col.field]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Pagination และ Items per page ที่ด้านล่างขวา */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            marginTop: 2,
+            marginBottom: 2,
+          }}
+        >
+          <FormControl sx={{ minWidth: 80 }}>
+            <InputLabel sx={{ fontSize: 14 }}>Items</InputLabel>
+            <Select
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              label="Items"
+              sx={{ fontSize: 14, height: 30 }}
+            >
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={15}>15</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Pagination
+            count={Math.ceil(data.orders.length / itemsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                fontSize: 14,
+              },
+              marginLeft: 2,
+            }}
+          />
+        </Box>
       </div>
       <Modal open={statusModal.visible} onClose={closeModal}>
-        <Paper sx={{ padding: 3, margin: "auto", maxWidth: 500 }}>
-          <Typography variant="h6">Order ID: {orderDetails.id}</Typography>
-          <Typography>
-            <strong>Customer Name:</strong> {orderDetails.name}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: { xs: '90%', sm: '80%', md: '600px' },
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 3,
+            borderRadius: 2,
+            maxHeight: '90vh',
+            overflowY: 'auto',
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#38b000' }}>
+            รายละเอียดคำสั่งซื้อ
           </Typography>
-          <Typography>
-            <strong>Address:</strong> {orderDetails.address}
-          </Typography>
-          <Typography>
-            <strong>Plant:</strong> {orderDetails.plant}
-          </Typography>
-          <Typography>
-            <strong>Order Date:</strong>{" "}
-            {orderDetails.order_date
-              ? new Date(orderDetails.order_date).toLocaleDateString()
-              : "N/A"}
-          </Typography>
-          <Typography>
-            <strong>Plant Number:</strong> {orderDetails.plant_number}
-          </Typography>
-          <Typography>
-            <strong>Quantity:</strong> {orderDetails.quantity}
-          </Typography>
-          <Typography>
-            <strong>Status:</strong> {orderDetails.order_status}
-          </Typography>
-          <Button onClick={closeModal} sx={{ marginTop: 2 }}>
-            Close
-          </Button>
-        </Paper>
+          <Divider sx={{ mb: 2 }} />
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                ออเดอร์ที่:
+              </Typography>
+              <Typography variant="body1">{orderDetails.id}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                ชื่อลูกค้า:
+              </Typography>
+              <Typography variant="body1">{orderDetails.name}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                ที่อยู่:
+              </Typography>
+              <Typography variant="body1">{orderDetails.address}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                พืช:
+              </Typography>
+              <Typography variant="body1">{orderDetails.plant}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                วันที่สั่งซื้อ:
+              </Typography>
+              <Typography variant="body1">
+                {orderDetails.order_date
+                  ? new Date(orderDetails.order_date).toLocaleDateString()
+                  : 'N/A'}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                รหัสของพืช:
+              </Typography>
+              <Typography variant="body1">{orderDetails.plant_number}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                จำนวน:
+              </Typography>
+              <Typography variant="body1">{orderDetails.quantity}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
+                สถานะ:
+              </Typography>
+              <Chip
+                label={orderDetails.order_status}
+                sx={{
+                  backgroundColor: getStatusColor(orderDetails.order_status),
+                  color: 'white',
+                }}
+              />
+            </Box>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button
+              onClick={closeModal}
+              variant="contained"
+              sx={{
+                color: "#ffffff",
+                backgroundColor: "#38b000",
+                "&:hover": { backgroundColor: "#2c8c00" },
+              }}
+            >
+              ปิด
+            </Button>
+          </Box>
+        </Box>
       </Modal>
     </div>
   );

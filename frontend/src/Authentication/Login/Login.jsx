@@ -2,10 +2,20 @@ import { Button, Checkbox, Form, Grid, theme, Typography } from "antd";
 import "./Login.css";
 import picture from "../../components/extended/background/picture.jpg";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+import { ThemeProvider } from "@mui/material/styles";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
 const { Text, Title, Link } = Typography;
+const demoTheme = {
+  typography: {
+    fontFamily: "'Sarabun', sans-serif",
+    h6: { fontWeight: 700 },
+    body1: { fontWeight: 400 },
+    button: { fontWeight: 500 },
+  }
+};
 
 export default function Login() {
   const { token } = useToken();
@@ -29,17 +39,59 @@ export default function Login() {
           localStorage.setItem("accessToken", res.access_token);
           localStorage.setItem("roleName", res.role_name); // Storing role_name
           callback();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'เข้าสู่ระบบไม่สำเร็จ',
+            text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+            confirmButtonText: 'ลองอีกครั้ง',
+            confirmButtonColor: '#32CD32',
+            customClass: {
+              popup: 'sarabun-font', // Apply Sarabun font to the popup
+              title: 'sarabun-font', // Apply Sarabun font to the title
+              content: 'sarabun-font', // Apply Sarabun font to the content
+              confirmButton: 'sarabun-font', // Apply Sarabun font to the confirm button
+            },
+          });
         }
       })
       .catch(() => {
-        alert("something went wrong");
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'มีบางอย่างผิดพลาด กรุณาลองอีกครั้งในภายหลัง',
+          confirmButtonText: 'ตกลง',
+          confirmButtonColor: '#32CD32',
+          customClass: {
+            popup: 'sarabun-font', // Apply Sarabun font to the popup
+            title: 'sarabun-font', // Apply Sarabun font to the title
+            content: 'sarabun-font', // Apply Sarabun font to the content
+            confirmButton: 'sarabun-font', // Apply Sarabun font to the confirm button
+          },
+        });
       });
   };
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
     login(values.email, values.password, () => {
-      navigate("/Home");
+      Swal.fire({
+        icon: 'success',
+        title: 'เข้าสู่ระบบสำเร็จ!',
+        text: 'คุณได้เข้าสู่ระบบเรียบร้อยแล้ว',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#32CD32',
+        customClass: {
+          popup: 'sarabun-font', // Apply Sarabun font to the popup
+          title: 'sarabun-font', // Apply Sarabun font to the title
+          content: 'sarabun-font', // Apply Sarabun font to the content
+          confirmButton: 'sarabun-font', // Apply Sarabun font to the confirm button
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/Home");
+        }
+      });
     });
   };
 
@@ -92,103 +144,113 @@ export default function Login() {
   };
 
   return (
-    <section style={styles.section}>
-      <div style={styles.imageSection}></div>
-      <div style={styles.container}>
-        <div>
-          <div style={styles.header}>
-            <Title style={styles.title}>เข้าสู่ระบบ</Title>
-            <Text style={styles.text}>
-              กรุณากรอกรายละเอียดด้านล่างเพื่อเข้าสู่ระบบ
-            </Text>
-          </div>
-          <Form
-            name="normal_login"
-            initialValues={{
-              remember: true,
-            }}
-            onFinish={onFinish}
-            layout="vertical"
-            requiredMark={false}
-          >
-            <label htmlFor="email" className="email-label" style={{ marginBottom: "0px", fontFamily: "'Sarabun', sans-serif" }}>
-              อีเมล
-            </label>
-            <Form.Item
-              name="email"
-              rules={[
-                {
-                  type: "email",
-                  required: true,
-                  message: "กรุณาใส่อีเมลของคุณ!",
-                },
-              ]}
+    <ThemeProvider theme={demoTheme}>
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
+      <style>
+        {`
+                  .sarabun-font {
+                    font-family: 'Sarabun', sans-serif !important;
+                  }
+                `}
+      </style>
+      <section style={styles.section}>
+        <div style={styles.imageSection}></div>
+        <div style={styles.container}>
+          <div>
+            <div style={styles.header}>
+              <Title style={styles.title}>เข้าสู่ระบบ</Title>
+              <Text style={styles.text}>
+                กรุณากรอกรายละเอียดด้านล่างเพื่อเข้าสู่ระบบ
+              </Text>
+            </div>
+            <Form
+              name="normal_login"
+              initialValues={{
+                remember: true,
+              }}
+              onFinish={onFinish}
+              layout="vertical"
+              requiredMark={false}
             >
-              <input
-                type="email"
-                id="email"
-                className="email-input"
-                placeholder="ชื่อผู้ใช้หรืออีเมล"
-                style={{ fontFamily: "'Sarabun', sans-serif" }}
-              />
-            </Form.Item>
-            <label htmlFor="password" className="password-label" style={{ marginBottom: "0px", fontFamily: "'Sarabun', sans-serif" }}>
-              รหัสผ่าน
-            </label>
-            <Form.Item
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาใส่รหัสผ่านของคุณ!",
-                },
-              ]}
-            >
-              <input
-                type="password"
-                id="password"
-                className="password-input"
-                placeholder="รหัสผ่าน"
-                style={{ fontFamily: "'Sarabun', sans-serif" }}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox style={{ fontFamily: "'Sarabun', sans-serif" }}>
-                  จดจำฉันไว้
-                </Checkbox>
-              </Form.Item>
-            </Form.Item>
-            <Form.Item style={{ marginTop: "auto" }}>
-              <Button
-                block
-                type="primary"
-                htmlType="submit"
-                style={{
-                  backgroundColor: "#32CD32",
-                  borderColor: "#32CD32",
-                  color: "#fff",
-                  fontFamily: "'Sarabun', sans-serif",
-                }}
+              <label htmlFor="email" className="email-label" style={{ marginBottom: "0px", fontFamily: "'Sarabun', sans-serif" }}>
+                อีเมล
+              </label>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    type: "email",
+                    required: true,
+                    message: "กรุณาใส่อีเมลของคุณ!",
+                  },
+                ]}
               >
-                เข้าสู่ระบบ
-              </Button>
-              <div style={styles.footer}>
-                <Text style={styles.text}>ไม่มีบัญชีใช่ไหม?</Text>{" "}
-                <Link
-                  href="/register"
+                <input
+                  type="email"
+                  id="email"
+                  className="email-input"
+                  placeholder="ชื่อผู้ใช้หรืออีเมล"
+                  style={{ fontFamily: "'Sarabun', sans-serif" }}
+                />
+              </Form.Item>
+              <label htmlFor="password" className="password-label" style={{ marginBottom: "0px", fontFamily: "'Sarabun', sans-serif" }}>
+                รหัสผ่าน
+              </label>
+              <Form.Item
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณาใส่รหัสผ่านของคุณ!",
+                  },
+                ]}
+              >
+                <input
+                  type="password"
+                  id="password"
+                  className="password-input"
+                  placeholder="รหัสผ่าน"
+                  style={{ fontFamily: "'Sarabun', sans-serif" }}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Form.Item name="remember" valuePropName="checked" noStyle>
+                  <Checkbox style={{ fontFamily: "'Sarabun', sans-serif" }}>
+                    จดจำฉันไว้
+                  </Checkbox>
+                </Form.Item>
+              </Form.Item>
+              <Form.Item style={{ marginTop: "auto" }}>
+                <Button
+                  block
+                  type="primary"
+                  htmlType="submit"
                   style={{
-                    color: "#32CD32",
+                    backgroundColor: "#32CD32",
+                    borderColor: "#32CD32",
+                    color: "#fff",
                     fontFamily: "'Sarabun', sans-serif",
                   }}
                 >
-                  ลงทะเบียน
-                </Link>
-              </div>
-            </Form.Item>
-          </Form>
+                  เข้าสู่ระบบ
+                </Button>
+                <div style={styles.footer}>
+                  <Text style={styles.text}>ไม่มีบัญชีใช่ไหม?</Text>{" "}
+                  <Link
+                    href="/register"
+                    style={{
+                      color: "#32CD32",
+                      fontFamily: "'Sarabun', sans-serif",
+                    }}
+                  >
+                    ลงทะเบียน
+                  </Link>
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </ThemeProvider>
   );
 }
