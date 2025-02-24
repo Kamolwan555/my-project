@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Boolean,create_engine
+from sqlalchemy import Column, Integer, Sequence, String, Text, ForeignKey, DateTime, Boolean,create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship,sessionmaker
@@ -10,10 +10,13 @@ DATABASEURL = 'postgresql://postgres:password@db:5432/pui_database'
 engine = create_engine(DATABASEURL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Model = declarative_base()
+user_id_seq = Sequence('user_user_id_seq', start=10001)
+order_id_seq = Sequence('order_order_id_seq')
+
 class User(Model):
     __tablename__ = 'user'
 
-    user_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, Sequence('user_user_id_seq', start=10001), primary_key=True)
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(200), nullable=False)
@@ -29,7 +32,7 @@ class User(Model):
 class Order(Model):
     __tablename__ = 'order'
 
-    order_id = Column(Integer, primary_key=True,autoincrement=True)
+    order_id = Column(Integer, order_id_seq, primary_key=True, server_default=order_id_seq.next_value())
     name = Column(String(100))
     address = Column(String(100))
     plant = Column(String(100))

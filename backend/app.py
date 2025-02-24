@@ -135,6 +135,8 @@ def login():
 
         # Get role name from user’s role relationship
         role_name = user.role.role_name if user.role else None
+        user_id = user.user_id if user.role else None
+
 
         # Generate JWT access token
         access_token = create_access_token(
@@ -145,7 +147,8 @@ def login():
 
         return jsonify({
             'access_token': access_token,
-            'role_name': role_name
+            'role_name': role_name,
+            "user_id" : user.user_id
         }), 200
 
 @app.route('/order/<string:order_id>', methods=['GET'])
@@ -238,10 +241,10 @@ def place_order():
         # order_time = datetime.utcnow()
         with get_db() as db_session:
             last_order = db_session.query(Order).order_by(Order.order_id.desc()).first()
-            next_id = (last_order.order_id if last_order else 0) + 1
+            # next_id = (last_order.order_id if last_order else 0) + 1
             # Create new order
             new_order = Order(
-                order_id=next_id,
+                # order_id=next_id,
                 name=name,
                 address=address,
                 plant=plant,
