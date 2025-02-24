@@ -75,7 +75,7 @@ const EditOrder = () => {
     event.preventDefault();
 
     try {
-      const token = localStorage.getItem('access_token'); // รับ JWT จาก localStorage
+      const token = localStorage.getItem('accessToken'); // รับ JWT จาก localStorage
       if (!token) {
         message.error("กรุณาล็อกอินก่อน");
         return;

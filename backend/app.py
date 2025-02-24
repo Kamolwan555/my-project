@@ -383,7 +383,7 @@ def get_all_sensor():
         sensr_list = []
         for ssr in ssr:
             sensr_list.append({
-               'id': ssr.sensor_id,
+                'id': ssr.sensor_id,
                 'start': ssr.fermentation_start,
                 'daysf': ssr.day_fermented,
                 'status': ssr.sensor_status,
