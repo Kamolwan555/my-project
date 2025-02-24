@@ -373,6 +373,25 @@ def get_all_user():
 
         return jsonify({'ussr': userlist}), 200
 
+@app.route('/sensor', methods=['GET'])
+def get_all_sensor():
+    # Fetch all orders from the database
+    with get_db() as db_session:
+        ssr = db_session.query(Sensor).all()
+
+        # Convert the orders to a list of dictionaries
+        sensr_list = []
+        for ssr in ssr:
+            sensr_list.append({
+               'id': ssr.sensor_id,
+                'start': ssr.fermentation_start,
+                'daysf': ssr.day_fermented,
+                'status': ssr.sensor_status,
+                'order': ssr.order_id,
+
+            })
+
+        return jsonify({'ssr': sensr_list}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port='5000',debug=True)
