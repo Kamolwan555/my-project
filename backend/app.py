@@ -351,6 +351,27 @@ def get_orders_today_summary():
     except Exception as e:
         return jsonify({'error': 'An error occurred while processing the request.', 'message': str(e)}), 500
 
+@app.route('/user', methods=['GET'])
+def get_all_user():
+    # Fetch all orders from the database
+    with get_db() as db_session:
+        uss = db_session.query(User).all()
+
+        # Convert the orders to a list of dictionaries
+        userlist = []
+        for ussr in uss:
+            userlist.append({
+               'id': ussr.user_id,
+                'name': ussr.username,
+                'address': ussr.email,
+                'first_name': ussr.first_name,
+                'last_name': ussr.last_name,
+                'tel': ussr.tel,
+                'role': ussr.role_id
+
+            })
+
+        return jsonify({'ussr': userlist}), 200
 
 
 if __name__ == '__main__':
