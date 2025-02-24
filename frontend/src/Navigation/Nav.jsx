@@ -13,6 +13,7 @@ import {
   AccountBoxRounded as AccountBoxRoundedIcon,
   Notifications as NotificationsRoundedIcon,
   Person as PersonRoundedIcon,
+  Settings as SettingsRoundedIcon
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Swal from "sweetalert2"; // นำเข้า SweetAlert2
@@ -175,9 +176,24 @@ const Navigation = () => {
                 horizontal: 'right',
               }}
             >
-              <MenuItem onClick={handleProfileMenuClose}>โปรไฟล์</MenuItem>
-              <MenuItem onClick={handleProfileMenuClose}>การตั้งค่า</MenuItem>
-              <MenuItem onClick={handleLogout}>ออกจากระบบ</MenuItem>
+              <MenuItem onClick={handleProfileMenuClose}>
+                <ListItemIcon>
+                  <PersonRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>โปรไฟล์</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleProfileMenuClose}>
+                <ListItemIcon>
+                  <SettingsRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>การตั้งค่า</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <LogoutRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>ออกจากระบบ</ListItemText>
+              </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
