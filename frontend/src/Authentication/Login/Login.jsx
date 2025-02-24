@@ -38,6 +38,7 @@ export default function Login() {
         if (res.access_token) {
           localStorage.setItem("accessToken", res.access_token);
           localStorage.setItem("roleName", res.role_name); // Storing role_name
+          localStorage.setItem("user_id", res.user_id); // Storing role_name
           callback();
         } else {
           Swal.fire({
