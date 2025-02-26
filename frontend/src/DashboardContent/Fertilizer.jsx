@@ -7,14 +7,17 @@ import {
   CircularProgress, 
   Grid, 
   Typography, 
-  Chip 
+  Chip,
+  Divider,
+  Box
 } from '@mui/material';
 import { 
   AccessTime, 
   PlayCircleOutline, 
-  CheckCircleOutline, 
-  Dashboard 
+  CheckCircleOutline,
+  ChevronRight
 } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 
 const SensorCard = () => {
   const [sensorData, setSensorData] = useState([]);
@@ -45,50 +48,57 @@ const SensorCard = () => {
   };
 
   return (
-    <div style={{ padding: 24 }}>
-
+    <Box sx={{ padding: 4, minHeight: '100vh' }}>
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: 10 }}>
           <CircularProgress />
-        </div>
+        </Box>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           {sensorData.map((sensor) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={sensor.id}>
               <Card 
+                component={Link}
+                to={`/customerfer?orderId=${sensor.order}`}
                 sx={{ 
                   borderRadius: 2,
                   boxShadow: 3,
                   transition: 'transform 0.2s',
-                  '&:hover': { transform: 'scale(1.02)' }
+                  '&:hover': { transform: 'scale(1.02)' },
+                  textDecoration: 'none',
+                  backgroundColor: '#ffffff',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
                 }}
               >
                 <CardHeader
                   title={
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                      <Dashboard style={{ color: 'white' }} />
-                      <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                      <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'black' }}> 
                         ออร์เดอร์ที่ {sensor.order}
                       </Typography>
-                    </div>
+                    </Box>
                   }
                   sx={{
-                    backgroundColor: (theme) => theme.palette.primary.light,
+                    backgroundColor: '#f1ffe5', 
                     color: 'black',
                     borderTopLeftRadius: 8,
                     borderTopRightRadius: 8,
+                    py: 3,
                     '& .MuiCardHeader-content': {
                       display: 'flex',
                       justifyContent: 'center'
                     }
                   }}
                 />
-                <CardContent>
+                <CardContent sx={{ flexGrow: 1 }}>
                   <Chip
                     icon={<AccessTime />}
                     label={`จำนวนวัน: ${sensor.daysf}`}
                     variant="outlined"
-                    sx={{ mb: 2, color: '#1976d2', borderColor: '#1976d2' }}
+                    sx={{ mb: 2, color: '#38b000', borderColor: '#38b000' }} 
                   />
 
                   <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -96,7 +106,7 @@ const SensorCard = () => {
                       <Typography variant="body2" color="textSecondary">
                         <PlayCircleOutline fontSize="small" /> เริ่มต้น
                       </Typography>
-                      <Typography variant="body1" style={{ fontWeight: 'bold' }}>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
                         {sensor.start}
                       </Typography>
                     </Grid>
@@ -108,7 +118,7 @@ const SensorCard = () => {
                         label={sensor.status.toUpperCase()}
                         color={getStatusColor(sensor.status)}
                         size="small"
-                        style={{ fontWeight: 'bold' }}
+                        sx={{ fontWeight: 'bold' }}
                       />
                     </Grid>
                   </Grid>
@@ -117,12 +127,19 @@ const SensorCard = () => {
                     รหัสเซ็นเซอร์: {sensor.id}
                   </Typography>
                 </CardContent>
+                <Divider sx={{ my: 1 }} />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', p: 2 }}>
+                  <Typography variant="body2" sx={{ color: '#38b000', mr: 1 }}> 
+                    ดูรายละเอียด
+                  </Typography>
+                  <ChevronRight sx={{ color: '#38b000' }} /> 
+                </Box>
               </Card>
             </Grid>
           ))}
         </Grid>
       )}
-    </div>
+    </Box>
   );
 };
 
