@@ -1,238 +1,243 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Box, Button, CircularProgress, Container, Grid, TextField, Typography, Paper } from "@mui/material";
-import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
-import { message } from "antd";
-
-// สร้าง theme และกำหนดสี primary เป็น #38b000
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#38b000", // เปลี่ยนสี primary เป็น #38b000
-    },
-  },
-  typography: {
-    fontFamily: "Sarabun, sans-serif",
-  },
-});
+import {
+    Box,
+    TextField,
+    Button,
+    Typography,
+    CircularProgress,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const EditOrder = () => {
-  const { orderId } = useParams(); // ใช้ useParams เพื่อดึงค่า orderId จาก URL
-  const navigate = useNavigate(); // ใช้ useNavigate สำหรับการนำทาง
-  const [order, setOrder] = useState({
-    name: "",
-    address: "",
-    plant: "",
-    order_date: "",
-    plant_number: "",
-    quantity: "",
-    order_status: "",
-  });
-  const [loading, setLoading] = useState(true);
+    const { orderid } = useParams();
+    const navigate = useNavigate();
+    const [orderData, setOrderData] = useState({
+        name: "",
+        address: "",
+        order_date: "",
+        order_status: "Pending",
+        plant: "",
+        plant_number: "",
+        quantity: "",
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [submitError, setSubmitError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const token = localStorage.getItem('access_token'); // รับ JWT จาก localStorage
-        if (!token) {
-          message.error("กรุณาล็อกอินก่อน");
-          return;
-        }
+    useEffect(() => {
+        const fetchOrder = async () => {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/order/5`);
+                if (!response.ok) throw new Error("Failed to fetch order data");
+                const data = await response.json();
+                const order = data.order;
+                setOrderData({
+                    name: order.name,
+                    address: order.address,
+                    order_date: order.order_date,
+                    order_status: order.order_status,
+                    plant: order.plant,
+                    plant_number: order.plant_number,
+                    quantity: order.quantity,
+                });
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        const response = await axios.get(`http://localhost:5000/orderlist/${orderId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`  // ส่ง JWT Token ใน header
-          }
-        });
+        fetchOrder();
+    }, [orderid]);
 
-        if (response.status === 200) {
-          setOrder(response.data);  // ถ้าผลลัพธ์ถูกต้อง จะตั้งค่า order
-        } else {
-          message.error("ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้");
-        }
-      } catch (error) {
-        console.error(error);
-        message.error("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
-      } finally {
-        setLoading(false);
-      }
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setOrderData((prev) => ({ ...prev, [name]: value }));
     };
 
-    fetchOrder();
-  }, [orderId]);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitError(null);
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setOrder((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/order/${orderid}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(orderData),
+            });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to update order");
+            }
 
-    try {
-      const token = localStorage.getItem('accessToken'); // รับ JWT จาก localStorage
-      if (!token) {
-        message.error("กรุณาล็อกอินก่อน");
-        return;
-      }
-
-      const response = await axios.put(`http://localhost:5000/orderlist/${orderId}`, order, {
-        headers: {
-          Authorization: `Bearer ${token}`  // ส่ง JWT Token ใน header
+            navigate("/orderconfig");
+        } catch (err) {
+            setSubmitError(err.message);
+        } finally {
+            setIsSubmitting(false);
         }
-      });
+    };
 
-      if (response.status === 200) {
-        message.success("ข้อมูลคำสั่งซื้อถูกบันทึกสำเร็จ");
-      } else {
-        message.error("ไม่สามารถบันทึกข้อมูลคำสั่งซื้อได้");
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-    }
-  };
+    const handleCancel = () => {
+        navigate("/orderconfig");
+    };
 
-  if (loading) return <CircularProgress style={{ display: "block", margin: "50px auto" }} />;
-
-  return (
-    <ThemeProvider theme={theme}>
-      <Container maxWidth="md">
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            marginBottom: 2,
-            marginTop: 1,
-          }}
-        >
-          <Button
-            startIcon={<ArrowBackIcon />}
-            onClick={() => navigate(-1)}
-            sx={{
-              color: '#38b000',
-              fontWeight: 'bold',
-              textTransform: 'none',
-              '&:hover': {
-                backgroundColor: 'rgba(56, 176, 0, 0.1)',
-              },
-            }}
-          >
-            ย้อนกลับ
-          </Button>
-        </Box>
-        <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, color: "black" }}>
-            แก้ไขคำสั่งซื้อ
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  id="name"
-                  label="ชื่อลูกค้า"
-                  variant="outlined"
-                  value={order.name}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  id="address"
-                  label="ที่อยู่"
-                  variant="outlined"
-                  value={order.address}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  id="plant"
-                  label="พืช"
-                  variant="outlined"
-                  value={order.plant}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  id="order_date"
-                  label="วันที่สั่งซื้อ"
-                  type="date"
-                  variant="outlined"
-                  value={order.order_date ? new Date(order.order_date).toISOString().split('T')[0] : ''}
-                  onChange={handleChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  id="plant_number"
-                  label="เลขที่พืช"
-                  variant="outlined"
-                  value={order.plant_number}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  id="quantity"
-                  label="จำนวน"
-                  type="number"
-                  variant="outlined"
-                  value={order.quantity}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="order_status"
-                  label="สถานะ"
-                  variant="outlined"
-                  value={order.order_status}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-            </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  color: "#ffffff",
-                  backgroundColor: "#38b000",
-                  "&:hover": { backgroundColor: "#2c8c00" },
-              }}
-              >
-                บันทึก
-              </Button>
+    if (loading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                <CircularProgress color="success" />
             </Box>
-          </Box>
-        </Paper>
-      </Container>
-    </ThemeProvider>
-  );
+        );
+    }
+
+    if (error) {
+        return (
+            <Typography color="error" textAlign="center" mt={4}>
+                Error: {error}
+            </Typography>
+        );
+    }
+
+    return (
+        <Box sx={{ maxWidth: 600, mx: "auto", p: 3 }}>
+            {/* Header Section */}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                <Button
+                    startIcon={<ArrowBackIcon />}
+                    onClick={handleCancel}
+                    sx={{
+                        color: "#38b000",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        "&:hover": { backgroundColor: "rgba(56, 176, 0, 0.1)" },
+                    }}
+                >
+                    ย้อนกลับ
+                </Button>
+                <Typography variant="h5" sx={{ ml: 2, fontWeight: 700, color: "#38b000" }}>
+                    แก้ไขออเดอร์
+                </Typography>
+            </Box>
+
+            {/* Edit Form */}
+            <form onSubmit={handleSubmit}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    <TextField
+                        label="ชื่อผู้สั่ง"
+                        name="name"
+                        value={orderData.name}
+                        onChange={handleInputChange}
+                        required
+                        fullWidth
+                    />
+
+                    <TextField
+                        label="ที่อยู่"
+                        name="address"
+                        value={orderData.address}
+                        onChange={handleInputChange}
+                        required
+                        multiline
+                        rows={3}
+                        fullWidth
+                    />
+
+
+                    <FormControl fullWidth>
+                        <InputLabel>สถานะการออเดอร์</InputLabel>
+                        <Select
+                            name="order_status"
+                            value={orderData.order_status}
+                            label="สถานะการออเดอร์"
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <MenuItem value="Pending">Pending</MenuItem>
+                            <MenuItem value="Completed">Completed</MenuItem>
+                            <MenuItem value="Cancelled">Cancelled</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <TextField
+                        label="หมายเลขโรงงาน"
+                        name="plant"
+                        value={orderData.plant}
+                        onChange={handleInputChange}
+                        required
+                        fullWidth
+                    />
+
+                    <TextField
+                        label="หมายเลขโทรศัพท์โรงงาน"
+                        name="plant_number"
+                        value={orderData.plant_number}
+                        onChange={handleInputChange}
+                        required
+                        fullWidth
+                    />
+
+                    <TextField
+                        label="จำนวน"
+                        name="quantity"
+                        value={orderData.quantity}
+                        onChange={handleInputChange}
+                        required
+                        fullWidth
+                        type="number"
+                    />
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                         {orderData.order_date}
+                      </Typography>
+
+                    {submitError && (
+                        <Typography color="error" sx={{ mt: 1 }}>
+                            {submitError}
+                        </Typography>
+                    )}
+
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                        <Button
+                            type="button"
+                            onClick={handleCancel}
+                            variant="outlined"
+                            sx={{
+                                color: "#38b000",
+                                borderColor: "#38b000",
+                                "&:hover": { borderColor: "#2d8500" },
+                            }}
+                        >
+                            ยกเลิก
+                        </Button>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            disabled={isSubmitting}
+                            sx={{
+                                bgcolor: "#38b000",
+                                "&:hover": { bgcolor: "#2d8500" },
+                            }}
+                        >
+                            {isSubmitting ? (
+                                <CircularProgress size={24} color="inherit" />
+                            ) : (
+                                "บันทึกการเปลี่ยนแปลง"
+                            )}
+                        </Button>
+                    </Box>
+                </Box>
+            </form>
+        </Box>
+    );
 };
 
 export default EditOrder;

@@ -17,10 +17,9 @@ const EditUser = () => {
     const { userid } = useParams();
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
-        name: "",
+        username: "",
         first_name: "",
         last_name: "",
-        address: "",
         tel: "",
         role: "user",
     });
@@ -35,7 +34,14 @@ const EditUser = () => {
                 const response = await fetch(`http://localhost:5000/user/${userid}`);
                 if (!response.ok) throw new Error("Failed to fetch user data");
                 const data = await response.json();
-                setUserData(data);
+                const user = data.user;  // ดึงข้อมูลผู้ใช้จาก API
+                setUserData({
+                    username: user.username,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    tel: user.tel,
+                    role: user.role === 1 ? "user" : "admin", // ปรับ role ตามค่าใน API
+                });
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -124,8 +130,8 @@ const EditUser = () => {
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
                     <TextField
                         label="ชื่อผู้ใช้"
-                        name="name"
-                        value={userData.name}
+                        name="username"
+                        value={userData.username}
                         onChange={handleInputChange}
                         required
                         fullWidth
@@ -150,7 +156,7 @@ const EditUser = () => {
                         />
                     </Box>
 
-                    <TextField
+                    {/* <TextField
                         label="ที่อยู่"
                         name="address"
                         value={userData.address}
@@ -158,7 +164,7 @@ const EditUser = () => {
                         multiline
                         rows={3}
                         fullWidth
-                    />
+                    /> */}
 
                     <TextField
                         label="เบอร์โทร"

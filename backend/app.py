@@ -152,7 +152,7 @@ def login():
         }), 200
 
 @app.route('/order/<string:order_id>', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def get_order(order_id):
     with get_db() as db_session:
         order = db_session.query(Order).filter_by(order_id=order_id).first()
@@ -174,7 +174,7 @@ def get_order(order_id):
         return jsonify({'order': order_data}), 200
 
 @app.route('/order/<string:order_id>', methods=['PUT'])
-@jwt_required()
+# @jwt_required()
 def update_order(order_id):
     data = request.get_json()
     name = data.get('name')
@@ -224,7 +224,7 @@ def update_order(order_id):
 
 # Route to place an order
 @app.route('/order', methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def place_order():
     try:
         data = request.get_json()
@@ -396,5 +396,27 @@ def get_all_sensor():
 
         return jsonify({'ssr': sensr_list}), 200
 
+@app.route('/user/<int:user_id>', methods=['GET'])
+# @jwt_required()
+def get_user_by_id(user_id):
+    with get_db() as db_session:
+        user = db_session.query(User).filter_by(user_id=user_id).first()
+
+        if not user:
+            return jsonify({'error': 'ไม่พบผู้ใช้'}), 404
+
+        user_data = {
+            'id': user.user_id,
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'tel': user.tel,
+            'role': user.role_id
+        }
+
+        return jsonify({'user': user_data}), 200
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port='5000',debug=True)
+
