@@ -129,10 +129,10 @@ const SensorCard = () => {
                 </CardContent>
                 <Divider sx={{ my: 1 }} />
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', p: 2 }}>
-                  <Typography variant="body2" sx={{ color: '#38b000', mr: 1 }}> 
+                  <Typography variant="body2" sx={{ color: '#black', mr: 1 }}> 
                     ดูรายละเอียด
                   </Typography>
-                  <ChevronRight sx={{ color: '#38b000' }} /> 
+                  <ChevronRight sx={{ color: '#black' }} /> 
                 </Box>
               </Card>
             </Grid>
