@@ -29,6 +29,8 @@ import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import HourglassBottomRoundedIcon from "@mui/icons-material/HourglassBottomRounded";
 import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
 import SensorsOffRoundedIcon from "@mui/icons-material/SensorsOffRounded";
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { IconButton } from '@mui/material';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -99,8 +101,8 @@ const Home = () => {
     visible: false,
     orderDetails: {},
   });
-  const [page, setPage] = useState(1); // เพิ่ม state สำหรับหน้าปัจจุบัน
-  const [itemsPerPage, setItemsPerPage] = useState(10); // เพิ่ม state สำหรับจำนวนรายการต่อหน้า
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchDashboard = () => {
@@ -141,15 +143,49 @@ const Home = () => {
     setStatusModal({ visible: false, orderDetails: {} });
   };
 
-  // ฟังก์ชันจัดการการเปลี่ยนหน้า
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
-  // ฟังก์ชันจัดการการเปลี่ยนจำนวนรายการต่อหน้า
   const handleItemsPerPageChange = (event) => {
     setItemsPerPage(event.target.value);
-    setPage(1); // รีเซ็ตไปที่หน้าแรกเมื่อเปลี่ยนจำนวนรายการต่อหน้า
+    setPage(1);
+  };
+
+  const handleStatusChange = (newStatus) => {
+    const accessToken = localStorage.getItem("accessToken");
+    const orderId = statusModal.orderDetails.id;
+
+    fetch(`http://127.0.0.1:5000/orders/${orderId}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          const updatedOrders = data.orders.map((order) =>
+            order.id === orderId ? { ...order, order_status: newStatus } : order
+          );
+          setData({ ...data, orders: updatedOrders });
+
+          setStatusModal((prev) => ({
+            ...prev,
+            orderDetails: { ...prev.orderDetails, order_status: newStatus },
+          }));
+
+          toast.success("อัปเดตสถานะสำเร็จ");
+        } else {
+          toast.error("อัปเดตสถานะไม่สำเร็จ");
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to update status:", err);
+        toast.error("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+      });
   };
 
   if (!data)
@@ -304,7 +340,6 @@ const Home = () => {
           </Table>
         </TableContainer>
 
-        {/* Pagination และ Items per page ที่ด้านล่างขวา */}
         <Box
           sx={{
             display: "flex",
@@ -358,6 +393,19 @@ const Home = () => {
             overflowY: 'auto',
           }}
         >
+          <IconButton
+            aria-label="close"
+            onClick={closeModal}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseRoundedIcon />
+          </IconButton>
+
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#38b000' }}>
             รายละเอียดคำสั่งซื้อ
           </Typography>
@@ -424,9 +472,9 @@ const Home = () => {
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 2 }}>
             <Button
-              onClick={closeModal}
+              onClick={() => handleStatusChange('Completed')}
               variant="contained"
               sx={{
                 color: "#ffffff",
@@ -434,7 +482,29 @@ const Home = () => {
                 "&:hover": { backgroundColor: "#2c8c00" },
               }}
             >
-              ปิด
+              ยืนยัน
+            </Button>
+            <Button
+              onClick={() => handleStatusChange('Canceled')}
+              variant="contained"
+              sx={{
+                color: "#ffffff",
+                backgroundColor: "#f80000",
+                "&:hover": { backgroundColor: "#d60000" },
+              }}
+            >
+              ยกเลิก
+            </Button>
+            <Button
+              onClick={() => handleStatusChange('Pending')}
+              variant="contained"
+              sx={{
+                color: "#ffffff",
+                backgroundColor: "#ffc300",
+                "&:hover": { backgroundColor: "#e6b000" },
+              }}
+            >
+              แก้ไข
             </Button>
           </Box>
         </Box>

@@ -1,199 +1,227 @@
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
+    Box,
     TextField,
+    Button,
+    Typography,
+    CircularProgress,
     Select,
     MenuItem,
     FormControl,
     InputLabel,
-    Button,
-    Box,
-    Typography,
-    Container,
-    Grid,
 } from "@mui/material";
-import { useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-// สร้าง theme และกำหนดสี primary เป็น #38b000
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: "#38b000", // เปลี่ยนสี primary เป็น #38b000
-        },
-    },
-    typography: {
-        fontFamily: "Sarabun, sans-serif",
-    },
-});
-
-function EditUser() {
+const EditUser = () => {
+    const { userid } = useParams();
     const navigate = useNavigate();
-
-    const [formData, setFormData] = useState({
-        userid: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        role: "",
+    const [userData, setUserData] = useState({
+        name: "",
+        first_name: "",
+        last_name: "",
+        address: "",
+        tel: "",
+        role: "user",
     });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [submitError, setSubmitError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleBackClick = () => {
-        navigate("/userconfig");
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/user/${userid}`);
+                if (!response.ok) throw new Error("Failed to fetch user data");
+                const data = await response.json();
+                setUserData(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, [userid]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [id]: value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Perform validation here
-        if (!formData.userid || !formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.role) {
-            alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-            return;
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        try {
+            const response = await fetch(`http://localhost:5000/user/${userid}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to update user");
+            }
+
+            navigate("/userconfig");
+        } catch (err) {
+            setSubmitError(err.message);
+        } finally {
+            setIsSubmitting(false);
         }
+    };
 
-        // Handle form submission (e.g., send data to an API)
-        console.log("Form Data Submitted:", formData);
-
-        // Navigate back or show success message
+    const handleCancel = () => {
         navigate("/userconfig");
     };
+
+    if (loading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                <CircularProgress color="success" />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Typography color="error" textAlign="center" mt={4}>
+                Error: {error}
+            </Typography>
+        );
+    }
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container>
-                {/* Header Container */}
+        <Box sx={{ maxWidth: 600, mx: "auto", p: 3 }}>
+            {/* Header Section */}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
                 <Button
                     startIcon={<ArrowBackIcon />}
-                    onClick={handleBackClick}
+                    onClick={handleCancel}
                     sx={{
                         color: "#38b000",
                         fontWeight: "bold",
                         textTransform: "none",
-                        "&:hover": {
-                            backgroundColor: "rgba(56, 176, 0, 0.1)",
-                        },
+                        "&:hover": { backgroundColor: "rgba(56, 176, 0, 0.1)" },
                     }}
                 >
                     ย้อนกลับ
                 </Button>
+                <Typography variant="h5" sx={{ ml: 2, fontWeight: 700, color: "#38b000" }}>
+                    แก้ไขผู้ใช้
+                </Typography>
+            </Box>
 
-                {/* Form Container */}
-                <Box sx={{ bgcolor: "background.paper", p: 4, borderRadius: 2 }}>
-                    <Box sx={{ mb: 4 }}>
-                        <Typography variant="h6" component="p">
-                            แก้ไขข้อมูลส่วนตัวผู้ใช้
-                        </Typography>
+            {/* Edit Form */}
+            <form onSubmit={handleSubmit}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    <TextField
+                        label="ชื่อผู้ใช้"
+                        name="name"
+                        value={userData.name}
+                        onChange={handleInputChange}
+                        required
+                        fullWidth
+                    />
+
+                    <Box sx={{ display: "flex", gap: 3 }}>
+                        <TextField
+                            label="ชื่อ"
+                            name="first_name"
+                            value={userData.first_name}
+                            onChange={handleInputChange}
+                            required
+                            fullWidth
+                        />
+                        <TextField
+                            label="นามสกุล"
+                            name="last_name"
+                            value={userData.last_name}
+                            onChange={handleInputChange}
+                            required
+                            fullWidth
+                        />
                     </Box>
 
-                    <Box component="form" onSubmit={handleSubmit}>
-                        {/* User ID */}
-                        <Box sx={{ mb: 2 }}>
-                            <TextField
-                                fullWidth
-                                id="userid"
-                                label="User ID"
-                                variant="outlined"
-                                required
-                                value={formData.userid}
-                                onChange={handleChange}
-                            />
-                        </Box>
+                    <TextField
+                        label="ที่อยู่"
+                        name="address"
+                        value={userData.address}
+                        onChange={handleInputChange}
+                        multiline
+                        rows={3}
+                        fullWidth
+                    />
 
-                        {/* First Name and Last Name */}
-                        <Grid container spacing={2} sx={{ mb: 2 }}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    id="firstName"
-                                    label="ชื่อ"
-                                    variant="outlined"
-                                    required
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    id="lastName"
-                                    label="นามสกุล"
-                                    variant="outlined"
-                                    required
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                        </Grid>
+                    <TextField
+                        label="เบอร์โทร"
+                        name="tel"
+                        value={userData.tel}
+                        onChange={handleInputChange}
+                        inputProps={{ pattern: "[0-9]{10}" }}
+                        fullWidth
+                    />
 
-                        {/* Email */}
-                        <Box sx={{ mb: 2 }}>
-                            <TextField
-                                fullWidth
-                                id="email"
-                                label="อีเมล"
-                                variant="outlined"
-                                type="email"
-                                required
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-                        </Box>
+                    <FormControl fullWidth>
+                        <InputLabel>Role</InputLabel>
+                        <Select
+                            name="role"
+                            value={userData.role}
+                            label="Role"
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <MenuItem value="user">User</MenuItem>
+                            <MenuItem value="admin">Admin</MenuItem>
+                        </Select>
+                    </FormControl>
 
-                        {/* Phone Number */}
-                        <Box sx={{ mb: 2 }}>
-                            <TextField
-                                fullWidth
-                                id="phone"
-                                label="เบอร์โทรศัพท์"
-                                variant="outlined"
-                                type="tel"
-                                required
-                                value={formData.phone}
-                                onChange={handleChange}
-                            />
-                        </Box>
+                    {submitError && (
+                        <Typography color="error" sx={{ mt: 1 }}>
+                            {submitError}
+                        </Typography>
+                    )}
 
-                        {/* Role */}
-                        <Box sx={{ mb: 2 }}>
-                            <FormControl fullWidth>
-                                <InputLabel id="role-label">Role</InputLabel>
-                                <Select
-                                    labelId="role-label"
-                                    id="role"
-                                    label="Role"
-                                    required
-                                    value={formData.role}
-                                    onChange={handleChange}
-                                >
-                                    <MenuItem value="admin">Admin</MenuItem>
-                                    <MenuItem value="user">User</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-
-                        {/* Submit Button */}
-                        <Box>
-                            <Button type="submit" variant="contained" sx={{
-                                color: "#ffffff",
-                                backgroundColor: "#38b000",
-                                "&:hover": { backgroundColor: "#2c8c00" },
-                            }}>
-                                บันทึก
-                            </Button>
-                        </Box>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                        <Button
+                            type="button"
+                            onClick={handleCancel}
+                            variant="outlined"
+                            sx={{
+                                color: "#38b000",
+                                borderColor: "#38b000",
+                                "&:hover": { borderColor: "#2d8500" },
+                            }}
+                        >
+                            ยกเลิก
+                        </Button>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            disabled={isSubmitting}
+                            sx={{
+                                bgcolor: "#38b000",
+                                "&:hover": { bgcolor: "#2d8500" },
+                            }}
+                        >
+                            {isSubmitting ? (
+                                <CircularProgress size={24} color="inherit" />
+                            ) : (
+                                "บันทึกการเปลี่ยนแปลง"
+                            )}
+                        </Button>
                     </Box>
                 </Box>
-            </Container>
-        </ThemeProvider>
+            </form>
+        </Box>
     );
-}
+};
 
 export default EditUser;

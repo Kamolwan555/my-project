@@ -373,6 +373,20 @@ const Order = () => {
               overflowY: 'auto', // ให้สามารถสกรอลได้หากเนื้อหาเยอะ
             }}
           >
+            {/* เพิ่ม IconButton สำหรับปิด modal ที่มุมขวาบน */}
+            <IconButton
+              aria-label="close"
+              onClick={() => setIsModalOpen(false)}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseRoundedIcon />
+            </IconButton>
+
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#38b000' }}>
               รายละเอียดคำสั่งซื้อ
             </Typography>

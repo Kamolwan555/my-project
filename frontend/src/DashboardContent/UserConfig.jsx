@@ -12,6 +12,7 @@ import {
     Box,
     Button,
     CircularProgress,
+    TablePagination,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -20,11 +21,13 @@ const UserTable = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("http://localhost:5000/user"); 
+                const response = await fetch("http://localhost:5000/user");
                 if (!response.ok) {
                     throw new Error("Failed to fetch data");
                 }
@@ -42,6 +45,15 @@ const UserTable = () => {
 
     const handleBackClick = () => {
         navigate("/configmenu");
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
     };
 
     const columns = [
@@ -111,7 +123,7 @@ const UserTable = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {data.map((row, index) => (
+                            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                                 <TableRow
                                     key={row.id}
                                     sx={{
@@ -135,6 +147,18 @@ const UserTable = () => {
                             ))}
                         </TableBody>
                     </Table>
+
+                    {/* Pagination */}
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={data.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        sx={{ borderTop: "1px solid #e0e0e0" }}
+                    />
                 </TableContainer>
             )}
         </div>
