@@ -19,7 +19,7 @@ import {
   Select,
   InputLabel,
   Pagination,
-  Divider, // เพิ่ม Divider
+  Divider,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -33,7 +33,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#38b000", // Primary color set to #38b000
+      main: "#38b000",
     },
   },
   typography: {
@@ -145,8 +145,8 @@ const Order = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addOrderModalOpen, setAddOrderModalOpen] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState("");
-  const [page, setPage] = useState(1); // เพิ่ม state สำหรับหน้าปัจจุบัน
-  const [itemsPerPage, setItemsPerPage] = useState(10); // เพิ่ม state สำหรับจำนวนรายการต่อหน้า
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -213,21 +213,40 @@ const Order = () => {
     }
   };
 
-  // ฟังก์ชันจัดการการเปลี่ยนหน้า
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
-  // ฟังก์ชันจัดการการเปลี่ยนจำนวนรายการต่อหน้า
   const handleItemsPerPageChange = (event) => {
     setItemsPerPage(event.target.value);
-    setPage(1); // รีเซ็ตไปที่หน้าแรกเมื่อเปลี่ยนจำนวนรายการต่อหน้า
+    setPage(1);
+  };
+
+  const handleStatusChange = async (status) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `http://127.0.0.1:5000/order/${selectedOrder.id}`,
+        { order_status: status },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+
+      toast.success(response.data.message || "Order status updated successfully!");
+      setIsModalOpen(false);
+
+      const updatedOrders = await axios.get(`http://127.0.0.1:5000/orderlist`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setData(updatedOrders.data.orders || []);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      toast.error("Failed to update order status. Please try again.");
+    }
   };
 
   return (
     <ThemeProvider theme={theme}>
       <div style={{ marginTop: 30 }}>
-        {/* Order Table */}
         <TableContainer
           component={Paper}
           sx={{
@@ -318,7 +337,6 @@ const Order = () => {
           </Table>
         </TableContainer>
 
-        {/* Pagination และ Items per page ที่ด้านล่างขวา */}
         <Box
           sx={{
             display: "flex",
@@ -356,7 +374,6 @@ const Order = () => {
           />
         </Box>
 
-        {/* Order Details Modal */}
         <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <Box
             sx={{
@@ -364,16 +381,15 @@ const Order = () => {
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: { xs: '90%', sm: '80%', md: '600px' }, // ปรับขนาดตามหน้าจอ
+              width: { xs: '90%', sm: '80%', md: '600px' },
               bgcolor: 'background.paper',
               boxShadow: 24,
               p: 3,
               borderRadius: 2,
-              maxHeight: '90vh', // จำกัดความสูงสูงสุด
-              overflowY: 'auto', // ให้สามารถสกรอลได้หากเนื้อหาเยอะ
+              maxHeight: '90vh',
+              overflowY: 'auto',
             }}
           >
-            {/* เพิ่ม IconButton สำหรับปิด modal ที่มุมขวาบน */}
             <IconButton
               aria-label="close"
               onClick={() => setIsModalOpen(false)}
@@ -392,7 +408,6 @@ const Order = () => {
             </Typography>
             <Divider sx={{ mb: 2 }} />
 
-            {/* ใช้ Grid เพื่อจัดวางข้อมูลในบรรทัดเดียวกัน */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '120px' }}>
@@ -454,10 +469,9 @@ const Order = () => {
               </Box>
             </Box>
 
-            {/* ปุ่ม Close */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 2 }}>
               <Button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => handleStatusChange('Completed')}
                 variant="contained"
                 sx={{
                   color: "#ffffff",
@@ -465,13 +479,34 @@ const Order = () => {
                   "&:hover": { backgroundColor: "#2c8c00" },
                 }}
               >
-                ปิด
+                ยืนยัน
+              </Button>
+              <Button
+                onClick={() => handleStatusChange('Canceled')}
+                variant="contained"
+                sx={{
+                  color: "#ffffff",
+                  backgroundColor: "#f80000",
+                  "&:hover": { backgroundColor: "#d60000" },
+                }}
+              >
+                ยกเลิก
+              </Button>
+              <Button
+                onClick={() => handleStatusChange('Pending')}
+                variant="contained"
+                sx={{
+                  color: "#ffffff",
+                  backgroundColor: "#ffc300",
+                  "&:hover": { backgroundColor: "#e6b000" },
+                }}
+              >
+                แก้ไข
               </Button>
             </Box>
           </Box>
         </Modal>
 
-        {/* Add Order Modal */}
         <Modal
           open={addOrderModalOpen}
           onClose={() => setAddOrderModalOpen(false)}
@@ -509,7 +544,6 @@ const Order = () => {
               onSubmit={handleAddOrderSubmit}
               style={{ display: "flex", flexDirection: "column", gap: 16 }}
             >
-              {/* ช่องอินพุตชื่อผู้ซื้อ */}
               <FormControl fullWidth>
                 <TextField
                   fullWidth
@@ -523,7 +557,6 @@ const Order = () => {
                 />
               </FormControl>
 
-              {/* ช่องอินพุตที่อยู่ */}
               <FormControl fullWidth>
                 <TextField
                   fullWidth
@@ -538,7 +571,6 @@ const Order = () => {
                 />
               </FormControl>
 
-              {/* ช่องอินพุตเบอร์โทรศัพท์ */}
               <FormControl fullWidth>
                 <TextField
                   fullWidth
@@ -551,7 +583,6 @@ const Order = () => {
                 />
               </FormControl>
 
-              {/* ช่องอินพุตจำนวน */}
               <FormControl fullWidth>
                 <TextField
                   fullWidth
@@ -565,7 +596,6 @@ const Order = () => {
                 />
               </FormControl>
 
-              {/* Dropdown เลือกพืช */}
               <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
                 <InputLabel>เลือกพืช</InputLabel>
                 <Select

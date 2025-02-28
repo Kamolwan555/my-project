@@ -270,7 +270,7 @@ def get_all_orders():
         orders_list = []
         for order in orders:
             orders_list.append({
-               'id': order.order_id,
+                'id': order.order_id,
                 'name': order.name,
                 'address': order.address,
                 'plant': order.plant,
@@ -339,7 +339,7 @@ def get_orders_today_summary():
                 sensor for sensor in sensor_data
                 if sensor.sensor_status and sensor.sensor_status.lower() == "active"
             ])
-           
+        
             return jsonify({
                 'summary': {
                     'total_orders_today': total_orders_today,
@@ -364,7 +364,7 @@ def get_all_user():
         userlist = []
         for ussr in uss:
             userlist.append({
-               'id': ussr.user_id,
+                'id': ussr.user_id,
                 'name': ussr.username,
                 'address': ussr.email,
                 'first_name': ussr.first_name,
