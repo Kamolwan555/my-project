@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
-import { Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, Menu, MenuItem } from "@mui/material";
+import {
+  Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, Menu, MenuItem, Grid, Avatar
+} from "@mui/material";
 import {
   Menu as MenuIcon,
   HomeRounded as HomeRoundedIcon,
@@ -13,7 +15,9 @@ import {
   AccountBoxRounded as AccountBoxRoundedIcon,
   Notifications as NotificationsRoundedIcon,
   Person as PersonRoundedIcon,
-  Settings as SettingsRoundedIcon
+  Settings as SettingsRoundedIcon,
+  Edit as EditIcon,
+  People as PeopleIcon
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Swal from "sweetalert2"; // นำเข้า SweetAlert2
@@ -26,15 +30,15 @@ const demoTheme = createTheme({
     button: { fontWeight: 500 },
   },
   palette: {
-    primary: { main: "#FFFFFF" },
-    background: { default: "#E8F5E9" },
+    primary: { main: "#38b000" },
+    secondary: { main: "#4CAF50" },
+    background: { default: "#F5F5F5" },
   },
   components: {
     MuiAppBar: {
       styleOverrides: {
         root: {
           background: "#38b000",
-          // background: "linear-gradient(90deg, #38b000, #70e000)",
           color: "#FFFFFF",
         },
       },
@@ -175,24 +179,86 @@ const Navigation = () => {
                 vertical: 'top',
                 horizontal: 'right',
               }}
+              PaperProps={{
+                style: {
+                  width: 300,
+                  padding: 16,
+                  borderRadius: 12,
+                  boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                },
+              }}
             >
-              <MenuItem onClick={handleProfileMenuClose}>
+              {/* ส่วนหัวของเมนูโปรไฟล์ */}
+              <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                <Grid item>
+                  <Avatar alt="User Avatar" src="/path/to/avatar.jpg" sx={{ width: 56, height: 56 }} />
+                </Grid>
+                <Grid item>
+                  <Typography variant="h6" sx={{ fontWeight: 700 }}>แอดมิน</Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>admin@example.com</Typography>
+                </Grid>
+              </Grid>
+
+              <Divider sx={{ my: 2 }} />
+
+              {/* เมนูย่อย */}
+              <Box>
+                <MenuItem 
+                  onClick={handleProfileMenuClose}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  }}
+                >
+                  <ListItemIcon>
+                    <EditIcon fontSize="small" sx={{ color: 'black' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="แก้ไขโปรไฟล์" />
+                </MenuItem>
+                <MenuItem 
+                  onClick={handleProfileMenuClose}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  }}
+                >
+                  <ListItemIcon>
+                    <PeopleIcon fontSize="small" sx={{ color: 'black' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="ดูโปรไฟล์" />
+                </MenuItem>
+                <MenuItem 
+                  onClick={handleProfileMenuClose}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  }}
+                >
+                  <ListItemIcon>
+                    <SettingsRoundedIcon fontSize="small" sx={{ color: 'black' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="ตั้งค่าบัญชี" />
+                </MenuItem>
+              </Box>
+
+              <Divider sx={{ my: 2 }} />
+
+              {/* ปุ่มออกจากระบบ */}
+              <MenuItem 
+                onClick={handleLogout}
+                sx={{
+                  '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                }}
+              >
                 <ListItemIcon>
-                  <PersonRoundedIcon fontSize="small" />
+                  <LogoutRoundedIcon fontSize="small" sx={{ color: 'error.main' }} />
                 </ListItemIcon>
-                <ListItemText>โปรไฟล์</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleProfileMenuClose}>
-                <ListItemIcon>
-                  <SettingsRoundedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>การตั้งค่า</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <ListItemIcon>
-                  <LogoutRoundedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>ออกจากระบบ</ListItemText>
+                <ListItemText primary="ออกจากระบบ" />
               </MenuItem>
             </Menu>
           </Toolbar>

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { Box, Card, CardContent, Typography, Alert, Button, Grid } from "@mui/material";
-import { BarChart, LineChart } from "@mui/x-charts"; // เพิ่ม LineChart
+import { BarChart, LineChart } from "@mui/x-charts";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -9,27 +9,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 const soilData = [
   { soil_temperature: 21, soil_moisture: 43, ec: 4.54, ph: 6, nitrogen: 90, potassium: 75, phosphorus: 38 },
   { soil_temperature: 20, soil_moisture: 56, ec: 3.88, ph: 6.9, nitrogen: 16, potassium: 71, phosphorus: 51 },
-  { soil_temperature: 20, soil_moisture: 69, ec: 2.3, ph: 6.5, nitrogen: 43, potassium: 49, phosphorus: 37 },
-  { soil_temperature: 28, soil_moisture: 46, ec: 7.26, ph: 7.3, nitrogen: 70, potassium: 50, phosphorus: 97 },
-  { soil_temperature: 25, soil_moisture: 63, ec: 8.89, ph: 6.3, nitrogen: 58, potassium: 94, phosphorus: 57 },
-  { soil_temperature: 25, soil_moisture: 43, ec: 4.21, ph: 6.8, nitrogen: 75, potassium: 88, phosphorus: 73 },
-  { soil_temperature: 29, soil_moisture: 50, ec: 3.43, ph: 6.8, nitrogen: 8, potassium: 6, phosphorus: 2 },
-  { soil_temperature: 28, soil_moisture: 34, ec: 4.4, ph: 7.9, nitrogen: 89, potassium: 5, phosphorus: 89 },
-  { soil_temperature: 27, soil_moisture: 66, ec: 3.54, ph: 6.2, nitrogen: 81, potassium: 42, phosphorus: 7 },
-  { soil_temperature: 26, soil_moisture: 42, ec: 9.63, ph: 7.1, nitrogen: 57, potassium: 73, phosphorus: 26 },
-  { soil_temperature: 23, soil_moisture: 45, ec: 2.68, ph: 6.9, nitrogen: 26, potassium: 91, phosphorus: 42 },
-  { soil_temperature: 26, soil_moisture: 34, ec: 7.89, ph: 6.4, nitrogen: 4, potassium: 54, phosphorus: 89 },
-  { soil_temperature: 21, soil_moisture: 49, ec: 2.02, ph: 6.7, nitrogen: 3, potassium: 22, phosphorus: 79 },
-  { soil_temperature: 28, soil_moisture: 73, ec: 7.87, ph: 6.2, nitrogen: 2, potassium: 23, phosphorus: 16 },
-  { soil_temperature: 27, soil_moisture: 60, ec: 6.05, ph: 7.2, nitrogen: 50, potassium: 48, phosphorus: 43 },
-  { soil_temperature: 24, soil_moisture: 47, ec: 9.88, ph: 6.4, nitrogen: 65, potassium: 52, phosphorus: 53 },
-  { soil_temperature: 26, soil_moisture: 58, ec: 3.3, ph: 6.4, nitrogen: 32, potassium: 34, phosphorus: 32 },
-  { soil_temperature: 27, soil_moisture: 45, ec: 5.01, ph: 6, nitrogen: 48, potassium: 89, phosphorus: 67 },
-  { soil_temperature: 24, soil_moisture: 60, ec: 9.62, ph: 6.4, nitrogen: 50, potassium: 98, phosphorus: 65 },
 ];
 
 const nowData = soilData[0];
-const finalData = soilData[soilData.length - 1];
+const previousData = soilData[1]; // ข้อมูลก่อนหน้า
 
 // สร้างธีม
 const theme = createTheme({
@@ -42,14 +25,19 @@ const theme = createTheme({
   palette: {
     primary: { main: "#38b000" }, // สีเขียว
     secondary: { main: "#ff6f61" }, // สีส้ม
+    error: { main: "#ff1744" }, // สีแดงสำหรับข้อผิดพลาด
+    background: {
+      default: "#f5f5f5", // สีพื้นหลัง
+      paper: "#ffffff", // สีพื้นหลังของ Card
+    },
   },
 });
 
 // ข้อมูลสำหรับ Bar Chart
 const chartData = [
-  { name: "ไนโตรเจน", now: nowData.nitrogen, final: finalData.nitrogen },
-  { name: "ฟอสฟอรัส", now: nowData.phosphorus, final: finalData.phosphorus },
-  { name: "โพแทสเซียม", now: nowData.potassium, final: finalData.potassium },
+  { name: "ไนโตรเจน", now: nowData.nitrogen, final: previousData.nitrogen },
+  { name: "ฟอสฟอรัส", now: nowData.phosphorus, final: previousData.phosphorus },
+  { name: "โพแทสเซียม", now: nowData.potassium, final: previousData.potassium },
 ];
 
 // ข้อมูลสำหรับ Line Chart
@@ -67,35 +55,31 @@ const CustomTooltip = ({ active, payload, label }) => {
     <Box sx={{ p: 1, bgcolor: 'white', boxShadow: 1, borderRadius: 1 }}>
       <Typography variant="body2" fontWeight="bold">{label}</Typography>
       <Typography variant="body2">ปัจจุบัน: {thisData.now}</Typography>
-      <Typography variant="body2">สุดท้าย: {thisData.final}</Typography>
+      <Typography variant="body2">ก่อนหน้า: {thisData.final}</Typography>
     </Box>
   );
 };
 
 CustomTooltip.propTypes = {
   active: PropTypes.bool,
-  label: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
-  payload: PropTypes.arrayOf(PropTypes.shape({
-    payload: PropTypes.shape({
-      now: PropTypes.number,
-      final: PropTypes.number,
-    }),
-  })),
+  payload: PropTypes.arrayOf(
+    PropTypes.shape({
+      payload: PropTypes.shape({
+        now: PropTypes.number,
+        final: PropTypes.number,
+      }),
+    })
+  ),
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 // Alert Component
 function SurveyAlertItem({ id, title }) {
   return (
     <Alert
-      severity="warning"
+      severity="warning" // ใช้ severity ที่ถูกต้อง
       variant="outlined"
-      sx={{ 
-        mb: 2, 
-        alignItems: 'center',
-      }}
+      sx={{ mb: 2, alignItems: 'center' }}
     >
       <Typography variant="body2" fontWeight="bold">
         {title}
@@ -110,6 +94,32 @@ function SurveyAlertItem({ id, title }) {
 SurveyAlertItem.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+};
+
+// การ์ดสำหรับแสดงข้อมูล
+const DataCard = ({ title, current, previous, unit }) => {
+  return (
+    <Card sx={{ borderRadius: 2, boxShadow: 3, bgcolor: "background.paper", transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.02)' } }}>
+      <CardContent>
+        <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+          {title}
+        </Typography>
+        <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
+          {current}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          ก่อนหน้า: {previous} {unit}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
+
+DataCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  current: PropTypes.number.isRequired,
+  previous: PropTypes.number.isRequired,
+  unit: PropTypes.string.isRequired,
 };
 
 // หน้าหลัก
@@ -138,37 +148,34 @@ export default function App() {
         </Button>
 
         <Box sx={{ p: 2 }}>
-          {/* Cards สำหรับแสดงค่าปัจจุบัน */}
+          {/* Cards สำหรับแสดงค่าปัจจุบันและค่าก่อนหน้า */}
           <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
-            ข้อมูลปัจจุบัน
+            ข้อมูลปัจจุบันและข้อมูลก่อนหน้า
           </Typography>
           <Grid container spacing={2} sx={{ mb: 3 }}>
             {[
-              { title: "ไนโตรเจน", value: finalData.nitrogen, bgcolor: '#FFCCCC' },
-              { title: "ฟอสฟอรัส", value: finalData.phosphorus, bgcolor: '#CCFFCC' },
-              { title: "โพแทสเซียม", value: finalData.potassium, bgcolor: '#CCCCFF' },
-              { title: "อุณหภูมิดิน", value: finalData.soil_temperature, bgcolor: '#FFFFCC' },
-              { title: "ค่าการนำไฟฟ้า", value: finalData.ec, bgcolor: '#FFCCFF' },
-              { title: "ค่า pH", value: finalData.ph, bgcolor: '#CCFFFF' },
+              { title: "ไนโตรเจน", current: nowData.nitrogen, previous: previousData.nitrogen, unit: "mg/kg" },
+              { title: "ฟอสฟอรัส", current: nowData.phosphorus, previous: previousData.phosphorus, unit: "mg/kg" },
+              { title: "โพแทสเซียม", current: nowData.potassium, previous: previousData.potassium, unit: "mg/kg" },
+              { title: "อุณหภูมิดิน", current: nowData.soil_temperature, previous: previousData.soil_temperature, unit: "°C" },
+              { title: "ค่าการนำไฟฟ้า", current: nowData.ec, previous: previousData.ec, unit: "dS/m" },
+              { title: "ค่า pH", current: nowData.ph, previous: previousData.ph, unit: "" },
             ].map((item, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card sx={{ borderRadius: 2, boxShadow: 2, bgcolor: item.bgcolor }}>
-                  <CardContent>
-                    <Typography variant="h6" color="text.secondary">
-                      {item.title}
-                    </Typography>
-                    <Typography variant="h5" fontWeight="bold">
-                      {item.value}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <DataCard
+                  title={item.title}
+                  current={item.current}
+                  previous={item.previous}
+                  unit={item.unit}
+                />
               </Grid>
             ))}
           </Grid>
+
           <Grid container spacing={2}>
             {/* Bar Chart */}
             <Grid item xs={12} md={6}>
-              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+              <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
                     เปรียบเทียบสารอาหารในดิน
@@ -178,8 +185,8 @@ export default function App() {
                       dataset={chartData}
                       xAxis={[{ scaleType: 'band', dataKey: 'name' }]}
                       series={[
-                        { dataKey: 'now', label: 'ปัจจุบัน' },
-                        { dataKey: 'final', label: 'สุดท้าย' },
+                        { dataKey: 'now', label: 'ปัจจุบัน', color: theme.palette.primary.main },
+                        { dataKey: 'final', label: 'ก่อนหน้า', color: theme.palette.secondary.main },
                       ]}
                       height={300}
                     />
@@ -190,7 +197,7 @@ export default function App() {
 
             {/* Line Chart */}
             <Grid item xs={12} md={6}>
-              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+              <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
                     แนวโน้มอุณหภูมิและความชื้นในดิน
@@ -200,8 +207,8 @@ export default function App() {
                       dataset={lineChartData}
                       xAxis={[{ scaleType: 'band', dataKey: 'time' }]}
                       series={[
-                        { dataKey: 'temperature', label: 'อุณหภูมิ' },
-                        { dataKey: 'moisture', label: 'ความชื้น' },
+                        { dataKey: 'temperature', label: 'อุณหภูมิ', color: theme.palette.primary.main },
+                        { dataKey: 'moisture', label: 'ความชื้น', color: theme.palette.secondary.main },
                       ]}
                       height={300}
                     />
@@ -212,7 +219,7 @@ export default function App() {
 
             {/* Alert Section */}
             <Grid item xs={12} md={4}>
-              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+              <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
                     การแจ้งเตือน
