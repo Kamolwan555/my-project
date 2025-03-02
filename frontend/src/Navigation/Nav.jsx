@@ -15,7 +15,7 @@ import {
   AccountBoxRounded as AccountBoxRoundedIcon,
   NotificationsRounded as NotificationsRoundedIcon,
   PersonRounded as PersonRoundedIcon,
-  PeopleRounded as PeopleRoundedIcon,
+  Person2Rounded as Person2RoundedIcon ,
   EditRounded as EditRoundedIcon,
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -254,10 +254,11 @@ const Navigation = () => {
                   }}
                 >
                   <ListItemIcon>
-                    <PeopleRoundedIcon fontSize="small" sx={{ color: 'black' }} />
+                    <Person2RoundedIcon fontSize="small" sx={{ color: 'black' }} />
                   </ListItemIcon>
                   <ListItemText primary="ดูโปรไฟล์" />
                 </MenuItem>
+
                 <MenuItem 
                   onClick={() => handleProfileMenuClose('/editprofile')}
                   sx={{
@@ -272,23 +273,6 @@ const Navigation = () => {
                   <ListItemText primary="แก้ไขโปรไฟล์" />
                 </MenuItem>
               </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              {/* ปุ่มออกจากระบบ */}
-              <MenuItem 
-                onClick={handleLogout}
-                sx={{
-                  '&:hover': {
-                      backgroundColor: '#f5f5f5',
-                    },
-                }}
-              >
-                <ListItemIcon>
-                  <LogoutRoundedIcon fontSize="small" sx={{ color: 'error.main' }} />
-                </ListItemIcon>
-                <ListItemText primary="ออกจากระบบ" />
-              </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
