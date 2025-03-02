@@ -417,6 +417,35 @@ def get_user_by_id(user_id):
 
         return jsonify({'user': user_data}), 200
     
+
+# @app.route('/orders/<int:order_id>', methods=['PUT'])
+# def update_order(order_id):
+#     order = Order.query.get(order_id)
+#     if not order:
+#         return jsonify({"error": "Order not found"}), 404
+    
+#     data = request.json
+#     order.customer_name = data.get('customer_name', order.customer_name)
+#     order.product = data.get('product', order.product)
+#     order.quantity = data.get('quantity', order.quantity)
+    
+#     db.session.commit()
+#     return jsonify({"message": "Order updated successfully", "order": {
+#         "id": order.id,
+#         "customer_name": order.customer_name,
+#         "product": order.product,
+#         "quantity": order.quantity
+#     }})
+
+# @app.route('/orders/<int:order_id>', methods=['DELETE'])
+# def delete_order(order_id):
+#     order = Order.query.get(order_id)
+#     if not order:
+#         return jsonify({"error": "Order not found"}), 404
+    
+#     db.session.delete(order)
+#     db.session.commit()
+#     return jsonify({"message": "Order deleted successfully"})
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port='5000',debug=True)
 
