@@ -116,7 +116,11 @@ const ProfileEditPage = () => {
                                     }}
                                 />
                                 <label htmlFor="avatar-upload">
-                                    <Button variant="contained" component="span">
+                                    <Button variant="contained" component="span" sx={{
+                                    color: "#ffffff",
+                                    backgroundColor: "#38b000",
+                                    "&:hover": { backgroundColor: "#2c8c00" },
+                                }}>
                                         อัปโหลดรูปภาพ
                                     </Button>
                                 </label>
@@ -171,7 +175,11 @@ const ProfileEditPage = () => {
                                 helperText={formik.touched.tel && formik.errors.tel}
                                 sx={{ mb: 2 }}
                             />
-                            <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+                            <Button type="submit" variant="contained" fullWidth sx={{
+                                    color: "#ffffff",
+                                    backgroundColor: "#38b000",
+                                    "&:hover": { backgroundColor: "#2c8c00" },
+                                }}>
                                 บันทึกการเปลี่ยนแปลง
                             </Button>
                         </form>
