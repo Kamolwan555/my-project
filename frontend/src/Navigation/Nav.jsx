@@ -15,8 +15,6 @@ import {
   AccountBoxRounded as AccountBoxRoundedIcon,
   Notifications as NotificationsRoundedIcon,
   Person as PersonRoundedIcon,
-  Settings as SettingsRoundedIcon,
-  Edit as EditIcon,
   People as PeopleIcon
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -122,8 +120,11 @@ const Navigation = () => {
   };
 
   // ฟังก์ชันสำหรับปิดเมนูโปรไฟล์
-  const handleProfileMenuClose = () => {
+  const handleProfileMenuClose = (path) => {
     setAnchorEl(null);
+    if (path) {
+      navigate(path); // นำทางไปยัง path ที่กำหนด
+    }
   };
 
   return (
@@ -170,7 +171,7 @@ const Navigation = () => {
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
-              onClose={handleProfileMenuClose}
+              onClose={() => handleProfileMenuClose()}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',
@@ -204,20 +205,7 @@ const Navigation = () => {
               {/* เมนูย่อย */}
               <Box>
                 <MenuItem 
-                  onClick={handleProfileMenuClose}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5',
-                    },
-                  }}
-                >
-                  <ListItemIcon>
-                    <EditIcon fontSize="small" sx={{ color: 'black' }} />
-                  </ListItemIcon>
-                  <ListItemText primary="แก้ไขโปรไฟล์" />
-                </MenuItem>
-                <MenuItem 
-                  onClick={handleProfileMenuClose}
+                  onClick={() => handleProfileMenuClose('/profile')}
                   sx={{
                     '&:hover': {
                       backgroundColor: '#f5f5f5',
@@ -228,19 +216,6 @@ const Navigation = () => {
                     <PeopleIcon fontSize="small" sx={{ color: 'black' }} />
                   </ListItemIcon>
                   <ListItemText primary="ดูโปรไฟล์" />
-                </MenuItem>
-                <MenuItem 
-                  onClick={handleProfileMenuClose}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5',
-                    },
-                  }}
-                >
-                  <ListItemIcon>
-                    <SettingsRoundedIcon fontSize="small" sx={{ color: 'black' }} />
-                  </ListItemIcon>
-                  <ListItemText primary="ตั้งค่าบัญชี" />
                 </MenuItem>
               </Box>
 

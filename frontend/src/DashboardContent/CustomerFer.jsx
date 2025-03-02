@@ -77,9 +77,15 @@ CustomTooltip.propTypes = {
 function SurveyAlertItem({ id, title }) {
   return (
     <Alert
-      severity="warning" // ใช้ severity ที่ถูกต้อง
+      severity="warning"
       variant="outlined"
-      sx={{ mb: 2, alignItems: 'center' }}
+      sx={{ 
+        mb: 2, 
+        alignItems: 'center', 
+        background: '#fff3e0', 
+        borderColor: '#ffb74d',
+        '& .MuiAlert-icon': { color: '#ff9800' }
+      }}
     >
       <Typography variant="body2" fontWeight="bold">
         {title}
@@ -99,12 +105,20 @@ SurveyAlertItem.propTypes = {
 // การ์ดสำหรับแสดงข้อมูล
 const DataCard = ({ title, current, previous, unit }) => {
   return (
-    <Card sx={{ borderRadius: 2, boxShadow: 3, bgcolor: "background.paper", transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.02)' } }}>
+    <Card sx={{ 
+      borderRadius: 2, 
+      boxShadow: 3, 
+      bgcolor: "background.paper", 
+      transition: 'transform 0.2s', 
+      '&:hover': { transform: 'scale(1.02)' },
+      background: 'linear-gradient(145deg, #ffffff, #f5f5f5)',
+      border: '1px solid #e0e0e0'
+    }}>
       <CardContent>
         <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
           {title}
         </Typography>
-        <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
+        <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, color: theme.palette.primary.main }}>
           {current}
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -141,7 +155,12 @@ export default function App() {
             color: "primary.main",
             fontWeight: "bold",
             textTransform: "none",
-            "&:hover": { backgroundColor: "rgba(56, 176, 0, 0.1)" },
+            "&:hover": { 
+              backgroundColor: "rgba(56, 176, 0, 0.1)",
+              boxShadow: '0px 4px 10px rgba(56, 176, 0, 0.2)'
+            },
+            padding: '10px 20px',
+            borderRadius: '8px'
           }}
         >
           ย้อนกลับ
@@ -175,7 +194,12 @@ export default function App() {
           <Grid container spacing={2}>
             {/* Bar Chart */}
             <Grid item xs={12} md={6}>
-              <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
+              <Card sx={{ 
+                borderRadius: 2, 
+                boxShadow: 3, 
+                background: 'linear-gradient(145deg, #ffffff, #f5f5f5)',
+                border: '1px solid #e0e0e0'
+              }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
                     เปรียบเทียบสารอาหารในดิน
@@ -197,7 +221,12 @@ export default function App() {
 
             {/* Line Chart */}
             <Grid item xs={12} md={6}>
-              <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
+              <Card sx={{ 
+                borderRadius: 2, 
+                boxShadow: 3, 
+                background: 'linear-gradient(145deg, #ffffff, #f5f5f5)',
+                border: '1px solid #e0e0e0'
+              }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
                     แนวโน้มอุณหภูมิและความชื้นในดิน
@@ -219,7 +248,12 @@ export default function App() {
 
             {/* Alert Section */}
             <Grid item xs={12} md={4}>
-              <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
+              <Card sx={{ 
+                borderRadius: 2, 
+                boxShadow: 3, 
+                background: 'linear-gradient(145deg, #ffffff, #f5f5f5)',
+                border: '1px solid #e0e0e0'
+              }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
                     การแจ้งเตือน
