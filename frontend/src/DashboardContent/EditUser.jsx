@@ -10,6 +10,9 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
+    Grid,
+    Container,
+    Alert,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -34,13 +37,13 @@ const EditUser = () => {
                 const response = await fetch(`http://localhost:5000/user/${userid}`);
                 if (!response.ok) throw new Error("Failed to fetch user data");
                 const data = await response.json();
-                const user = data.user;  // ดึงข้อมูลผู้ใช้จาก API
+                const user = data.user;
                 setUserData({
                     username: user.username,
                     first_name: user.first_name,
                     last_name: user.last_name,
                     tel: user.tel,
-                    role: user.role === 1 ? "user" : "admin", // ปรับ role ตามค่าใน API
+                    role: user.role === 1 ? "user" : "admin",
                 });
             } catch (err) {
                 setError(err.message);
@@ -91,23 +94,32 @@ const EditUser = () => {
     if (loading) {
         return (
             <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <CircularProgress color="success" />
+                <CircularProgress color="primary" />
             </Box>
         );
     }
 
     if (error) {
         return (
-            <Typography color="error" textAlign="center" mt={4}>
-                Error: {error}
-            </Typography>
+            <Container maxWidth="md" sx={{ mt: 4 }}>
+                <Alert severity="error" sx={{ mb: 3 }}>
+                    Error: {error}
+                </Alert>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/userconfig")}
+                >
+                    กลับไปยังหน้าผู้ใช้
+                </Button>
+            </Container>
         );
     }
 
     return (
-        <Box sx={{ maxWidth: 600, mx: "auto", p: 3 }}>
+        <Container maxWidth="md" >
             {/* Header Section */}
-            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 0 }}>
                 <Button
                     startIcon={<ArrowBackIcon />}
                     onClick={handleCancel}
@@ -115,118 +127,165 @@ const EditUser = () => {
                         color: "#38b000",
                         fontWeight: "bold",
                         textTransform: "none",
-                        "&:hover": { backgroundColor: "rgba(56, 176, 0, 0.1)" },
+                        "&:hover": {
+                            backgroundColor: "rgba(56, 176, 0, 0.1)",
+                        },
                     }}
                 >
                     ย้อนกลับ
                 </Button>
-                <Typography variant="h5" sx={{ ml: 2, fontWeight: 700, color: "#38b000" }}>
-                    แก้ไขผู้ใช้
-                </Typography>
             </Box>
 
             {/* Edit Form */}
-            <form onSubmit={handleSubmit}>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                    <TextField
-                        label="ชื่อผู้ใช้"
-                        name="username"
-                        value={userData.username}
-                        onChange={handleInputChange}
-                        required
-                        fullWidth
-                    />
-
-                    <Box sx={{ display: "flex", gap: 3 }}>
-                        <TextField
-                            label="ชื่อ"
-                            name="first_name"
-                            value={userData.first_name}
-                            onChange={handleInputChange}
-                            required
-                            fullWidth
-                        />
-                        <TextField
-                            label="นามสกุล"
-                            name="last_name"
-                            value={userData.last_name}
-                            onChange={handleInputChange}
-                            required
-                            fullWidth
-                        />
-                    </Box>
-
-                    {/* <TextField
-                        label="ที่อยู่"
-                        name="address"
-                        value={userData.address}
-                        onChange={handleInputChange}
-                        multiline
-                        rows={3}
-                        fullWidth
-                    /> */}
-
-                    <TextField
-                        label="เบอร์โทร"
-                        name="tel"
-                        value={userData.tel}
-                        onChange={handleInputChange}
-                        inputProps={{ pattern: "[0-9]{10}" }}
-                        fullWidth
-                    />
-
-                    <FormControl fullWidth>
-                        <InputLabel>Role</InputLabel>
-                        <Select
-                            name="role"
-                            value={userData.role}
-                            label="Role"
-                            onChange={handleInputChange}
-                            required
-                        >
-                            <MenuItem value="user">User</MenuItem>
-                            <MenuItem value="admin">Admin</MenuItem>
-                        </Select>
-                    </FormControl>
-
-                    {submitError && (
-                        <Typography color="error" sx={{ mt: 1 }}>
-                            {submitError}
+            <Box sx={{ bgcolor: "background.paper", p: 4, borderRadius: 2 }}>
+                <form onSubmit={handleSubmit}>
+                    <Box sx={{ mb: 4 }}>
+                        <Typography variant="h6" component="p">
+                            แก้ไขข้อมูลส่วนตัวผู้ใช้
                         </Typography>
-                    )}
-
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                        <Button
-                            type="button"
-                            onClick={handleCancel}
-                            variant="outlined"
-                            sx={{
-                                color: "#38b000",
-                                borderColor: "#38b000",
-                                "&:hover": { borderColor: "#2d8500" },
-                            }}
-                        >
-                            ยกเลิก
-                        </Button>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            disabled={isSubmitting}
-                            sx={{
-                                bgcolor: "#38b000",
-                                "&:hover": { bgcolor: "#2d8500" },
-                            }}
-                        >
-                            {isSubmitting ? (
-                                <CircularProgress size={24} color="inherit" />
-                            ) : (
-                                "บันทึกการเปลี่ยนแปลง"
-                            )}
-                        </Button>
                     </Box>
-                </Box>
-            </form>
-        </Box>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="ชื่อผู้ใช้"
+                                name="username"
+                                value={userData.username}
+                                onChange={handleInputChange}
+                                required
+                                fullWidth
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: "background.paper",
+                                    "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "primary.main"
+                                    },
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="ชื่อ"
+                                name="first_name"
+                                value={userData.first_name}
+                                onChange={handleInputChange}
+                                required
+                                fullWidth
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: "background.paper",
+                                    "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "primary.main",
+                                    },
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="นามสกุล"
+                                name="last_name"
+                                value={userData.last_name}
+                                onChange={handleInputChange}
+                                required
+                                fullWidth
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: "background.paper",
+                                    "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "primary.main",
+                                    },
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                label="เบอร์โทร"
+                                name="tel"
+                                value={userData.tel}
+                                onChange={handleInputChange}
+                                inputProps={{ pattern: "[0-9]{10}" }}
+                                fullWidth
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: "background.paper",
+                                    "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "primary.main",
+                                    },
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormControl fullWidth variant="outlined">
+                                <InputLabel>Role</InputLabel>
+                                <Select
+                                    name="role"
+                                    value={userData.role}
+                                    label="Role"
+                                    onChange={handleInputChange}
+                                    required
+                                    sx={{
+                                        backgroundColor: "background.paper",
+                                        "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "primary.main",
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="user">User</MenuItem>
+                                    <MenuItem value="admin">Admin</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        {submitError && (
+                            <Grid item xs={12}>
+                                <Alert severity="error" sx={{ mb: 2 }}>
+                                    {submitError}
+                                </Alert>
+                            </Grid>
+                        )}
+
+                        <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                            <Button
+                                type="button"
+                                onClick={handleCancel}
+                                variant="outlined"
+                                color="primary"
+                                sx={{
+                                    textTransform: "none",
+                                    "&:hover": {
+                                        backgroundColor: "rgba(144, 238, 144, 0.1)", // สีพื้นหลังเมื่อ hover (เขียวอ่อน)
+                                        borderColor: "#38b000", // สีขอบเมื่อ hover (เขียวอ่อน)
+                                        color: "#38b000", // สีตัวอักษรเมื่อ hover (เขียวอ่อน)
+                                    },
+                                }}
+                            >
+                                ยกเลิก
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                disabled={isSubmitting}
+                                sx={{
+                                    color: "#ffffff",
+                                    backgroundColor: "#38b000",
+                                    "&:hover": { backgroundColor: "#2c8c00" },
+                                }}
+                            >
+                                {isSubmitting ? (
+                                    <CircularProgress size={24} color="inherit" />
+                                ) : (
+                                    "บันทึกการเปลี่ยนแปลง"
+                                )}
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </form>
+            </Box>
+        </Container>
     );
 };
 

@@ -13,9 +13,10 @@ import {
   DataUsageRounded as DataUsageRoundedIcon,
   LogoutRounded as LogoutRoundedIcon,
   AccountBoxRounded as AccountBoxRoundedIcon,
-  Notifications as NotificationsRoundedIcon,
-  Person as PersonRoundedIcon,
-  People as PeopleIcon
+  NotificationsRounded as NotificationsRoundedIcon,
+  PersonRounded as PersonRoundedIcon,
+  PeopleRounded as PeopleRoundedIcon,
+  EditRounded as EditRoundedIcon,
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Swal from "sweetalert2"; // นำเข้า SweetAlert2
@@ -76,6 +77,9 @@ const menuItems = [
 const Navigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State สำหรับควบคุมการเปิดปิดเมนูโปรไฟล์
+  const [user, setUser] = useState(null); // State สำหรับเก็บข้อมูลผู้ใช้
+  const [loading, setLoading] = useState(true); // State สำหรับการโหลดข้อมูล
+  const [error, setError] = useState(null); // State สำหรับเก็บข้อผิดพลาด
   const location = useLocation();
   const navigate = useNavigate(); // ใช้ useNavigate สำหรับการ redirect
   const isSmallScreen = useMediaQuery(demoTheme.breakpoints.down("sm"));
@@ -85,6 +89,34 @@ const Navigation = () => {
       setIsDrawerOpen(false);
     }
   }, [isSmallScreen]);
+
+  // ดึงข้อมูลผู้ใช้จาก API
+  useEffect(() => {
+    const user_id = localStorage.getItem('user_id'); // ดึง user_id จาก localStorage
+
+    if (!user_id) {
+      setError('ไม่พบข้อมูลผู้ใช้');
+      setLoading(false);
+      return;
+    }
+
+    // ดึงข้อมูลผู้ใช้จาก API
+    fetch(`http://localhost:5000/user/${user_id}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('ไม่สามารถดึงข้อมูลผู้ใช้ได้');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setUser(data.user);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
 
   const handleMenuItemClick = () => {
     if (isSmallScreen) {
@@ -109,6 +141,7 @@ const Navigation = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
+        localStorage.removeItem('user_id'); // ลบ user_id ออกจาก localStorage
         navigate("/"); 
       }
     });
@@ -190,15 +223,23 @@ const Navigation = () => {
               }}
             >
               {/* ส่วนหัวของเมนูโปรไฟล์ */}
-              <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                <Grid item>
-                  <Avatar alt="User Avatar" src="/path/to/avatar.jpg" sx={{ width: 56, height: 56 }} />
+              {loading ? (
+                <Typography>กำลังโหลด...</Typography>
+              ) : error ? (
+                <Typography color="error">{error}</Typography>
+              ) : user ? (
+                <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                  <Grid item>
+                    <Avatar alt={user.username} src="/path/to/avatar.jpg" sx={{ width: 56, height: 56 }} />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>{user.first_name} {user.last_name}</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>{user.email}</Typography>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Typography variant="h6" sx={{ fontWeight: 700 }}>แอดมิน</Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>admin@example.com</Typography>
-                </Grid>
-              </Grid>
+              ) : (
+                <Typography>ไม่พบข้อมูลผู้ใช้</Typography>
+              )}
 
               <Divider sx={{ my: 2 }} />
 
@@ -213,9 +254,22 @@ const Navigation = () => {
                   }}
                 >
                   <ListItemIcon>
-                    <PeopleIcon fontSize="small" sx={{ color: 'black' }} />
+                    <PeopleRoundedIcon fontSize="small" sx={{ color: 'black' }} />
                   </ListItemIcon>
                   <ListItemText primary="ดูโปรไฟล์" />
+                </MenuItem>
+                <MenuItem 
+                  onClick={() => handleProfileMenuClose('/editprofile')}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  }}
+                >
+                  <ListItemIcon>
+                    <EditRoundedIcon fontSize="small" sx={{ color: 'black' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="แก้ไขโปรไฟล์" />
                 </MenuItem>
               </Box>
 
