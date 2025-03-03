@@ -152,40 +152,65 @@ const Home = () => {
     setPage(1);
   };
 
-  const handleStatusChange = (newStatus) => {
+  const handleStatusChange = async (newStatus) => {
     const accessToken = localStorage.getItem("accessToken");
     const orderId = statusModal.orderDetails.id;
 
-    fetch(`http://127.0.0.1:5000/orders/${orderId}/status`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ status: newStatus }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success) {
-          const updatedOrders = data.orders.map((order) =>
-            order.id === orderId ? { ...order, order_status: newStatus } : order
-          );
-          setData({ ...data, orders: updatedOrders });
+    const updatedOrders = data.orders.map((order) =>
+      order.id === orderId ? { ...order, order_status: newStatus } : order
+    );
+    setData({ ...data, orders: updatedOrders });
 
-          setStatusModal((prev) => ({
-            ...prev,
-            orderDetails: { ...prev.orderDetails, order_status: newStatus },
-          }));
+    // Update the status in the modal
+    setStatusModal((prev) => ({
+      ...prev,
+      orderDetails: { ...prev.orderDetails, order_status: newStatus },
+    }));
 
-          toast.success("อัปเดตสถานะสำเร็จ");
-        } else {
-          toast.error("อัปเดตสถานะไม่สำเร็จ");
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to update status:", err);
-        toast.error("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/orders/${orderId}/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
       });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        // Rollback if the request fails
+        const originalOrders = data.orders.map((order) =>
+          order.id === orderId ? { ...order, order_status: statusModal.orderDetails.order_status } : order
+        );
+        setData({ ...data, orders: originalOrders });
+
+        setStatusModal((prev) => ({
+          ...prev,
+          orderDetails: { ...prev.orderDetails, order_status: prev.orderDetails.order_status },
+        }));
+
+        toast.error("อัปเดตสถานะไม่สำเร็จ");
+      } else {
+        toast.success("อัปเดตสถานะสำเร็จ");
+      }
+    } catch (err) {
+      console.error("Failed to update status:", err);
+
+      // Rollback if there's an error
+      const originalOrders = data.orders.map((order) =>
+        order.id === orderId ? { ...order, order_status: statusModal.orderDetails.order_status } : order
+      );
+      setData({ ...data, orders: originalOrders });
+
+      setStatusModal((prev) => ({
+        ...prev,
+        orderDetails: { ...prev.orderDetails, order_status: prev.orderDetails.order_status },
+      }));
+
+      toast.error("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+    }
   };
 
   if (!data)
