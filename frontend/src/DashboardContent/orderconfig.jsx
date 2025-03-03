@@ -135,7 +135,7 @@ const OrderTable = () => {
             >
                 <Button
                     startIcon={<ArrowBackIcon />}
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate( "/configmenu" )}
                     sx={{
                         color: '#38b000',
                         fontWeight: 'bold',

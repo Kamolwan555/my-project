@@ -16,7 +16,6 @@ import {
   NotificationsRounded as NotificationsRoundedIcon,
   PersonRounded as PersonRoundedIcon,
   Person2Rounded as Person2RoundedIcon ,
-  EditRounded as EditRoundedIcon,
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Swal from "sweetalert2"; // นำเข้า SweetAlert2
@@ -257,20 +256,6 @@ const Navigation = () => {
                     <Person2RoundedIcon fontSize="small" sx={{ color: 'black' }} />
                   </ListItemIcon>
                   <ListItemText primary="ดูโปรไฟล์" />
-                </MenuItem>
-
-                <MenuItem 
-                  onClick={() => handleProfileMenuClose('/editprofile')}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5',
-                    },
-                  }}
-                >
-                  <ListItemIcon>
-                    <EditRoundedIcon fontSize="small" sx={{ color: 'black' }} />
-                  </ListItemIcon>
-                  <ListItemText primary="แก้ไขโปรไฟล์" />
                 </MenuItem>
               </Box>
             </Menu>
