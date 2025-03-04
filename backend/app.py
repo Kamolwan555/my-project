@@ -416,36 +416,31 @@ def get_user_by_id(user_id):
         }
 
         return jsonify({'user': user_data}), 200
-    
+@app.route('/orders/<int:order_id>/status', methods=['PUT'])
+@jwt_required()
+def update_order_status(order_id):
+    current_user = get_jwt_identity()  # ตรวจสอบตัวตนของผู้ใช้
 
-# @app.route('/orders/<int:order_id>', methods=['PUT'])
-# def update_order(order_id):
-#     order = Order.query.get(order_id)
-#     if not order:
-#         return jsonify({"error": "Order not found"}), 404
-    
-#     data = request.json
-#     order.customer_name = data.get('customer_name', order.customer_name)
-#     order.product = data.get('product', order.product)
-#     order.quantity = data.get('quantity', order.quantity)
-    
-#     db.session.commit()
-#     return jsonify({"message": "Order updated successfully", "order": {
-#         "id": order.id,
-#         "customer_name": order.customer_name,
-#         "product": order.product,
-#         "quantity": order.quantity
-#     }})
+    # รับข้อมูล JSON จากคำขอ
+    data = request.get_json()
+    new_status = data.get('status')
 
-# @app.route('/orders/<int:order_id>', methods=['DELETE'])
-# def delete_order(order_id):
-#     order = Order.query.get(order_id)
-#     if not order:
-#         return jsonify({"error": "Order not found"}), 404
-    
-#     db.session.delete(order)
-#     db.session.commit()
-#     return jsonify({"message": "Order deleted successfully"})
+    if not new_status:
+        return jsonify({"error": "Status is required"}), 400
+
+    # ใช้ get_db() ในการเปิด session กับฐานข้อมูล
+    with get_db() as db_session:
+        # ค้นหาคำสั่งซื้อที่ต้องการอัปเดต
+        order = db_session.query(Order).filter(Order.order_id == order_id).first()
+
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+
+        # อัปเดตสถานะคำสั่งซื้อ
+        order.order_status = new_status
+        db_session.commit()
+
+    return jsonify({"success": True, "message": "Order status updated successfully"})
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port='5000',debug=True)
 
