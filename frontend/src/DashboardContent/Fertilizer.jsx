@@ -26,7 +26,12 @@ const SensorCard = () => {
   useEffect(() => {
     const fetchSensorData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/sensor');
+        const token = localStorage.getItem("accessToken")
+        const response = await axios.get('http://localhost:5000/sensor', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
         setSensorData(response.data.ssr);
       } catch (error) {
         console.error('Error fetching sensor data:', error);

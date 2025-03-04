@@ -77,7 +77,7 @@ const CropSelector = () => {
         <Box sx={{ bgcolor: "background.paper", p: 4, borderRadius: 2 }}>
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" component="p">
-              เลือกพืชและค่าธาตุอาหาร
+              <strong>เลือกพืชและค่าธาตุอาหาร</strong>
             </Typography>
           </Box>
 

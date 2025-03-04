@@ -30,6 +30,7 @@ import HourglassBottomRoundedIcon from "@mui/icons-material/HourglassBottomRound
 import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
 import SensorsOffRoundedIcon from "@mui/icons-material/SensorsOffRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import axios from "axios";
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -113,15 +114,10 @@ const Home = () => {
       }
   
       try {
-        const response = await fetch(`http://127.0.0.1:5000/dashboard`, {
-          method: "GET",
+        const response = await axios.get("http://127.0.0.1:5000/dashboard", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-  
-        if (!response.ok) throw new Error("Failed to fetch data");
-  
-        const res = await response.json();
-        setData(res);
+        setData(response.data);
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
         toast.error("ไม่สามารถโหลดข้อมูลได้");
@@ -130,6 +126,7 @@ const Home = () => {
   
     fetchDashboard();
   }, []);
+  
 
   const handleRowClick = (record) => {
     setStatusModal({
@@ -242,22 +239,22 @@ const Home = () => {
         {[{
           title: "รายการวันนี้",
           value: data?.summary.total_orders_today || 0,
-          color: "#1e96fc",
+          color: "#4ee304",
           icon: <ShoppingCartRoundedIcon />,
         },{
           title: "รายการที่รอการตอบรับ",
           value: data?.summary.in_progress_count || 0,
-          color: "#38b000",
+          color: "#e3e304",
           icon: <HourglassBottomRoundedIcon />,
         },{
           title: "เซนเซอร์ที่ว่าง",
           value: data?.summary.status_free || 0,
-          color: "#ff8800",
+          color: "#5c5c5d",
           icon: <SensorsRoundedIcon />,
         },{
           title: "เซนเซอร์ที่ใช้งาน",
           value: data?.summary.status_progress || 0,
-          color: "#f25c54",
+          color: "#0495e3",
           icon: <SensorsOffRoundedIcon />,
         }].map((item) => (
           <Card key={item.title} sx={{ backgroundColor: item.color, padding: 2, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", borderRadius: 2, color: "white", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>

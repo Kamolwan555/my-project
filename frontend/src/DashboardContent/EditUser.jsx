@@ -34,7 +34,14 @@ const EditUser = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/user/${userid}`);
+                const token = localStorage.getItem("accessToken")
+                const response = await fetch(`http://localhost:5000/user/${userid}`, {
+                    method: 'GET', 
+                    headers: {
+                      'Authorization': `Bearer ${token}`,
+                      'Content-Type': 'application/json' 
+                    }
+                  });
                 if (!response.ok) throw new Error("Failed to fetch user data");
                 const data = await response.json();
                 const user = data.user;
@@ -66,9 +73,11 @@ const EditUser = () => {
         setSubmitError(null);
 
         try {
+            const token = localStorage.getItem("accessToken")
             const response = await fetch(`http://localhost:5000/user/${userid}`, {
                 method: "PUT",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(userData),

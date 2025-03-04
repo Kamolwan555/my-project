@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, Menu, MenuItem, Grid, Avatar
+  Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, Menu, MenuItem, Grid, Avatar,Badge
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -19,6 +19,9 @@ import {
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Swal from "sweetalert2"; // นำเข้า SweetAlert2
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+
 
 const demoTheme = createTheme({
   typography: {
@@ -61,46 +64,95 @@ const demoTheme = createTheme({
 });
 
 const menuItems = [
-  { kind: 'header', title: 'เมนูหลัก' }, 
-  { key: "/home", label: "หน้าหลัก", icon: <HomeRoundedIcon />, link: "/home" },
-  { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/cropcal" },
-  { key: "/order", label: "คำสั่งซื้อ", icon: <ShoppingCartRoundedIcon />, link: "/order" },
-  { kind: 'header', title: 'ตรวจสอบข้อมูล' }, 
-  { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainRoundedIcon />, link: "/soil" },
-  { key: "/fertilizer", label: "ตรวจสอบปุ๋ย", icon: <LocalFloristRoundedIcon />, link: "/fertilizer" },
-  { key: "/soilcard", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soilcard" },
-  { kind: 'header', title: 'การตั้งค่า' }, 
-  { key: "/logout", label: "ออกจากระบบ", icon: <LogoutRoundedIcon />, link: "/logout" },
+  { kind: 'header', title: 'เมนูหลัก', roles: ["Administrator", "Farmer","Customer"] }, 
+  { key: "/home", label: "หน้าหลัก", icon: <HomeRoundedIcon />, link: "/home", roles: ["Administrator", "Farmer","Customer"] },
+  { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/cropcal", roles: ["Administrator", "Farmer","Customer"] },
+  { key: "/order", label: "คำสั่งซื้อ", icon: <ShoppingCartRoundedIcon />, link: "/order", roles: ["Administrator", "Farmer","Customer"]},
+  { kind: 'header', title: 'ตรวจสอบข้อมูล', roles: ["Administrator", "Farmer","Customer"] }, 
+  { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainRoundedIcon />, link: "/soil", roles: ["Administrator", "Farmer"] },
+  { key: "/fertilizer", label: "ตรวจสอบปุ๋ย", icon: <LocalFloristRoundedIcon />, link: "/fertilizer", roles: ["Administrator", "Farmer"] },
+  { key: "/soilcard", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soilcard", roles: ["Administrator", "Farmer","Customer"] },
+  { kind: 'header', title: 'การตั้งค่า', roles: ["Administrator", "Farmer","Customer"] }, 
+  { key: "/logout", label: "ออกจากระบบ", icon: <LogoutRoundedIcon />, link: "/logout", roles: ["Administrator", "Farmer","Customer"] },
 ];
 
 const Navigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State สำหรับควบคุมการเปิดปิดเมนูโปรไฟล์
   const [user, setUser] = useState(null); // State สำหรับเก็บข้อมูลผู้ใช้
+  const [userrole,setUserrole] = useState(null)
   const [loading, setLoading] = useState(true); // State สำหรับการโหลดข้อมูล
   const [error, setError] = useState(null); // State สำหรับเก็บข้อผิดพลาด
   const location = useLocation();
   const navigate = useNavigate(); // ใช้ useNavigate สำหรับการ redirect
   const isSmallScreen = useMediaQuery(demoTheme.breakpoints.down("sm"));
-
+  const [alertCount, setAlertCount] = useState(0);
   useEffect(() => {
     if (isSmallScreen) {
       setIsDrawerOpen(false);
     }
   }, [isSmallScreen]);
+  const [alerts, setAlerts] = useState([]);
+  const [anchorEl1, setAnchorEl1] = useState(null);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const eventSource = new EventSource(`http://localhost:5000/sensors/alerts?jwt=${token}`);
+    eventSource.onmessage = (event) => {
+      try {
+        const alertData = JSON.parse(event.data);
+        // Increase alert count
+        setAlertCount((prevCount) => prevCount + 1);
+        setAlerts((prevAlerts) => [...prevAlerts, alertData]);
+
+        toast.error(`Alert: ${alertData.alert}`, {
+          position: "top-right",
+          autoClose: false,
+          closeOnClick: true,
+        });
+      } catch (error) {
+        console.error("Error parsing alert data:", error);
+      }
+    };
+
+    eventSource.onerror = (err) => {
+      console.error("EventSource error:", err);
+      eventSource.close();
+    };
+
+    // Clean up on component unmount
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
+  const handleNotificationsClick = (event) => {
+    setAnchorEl1(event.currentTarget);
+  };
+
+  const handleNotificationsClose = () => {
+    setAnchorEl1(null);
+  };
+
+
+ 
 
   // ดึงข้อมูลผู้ใช้จาก API
   useEffect(() => {
     const user_id = localStorage.getItem('user_id'); // ดึง user_id จาก localStorage
-
+    setUserrole(localStorage.getItem('roleName'))
     if (!user_id) {
       setError('ไม่พบข้อมูลผู้ใช้');
       setLoading(false);
       return;
     }
 
-    // ดึงข้อมูลผู้ใช้จาก API
-    fetch(`http://localhost:5000/user/${user_id}`)
+    const token = localStorage.getItem("accessToken")
+    fetch(`http://localhost:5000/user/${user_id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error('ไม่สามารถดึงข้อมูลผู้ใช้ได้');
@@ -158,7 +210,13 @@ const Navigation = () => {
       navigate(path); // นำทางไปยัง path ที่กำหนด
     }
   };
-
+  const handleClearAlerts = () => {
+    setAlerts([]);  
+    toast.dismiss();
+    setAlertCount(0);
+    handleNotificationsClose(); 
+  };
+  
   return (
     <ThemeProvider theme={demoTheme}>
       <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -187,9 +245,33 @@ const Navigation = () => {
 
             {/* ปุ่ม Notification และ Profile */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton color="inherit" aria-label="notifications">
-                <NotificationsRoundedIcon />
+            <IconButton color="inherit" aria-label="notifications" onClick={handleNotificationsClick}>
+                <Badge badgeContent={alertCount} color="secondary">
+                  <NotificationsRoundedIcon />
+                </Badge>
               </IconButton>
+              <ToastContainer />
+              <Menu
+                anchorEl={anchorEl1}
+                open={Boolean(anchorEl1)}
+                onClose={handleNotificationsClose}
+              >
+                {alerts.length > 0 ? (
+                  <>
+                    {alerts.map((alert, index) => (
+                      <MenuItem key={index} onClick={handleNotificationsClose}>
+                        {alert.alert}
+                      </MenuItem>
+                    ))}
+                    <MenuItem onClick={handleClearAlerts} sx={{ color: 'red' }}>
+                      Clear Alerts
+                    </MenuItem>
+                  </>
+                ) : (
+                  <MenuItem onClick={handleNotificationsClose}>No alerts</MenuItem>
+                )}
+              </Menu>
+
               <IconButton 
                 color="inherit" 
                 aria-label="profile" 
@@ -257,6 +339,17 @@ const Navigation = () => {
                   </ListItemIcon>
                   <ListItemText primary="ดูโปรไฟล์" />
                 </MenuItem>
+                <MenuItem 
+                  onClick={() => '/logout'}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ color: "inherit" }}><LogoutRoundedIcon /></ListItemIcon>
+                  <ListItemText primary="ออกจากระบบ" />
+                </MenuItem>
               </Box>
             </Menu>
           </Toolbar>
@@ -283,6 +376,9 @@ const Navigation = () => {
           <Box sx={{ flexGrow: 1 }}>
             <List>
               {menuItems.map((item) => {
+                if (item.roles && (!userrole || !item.roles.includes(userrole))) {
+                  return null;
+                }
                 if (item.kind === 'header') {
                   return (
                     <Typography
@@ -325,8 +421,8 @@ const Navigation = () => {
           </Box>
 
           <Divider />
-
-          <ListItem
+          {userrole == 'Administrator' && (
+            <ListItem
             button
             key="/userconfig"
             component={Link}
@@ -345,6 +441,8 @@ const Navigation = () => {
             </ListItemIcon>
             <ListItemText primary="การตั้งค่าผู้ใช้" />
           </ListItem>
+          )}
+          
         </Drawer>
 
         <Box

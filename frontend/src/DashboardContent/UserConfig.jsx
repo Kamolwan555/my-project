@@ -27,7 +27,14 @@ const UserTable = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("http://localhost:5000/user");
+                const token = localStorage.getItem("accessToken")
+                const response = await fetch(`http://localhost:5000/user`, {
+                    method: 'GET', 
+                    headers: {
+                      'Authorization': `Bearer ${token}`,
+                      'Content-Type': 'application/json' 
+                    }
+                  });
                 if (!response.ok) {
                     throw new Error("Failed to fetch data");
                 }

@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,abort,Response
+import time
 #from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token,jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token,jwt_required, get_jwt_identity, get_jwt
 # from dotenv import load_dotenv
 from flask_cors import CORS
 from datetime import datetime, timedelta,timezone
@@ -10,6 +11,10 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db import *
+import json
+import threading
+import paho.mqtt.client as mqtt
+from functools import wraps
 
 # load_dotenv()
 
@@ -18,13 +23,30 @@ from db import *
 
 app = Flask(__name__)
 CORS(app)
+jwt = JWTManager(app)
 # Configure database URI and secret key
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:362545@localhost:5432/mydatabase'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgress:password@db:5432/pui_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'
+app.config['JWT_ALGORITHM'] = 'HS256'  
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24) 
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)  
+app.config['JWT_TOKEN_LOCATION'] = ['headers', 'query_string']
 bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
+
+
+def roles_required(*roles):
+    def decorator(func):
+        @wraps(func)
+        @jwt_required()
+        def wrapper(*args, **kwargs):
+            claims = get_jwt()
+            if claims.get('role') not in roles:
+                return jsonify({'error': 'Access forbidden: insufficient privileges'}), 403
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
 
 def init_db(uri):
     # create_database_if_not_exists(uri)
@@ -38,6 +60,10 @@ def init_db(uri):
     if not admin_role:
         admin_role = Role(role_name='Administrator')
         session.add(admin_role)
+        customer_role = Role(role_name='Customer')
+        session.add(customer_role)
+        Farmer_role = Role(role_name='Farmer')
+        session.add(Farmer_role)
         session.commit()  
 
     if not session.query(User).filter_by(email='admin@admin.com').first():
@@ -88,7 +114,7 @@ def register():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         # Default role assignment
-        default_role_id = 1  # Assuming 1001 is the role_id for the default role
+        default_role_id = 2  # Assuming 1001 is the role_id for the default role
 
         # Check if the default role exists in the Role table
         default_role = db_session.query(Role).filter_by(role_id=default_role_id).first()
@@ -140,10 +166,11 @@ def login():
 
         # Generate JWT access token
         access_token = create_access_token(
-            identity=str(user.user_id),  # Convert user.id to string if needed
-            additional_claims={'email': user.email, 'role': role_name},
-            expires_delta=timedelta(hours=2)
+            identity=str(user.user_id),
+            expires_delta=timedelta(hours=2),
+            additional_claims={'role': role_name, 'email': user.email}
         )
+
 
         return jsonify({
             'access_token': access_token,
@@ -152,7 +179,8 @@ def login():
         }), 200
 
 @app.route('/order/<string:order_id>', methods=['GET'])
-# @jwt_required()
+@jwt_required()
+@roles_required('Administrator','Farmer')
 def get_order(order_id):
     with get_db() as db_session:
         order = db_session.query(Order).filter_by(order_id=order_id).first()
@@ -174,7 +202,8 @@ def get_order(order_id):
         return jsonify({'order': order_data}), 200
 
 @app.route('/order/<string:order_id>', methods=['PUT'])
-# @jwt_required()
+@jwt_required()
+@roles_required('Administrator','Farmer')
 def update_order(order_id):
     data = request.get_json()
     name = data.get('name')
@@ -224,7 +253,8 @@ def update_order(order_id):
 
 # Route to place an order
 @app.route('/order', methods=['POST'])
-# @jwt_required()
+@jwt_required()
+@roles_required('Administrator','Farmer','Customer')
 def place_order():
     try:
         data = request.get_json()
@@ -261,6 +291,8 @@ def place_order():
         return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
 
 @app.route('/orderlist', methods=['GET'])
+@jwt_required()
+@roles_required('Administrator','Farmer','Customer')
 def get_all_orders():
     # Fetch all orders from the database
     with get_db() as db_session:
@@ -282,7 +314,8 @@ def get_all_orders():
 
         return jsonify({'orders': orders_list}), 200
 @app.route('/dashboard', methods=['GET'])
-@jwt_required()  # Ensure that a valid JWT is required to access the route
+@jwt_required()
+@roles_required('Administrator','Farmer','Customer')
 def get_orders_today_summary():
     try:
         # Calculate today's time range in UTC
@@ -355,6 +388,8 @@ def get_orders_today_summary():
         return jsonify({'error': 'An error occurred while processing the request.', 'message': str(e)}), 500
 
 @app.route('/user', methods=['GET'])
+@jwt_required()
+@roles_required('Administrator')
 def get_all_user():
     # Fetch all orders from the database
     with get_db() as db_session:
@@ -377,6 +412,8 @@ def get_all_user():
         return jsonify({'ussr': userlist}), 200
 
 @app.route('/sensor', methods=['GET'])
+@jwt_required()
+@roles_required('Administrator','Farmer')
 def get_all_sensor():
     # Fetch all orders from the database
     with get_db() as db_session:
@@ -397,7 +434,8 @@ def get_all_sensor():
         return jsonify({'ssr': sensr_list}), 200
 
 @app.route('/user/<int:user_id>', methods=['GET'])
-# @jwt_required()
+@jwt_required()
+@roles_required('Administrator','Farmer','Customer')
 def get_user_by_id(user_id):
     with get_db() as db_session:
         user = db_session.query(User).filter_by(user_id=user_id).first()
@@ -418,6 +456,7 @@ def get_user_by_id(user_id):
         return jsonify({'user': user_data}), 200
 @app.route('/orders/<int:order_id>/status', methods=['PUT'])
 @jwt_required()
+@roles_required('Administrator','Farmer')
 def update_order_status(order_id):
     current_user = get_jwt_identity()  # ตรวจสอบตัวตนของผู้ใช้
 
@@ -440,7 +479,109 @@ def update_order_status(order_id):
         order.order_status = new_status
         db_session.commit()
 
-    return jsonify({"success": True, "message": "Order status updated successfully"})
+# In-memory storage for sensor data
+sensor_data_history = []
+
+# Load environment variables (with defaults for local testing)
+MQTT_PROTOCOL = os.getenv("MQTT_PROTOCAL", "mqtt")
+MQTT_HOST = os.getenv("MQTT_HOST", "203.158.253.160")
+MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
+MQTT_TOPIC = os.getenv("MQTT_TOPIC", "sensor/data")
+
+# Generate a unique client id
+client_id = f"mqtt_{os.urandom(4).hex()}"
+
+# Build connection URL (for logging purposes)
+connect_url = f"{MQTT_PROTOCOL}://{MQTT_HOST}:{MQTT_PORT}"
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print(f"Connected to MQTT broker {connect_url}")
+        client.subscribe(MQTT_TOPIC)
+        print(f"Subscribed to topic: {MQTT_TOPIC}")
+    else:
+        print(f"Failed to connect, return code {rc}")
+
+def on_message(client, userdata, msg):
+    try:
+        message_str = msg.payload.decode()
+        sensor_data = json.loads(message_str)
+        
+        # Process sensor data if it is not empty.
+        if sensor_data:
+            sensor_id = list(sensor_data.keys())[0]
+            data = sensor_data[sensor_id]
+            
+            # Create a standardized JSON object with a timestamp.
+            new_data = {
+                "sensorId": sensor_id,
+                "soil_temperature": data.get("soilTemperature"),
+                "soil_moisture": data.get("soilHumidity"),
+                "ec": data.get("soilEC"),
+                #"ec": 0, #For testAlert
+                "ph": data.get("soilPH"),
+                "nitrogen": data.get("soilN"),
+                "potassium": data.get("soilP"),
+                "phosphorus": data.get("soilK"),
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            sensor_data_history.append(new_data)
+            print("Received and processed data:", new_data)
+    except Exception as e:
+        print("Error processing MQTT message:", e)
+
+# Set up MQTT client and assign callbacks
+mqtt_client = mqtt.Client(client_id=client_id, clean_session=True)
+mqtt_client.on_connect = on_connect
+mqtt_client.on_message = on_message
+
+def start_mqtt():
+    mqtt_client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
+    mqtt_client.loop_forever()
+
+# Start the MQTT loop in a separate thread
+mqtt_thread = threading.Thread(target=start_mqtt)
+mqtt_thread.daemon = True  # Allows the program to exit even if thread is running
+mqtt_thread.start()
+
+@app.route("/sensors", methods=["GET"])
+@jwt_required()
+@roles_required('Administrator','Farmer')
+def get_latest_sensor_data():
+    if sensor_data_history:
+        return jsonify(sensor_data_history[-1])
+    abort(404, description="No sensor data available")
+
+# REST API endpoint to get the full sensor data history
+@app.route("/sensors/history", methods=["GET"])
+@jwt_required()
+@roles_required('Administrator','Farmer')
+def get_sensor_data_history():
+    return jsonify(sensor_data_history)
+
+@app.route("/sensors/alerts", methods=["GET"])
+@jwt_required()
+@roles_required('Administrator','Farmer','Customer')
+def sensor_alerts():
+    def event_stream():
+        last_index = len(sensor_data_history)
+        while True:
+            if len(sensor_data_history) > last_index:
+                new_entries = sensor_data_history[last_index:]
+                for data in new_entries:
+                    
+                    if data.get("ec") <= 0:
+                        alert_message = {
+                            "alert": "Sensor Error",
+                            "data": data
+                        }
+                        yield f"data: {json.dumps(alert_message)}\n\n"
+                last_index = len(sensor_data_history)
+         
+            time.sleep(1)
+    return Response(event_stream(), mimetype="text/event-stream")
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port='5000',debug=True)
 

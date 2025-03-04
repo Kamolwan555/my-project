@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { ThemeProvider } from "@mui/material/styles";
 
+
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
 const { Text, Title, Link } = Typography;
@@ -22,56 +23,62 @@ export default function Login() {
   const screens = useBreakpoint();
   const navigate = useNavigate();
 
-  const login = (usernameOrEmail, password, callback) => {
-    fetch(`http://127.0.0.1:5000/login`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        username_or_email: usernameOrEmail,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.access_token) {
-          localStorage.setItem("accessToken", res.access_token);
-          localStorage.setItem("roleName", res.role_name); // Storing role_name
-          localStorage.setItem("user_id", res.user_id); // Storing role_name
-          callback();
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'เข้าสู่ระบบไม่สำเร็จ',
-            text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
-            confirmButtonText: 'ลองอีกครั้ง',
-            confirmButtonColor: '#32CD32',
-            customClass: {
-              popup: 'sarabun-font', // Apply Sarabun font to the popup
-              title: 'sarabun-font', // Apply Sarabun font to the title
-              content: 'sarabun-font', // Apply Sarabun font to the content
-              confirmButton: 'sarabun-font', // Apply Sarabun font to the confirm button
-            },
-          });
-        }
-      })
-      .catch(() => {
+  const login = async (usernameOrEmail, password, callback) => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username_or_email: usernameOrEmail,
+          password: password,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Access the token using the correct property name
+        const accessToken = data.access_token;
+  
+        // Store the raw token and other details in localStorage
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("roleName", data.role_name);
+        localStorage.setItem("user_id", data.user_id);
+        callback();
+      } else {
         Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาด',
-          text: 'มีบางอย่างผิดพลาด กรุณาลองอีกครั้งในภายหลัง',
-          confirmButtonText: 'ตกลง',
-          confirmButtonColor: '#32CD32',
+          icon: "error",
+          title: "เข้าสู่ระบบไม่สำเร็จ",
+          text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+          confirmButtonText: "ลองอีกครั้ง",
+          confirmButtonColor: "#32CD32",
           customClass: {
-            popup: 'sarabun-font', // Apply Sarabun font to the popup
-            title: 'sarabun-font', // Apply Sarabun font to the title
-            content: 'sarabun-font', // Apply Sarabun font to the content
-            confirmButton: 'sarabun-font', // Apply Sarabun font to the confirm button
+            popup: "sarabun-font",
+            title: "sarabun-font",
+            content: "sarabun-font",
+            confirmButton: "sarabun-font",
           },
         });
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "มีบางอย่างผิดพลาด กรุณาลองอีกครั้งในภายหลัง",
+        confirmButtonText: "ตกลง",
+        confirmButtonColor: "#32CD32",
+        customClass: {
+          popup: "sarabun-font",
+          title: "sarabun-font",
+          content: "sarabun-font",
+          confirmButton: "sarabun-font",
+        },
       });
+    }
   };
+  
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);

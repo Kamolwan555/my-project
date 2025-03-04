@@ -32,7 +32,12 @@ const OrderTable = () => {
         const fetchOrders = async () => {
             setLoading(true);
             try {
-                const response = await axios.get("http://localhost:5000/orderlist");
+                const token = localStorage.getItem("accessToken")
+                const response = await axios.get('http://localhost:5000/orderlist', {
+                    headers: {
+                      'Authorization': `Bearer ${token}`,
+                    }
+                  });
                 if (response.status === 200) {
                     setOrders(response.data.orders);
                 } else {

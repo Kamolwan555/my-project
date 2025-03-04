@@ -4,19 +4,25 @@ import { Box, Typography, Paper, Grid, Avatar, Divider, Skeleton, useTheme } fro
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [userrole,setUserrole] = useState(null)
     const [error, setError] = useState(null);
     const theme = useTheme();
 
     useEffect(() => {
         const user_id = localStorage.getItem('user_id');
-
+        setUserrole(localStorage.getItem('roleName'))
         if (!user_id) {
             setError('ไม่พบข้อมูลผู้ใช้');
             setLoading(false);
             return;
         }
-
-        fetch(`http://localhost:5000/user/${user_id}`)
+        const token = localStorage.getItem("accessToken")
+        fetch(`http://localhost:5000/user/${user_id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('ไม่สามารถดึงข้อมูลผู้ใช้ได้');
@@ -76,7 +82,7 @@ const ProfilePage = () => {
                                 {user.first_name} {user.last_name}
                             </Typography>
                             <Typography variant="subtitle1" sx={{ color: theme.palette.text.secondary }}>
-                                {user.role === 1 ? 'Administrator' : 'User'}
+                                {userrole}
                             </Typography>
                         </Box>
                         <Divider sx={{ my: 2 }} />
