@@ -143,7 +143,7 @@ export default function SignUpPage() {
               rules={[
                 {
                   type: "username",
-                  required: true,
+                  required: false,
                   message: "กรุณาใส่ชื่อผู้ใช้ของคุณ!",
                 },
               ]}
@@ -166,7 +166,7 @@ export default function SignUpPage() {
               rules={[
                 {
                   type: "email",
-                  required: true,
+                  required: false,
                   message: "กรุณาใส่อีเมลของคุณ!",
                 },
               ]}
@@ -189,7 +189,7 @@ export default function SignUpPage() {
               rules={[
                 {
                   type: "tel",
-                  required: true,
+                  required: false,
                   message: "กรุณาใส่เบอร์โทรศัพท์ของคุณ!",
                 },
               ]}
@@ -214,7 +214,7 @@ export default function SignUpPage() {
                   rules={[
                     {
                       type: "text",
-                      required: true,
+                      required: false,
                       message: "กรุณาใส่ชื่อของคุณ!",
                     },
                   ]}
@@ -239,7 +239,7 @@ export default function SignUpPage() {
                   rules={[
                     {
                       type: "text",
-                      required: true,
+                      required: false,
                       message: "กรุณาใส่นามสกุลของคุณ!",
                     },
                   ]}
@@ -263,7 +263,7 @@ export default function SignUpPage() {
               name="password"
               rules={[
                 {
-                  required: true,
+                  required: false,
                   message: "กรุณาใส่รหัสผ่านของคุณ!",
                 },
               ]}
@@ -288,7 +288,7 @@ export default function SignUpPage() {
               name="confirm-password"
               rules={[
                 {
-                  required: true,
+                  required: false,
                   message: "กรุณาใส่รหัสผ่านของคุณ!",
                 },
               ]}

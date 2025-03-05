@@ -36,47 +36,35 @@ export default function Login() {
         }),
       });
   
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
       const data = await response.json();
   
-      if (response.ok) {
-        // Access the token using the correct property name
-        const accessToken = data.access_token;
-  
-        // Store the raw token and other details in localStorage
-        localStorage.setItem("accessToken", accessToken);
+      if (data.access_token) {
+        localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("roleName", data.role_name);
         localStorage.setItem("user_id", data.user_id);
         callback();
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "เข้าสู่ระบบไม่สำเร็จ",
-          text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
-          confirmButtonText: "ลองอีกครั้ง",
-          confirmButtonColor: "#32CD32",
-          customClass: {
-            popup: "sarabun-font",
-            title: "sarabun-font",
-            content: "sarabun-font",
-            confirmButton: "sarabun-font",
-          },
-        });
+        throw new Error("No access token received");
       }
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "มีบางอย่างผิดพลาด กรุณาลองอีกครั้งในภายหลัง",
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#32CD32",
-        customClass: {
-          popup: "sarabun-font",
-          title: "sarabun-font",
-          content: "sarabun-font",
-          confirmButton: "sarabun-font",
-        },
-      });
-    }
+    } catch (err) { // eslint-disable-line no-unused-vars
+  Swal.fire({
+    icon: "error",
+    title: "เกิดข้อผิดพลาด",
+    text: "มีบางอย่างผิดพลาด กรุณาลองอีกครั้งในภายหลัง",
+    confirmButtonText: "ตกลง",
+    confirmButtonColor: "#32CD32",
+    customClass: {
+      popup: "sarabun-font",
+      title: "sarabun-font",
+      content: "sarabun-font",
+      confirmButton: "sarabun-font",
+    },
+  });
+}
   };
   
 

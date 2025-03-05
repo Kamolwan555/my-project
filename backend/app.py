@@ -96,7 +96,7 @@ def register():
     username = data.get('username')  # Ensure username is passed in the request
 
     if not email or not password or not first_name or not last_name or not tel or not username:
-        return jsonify({'error': 'All fields are required'}), 400
+        return jsonify({'error': 'กรุณากรอกข้อมูลให้ครบทุกช่อง'}), 400
 
     # Validate email format
     if '@' not in email or '.' not in email:
@@ -119,7 +119,7 @@ def register():
         # Check if the default role exists in the Role table
         default_role = db_session.query(Role).filter_by(role_id=default_role_id).first()
         if not default_role:
-            return jsonify({'error': 'Default role does not exist'}), 400
+            return jsonify({'error': 'ไม่พบบทบาทเริ่มต้นในระบบ'}), 400
 
         # Create new user and assign the correct role_id
         new_user = User(
@@ -134,7 +134,7 @@ def register():
         db_session.add(new_user)
         db_session.commit()
 
-        return jsonify({'message': 'User registered successfully'}), 201
+        return jsonify({'message': 'ลงทะเบียนผู้ใช้สำเร็จ'}), 201
 
 
 @app.route('/login', methods=['POST'])
