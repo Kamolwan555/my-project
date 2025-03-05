@@ -107,12 +107,12 @@ const Home = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       const accessToken = localStorage.getItem("accessToken");
-  
+
       if (!accessToken) {
         toast.error("กรุณาล็อกอินก่อน");
         return;
       }
-  
+
       try {
         const response = await axios.get("http://127.0.0.1:5000/dashboard", {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -123,10 +123,10 @@ const Home = () => {
         toast.error("ไม่สามารถโหลดข้อมูลได้");
       }
     };
-  
+
     fetchDashboard();
   }, []);
-  
+
 
   const handleRowClick = (record) => {
     setStatusModal({
@@ -239,22 +239,22 @@ const Home = () => {
         {[{
           title: "รายการวันนี้",
           value: data?.summary.total_orders_today || 0,
-          color: "#4ee304",
+          color: "#1e96fc",
           icon: <ShoppingCartRoundedIcon />,
-        },{
+        }, {
           title: "รายการที่รอการตอบรับ",
           value: data?.summary.in_progress_count || 0,
-          color: "#e3e304",
+          color: "#38b000",
           icon: <HourglassBottomRoundedIcon />,
-        },{
+        }, {
           title: "เซนเซอร์ที่ว่าง",
           value: data?.summary.status_free || 0,
-          color: "#5c5c5d",
+          color: "#ff8800",
           icon: <SensorsRoundedIcon />,
-        },{
+        }, {
           title: "เซนเซอร์ที่ใช้งาน",
           value: data?.summary.status_progress || 0,
-          color: "#0495e3",
+          color: "#f25c54",
           icon: <SensorsOffRoundedIcon />,
         }].map((item) => (
           <Card key={item.title} sx={{ backgroundColor: item.color, padding: 2, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", borderRadius: 2, color: "white", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
@@ -275,19 +275,29 @@ const Home = () => {
         <TableContainer component={Paper} sx={{ marginTop: 2, borderRadius: 2, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
           <Table>
             <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.title}>{column.title}</TableCell>
+              <TableRow sx={{ backgroundColor: "#38b000" }}> {/* กำหนดสีพื้นหลังของแถว Header */}
+                {columns.map((col) => (
+                  <TableCell
+                    key={col.field || col.key}
+                    sx={{
+                      color: "white", // สีตัวอักษร
+                      fontWeight: "700", // ตัวหนา
+                      fontSize: "14px", // ขนาดตัวอักษร
+                    }}
+                  >
+                    {col.title}
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.orders.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((order) => (
+              {data?.orders.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((order, index) => (
                 <TableRow
                   key={order.id}
                   sx={{
                     cursor: "pointer",
                     "&:hover": { backgroundColor: "#f2f2f2" },
+                    backgroundColor: index % 2 === 0 ? "#ffffff" : "#f9f9f9", // สลับสีพื้นหลัง
                   }}
                   onClick={() => handleRowClick(order)}
                 >
@@ -304,47 +314,128 @@ const Home = () => {
             count={Math.ceil(data.orders.length / itemsPerPage)}
             page={page}
             onChange={handlePageChange}
-            color="primary"
+            sx={{
+              "& .MuiPaginationItem-root": {
+                fontSize: 14,
+              },
+              marginLeft: 2,
+            }}
           />
         </Box>
       </div>
       {/* Status Modal */}
       <Modal open={statusModal.visible} onClose={closeModal}>
-        <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "white", borderRadius: 2, boxShadow: 24, p: 4 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, color: "#1e96fc", textAlign: "center" }}>จัดการสถานะคำสั่งซื้อ</Typography>
-          <Divider sx={{ marginY: 2 }} />
-          <Typography variant="body1">
-            <strong>คำสั่งซื้อ ID:</strong> {orderDetails.id}
-          </Typography>
-          <Typography variant="body1">
-            <strong>ชื่อผู้สั่งซื้อ:</strong> {orderDetails.name}
-          </Typography>
-          <Typography variant="body1">
-            <strong>สถานะ:</strong> {orderDetails.order_status}
-          </Typography>
-          <FormControl fullWidth sx={{ marginTop: 2 }}>
-            <InputLabel>เลือกสถานะใหม่</InputLabel>
-            <Select
-              value={orderDetails.order_status}
-              onChange={(e) => setStatusModal({ ...statusModal, orderDetails: { ...orderDetails, order_status: e.target.value } })}
-            >
-              {["In progress", "Completed", "Pending", "Canceled"].map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Box sx={{ marginTop: 2, display: "flex", justifyContent: "space-between" }}>
-            <Button variant="contained" color="primary" onClick={() => handleStatusChange(orderDetails.order_status)}>
-              อัปเดตสถานะ
-            </Button>
-            <IconButton onClick={closeModal}>
-              <CloseRoundedIcon />
-            </IconButton>
-          </Box>
-        </Box>
-      </Modal>
+  <Box sx={{ 
+    position: "absolute", 
+    top: "50%", 
+    left: "50%", 
+    transform: "translate(-50%, -50%)", 
+    width: 500, // เพิ่มความกว้างของ Modal
+    backgroundColor: "white", 
+    borderRadius: 3, // ขอบโค้งมากขึ้น
+    boxShadow: 24, 
+    p: 4,
+    outline: "none", // ลบเส้นขอบเมื่อ Modal ถูกโฟกัส
+  }}>
+    {/* ปุ่มปิด Modal */}
+    <IconButton
+      aria-label="close"
+      onClick={closeModal}
+      sx={{
+        position: 'absolute',
+        right: 16,
+        top: 16,
+        color: (theme) => theme.palette.grey[600],
+        '&:hover': {
+          backgroundColor: 'rgba(0, 0, 0, 0.04)', // เพิ่มเอฟเฟกต์เมื่อ hover
+        },
+      }}
+    >
+      <CloseRoundedIcon />
+    </IconButton>
+
+    {/* หัวข้อ Modal */}
+    <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center', color: '#38b000' }}>
+      จัดการสถานะคำสั่งซื้อ
+    </Typography>
+
+    <Divider sx={{ mb: 3 }} />
+
+    {/* ข้อมูลคำสั่งซื้อ */}
+    <Box sx={{ mb: 3 }}>
+      <Typography variant="body1" sx={{ mb: 2 }}>
+        <strong>คำสั่งซื้อ ID:</strong> {orderDetails.id}
+      </Typography>
+      <Typography variant="body1" sx={{ mb: 2 }}>
+        <strong>ชื่อผู้สั่งซื้อ:</strong> {orderDetails.name}
+      </Typography>
+      <Typography variant="body1" sx={{ mb: 2 }}>
+        <strong>สถานะปัจจุบัน:</strong>{" "}
+        <Chip 
+          label={orderDetails.order_status} 
+          sx={{ 
+            backgroundColor: getStatusColor(orderDetails.order_status),
+            color: "white",
+            fontWeight: 600,
+          }} 
+        />
+      </Typography>
+    </Box>
+
+    {/* ฟอร์มเลือกสถานะใหม่ */}
+    <FormControl fullWidth sx={{ mb: 3 }}>
+      <InputLabel sx={{ fontWeight: 600 }}>เลือกสถานะใหม่</InputLabel>
+      <Select
+        value={orderDetails.order_status}
+        onChange={(e) => setStatusModal({ ...statusModal, orderDetails: { ...orderDetails, order_status: e.target.value } })}
+        sx={{
+          borderRadius: 1,
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#38b000', // สีขอบเมื่อไม่โฟกัส
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#38b000', // สีขอบเมื่อ hover
+          },
+        }}
+      >
+        {["In progress", "Completed", "Pending", "Canceled"].map((status) => (
+          <MenuItem key={status} value={status} sx={{ fontWeight: 500 }}>
+            {status}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+
+    {/* ปุ่มอัปเดตสถานะ */}
+    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+      <Button 
+        variant="outlined" 
+        onClick={closeModal}
+        sx={{
+          textTransform: "none",
+          "&:hover": {
+              backgroundColor: "rgba(144, 238, 144, 0.1)", 
+              borderColor: "#38b000", 
+              color: "#38b000", 
+          },
+      }}
+      >
+        ยกเลิก
+      </Button>
+      <Button 
+        variant="contained" 
+        onClick={() => handleStatusChange(orderDetails.order_status)}
+        sx={{
+          color: "#ffffff",
+          backgroundColor: "#38b000",
+          "&:hover": { backgroundColor: "#2c8c00" },
+        }}
+      >
+        อัปเดตสถานะ
+      </Button>
+    </Box>
+  </Box>
+</Modal>
     </div>
   );
 };

@@ -264,11 +264,11 @@ const Navigation = () => {
                       </MenuItem>
                     ))}
                     <MenuItem onClick={handleClearAlerts} sx={{ color: 'red' }}>
-                      Clear Alerts
+                      ล้างข้อมูลการแจ้งเตือน
                     </MenuItem>
                   </>
                 ) : (
-                  <MenuItem onClick={handleNotificationsClose}>No alerts</MenuItem>
+                  <MenuItem onClick={handleNotificationsClose}>ไม่มีข้อมูลการแจ้งเตือน</MenuItem>
                 )}
               </Menu>
 
@@ -340,16 +340,18 @@ const Navigation = () => {
                   <ListItemText primary="ดูโปรไฟล์" />
                 </MenuItem>
                 <MenuItem 
-                  onClick={() => '/logout'}
-                  sx={{
-                    '&:hover': {
+                onClick={handleLogout}
+                sx={{
+                  '&:hover': {
                       backgroundColor: '#f5f5f5',
                     },
-                  }}
-                >
-                  <ListItemIcon sx={{ color: "inherit" }}><LogoutRoundedIcon /></ListItemIcon>
-                  <ListItemText primary="ออกจากระบบ" />
-                </MenuItem>
+                }}
+              >
+                <ListItemIcon>
+                  <LogoutRoundedIcon fontSize="small" sx={{ color: 'error.main' }} />
+                </ListItemIcon>
+                <ListItemText primary="ออกจากระบบ" />
+              </MenuItem>
               </Box>
             </Menu>
           </Toolbar>

@@ -100,15 +100,15 @@ def register():
 
     # Validate email format
     if '@' not in email or '.' not in email:
-        return jsonify({'error': 'Invalid email format'}), 400
+        return jsonify({'error': 'รูปแบบอีเมลไม่ถูกต้อง'}), 400
     with get_db() as db_session:
         # Check if email already exists
         if db_session.query(User).filter_by(email=email).first():
-            return jsonify({'error': 'Email already exists'}), 409
+            return jsonify({'error': 'อีเมลนี้มีอยู่แล้ว'}), 409
 
         # Check if username already exists
         if db_session.query(User).filter_by(username=username).first():
-            return jsonify({'error': 'Username already exists'}), 409
+            return jsonify({'error': 'ชื่อผู้ใช้นี้มีอยู่แล้ว'}), 409
 
         # Hash the password
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
