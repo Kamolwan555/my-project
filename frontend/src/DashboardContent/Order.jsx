@@ -41,21 +41,23 @@ const theme = createTheme({
   },
 });
 
+// ฟังก์ชันกำหนดสีสถานะ
 const getStatusColor = (status) => {
   switch (status) {
     case "In progress":
-      return "#1e96fc";
+      return "#1e96fc"; // สีน้ำเงิน
     case "Completed":
-      return "#38b000";
+      return "#38b000"; // สีเขียว
     case "Pending":
-      return "#ffc300";
+      return "#ffc300"; // สีเหลือง
     case "Canceled":
-      return "#f80000";
+      return "#f80000"; // สีแดง
     default:
-      return "#D3D3D3";
+      return "#D3D3D3"; // สีเทา
   }
 };
 
+// คอลัมน์ของตาราง
 const columns = [
   {
     title: "",
@@ -91,15 +93,17 @@ const columns = [
     title: "สถานะ",
     field: "order_status",
     render: (record) => {
-      let color = "primary";
-      if (record.order_status === "Pending") color = "warning";
-      if (record.order_status === "Completed") color = "success";
-      if (
-        record.order_status === "Canceled" ||
-        record.order_status === "Cancelled"
-      )
-        color = "error";
-      return <Chip label={record.order_status} color={color} />;
+      const color = getStatusColor(record.order_status);
+      return (
+        <Chip
+          label={record.order_status}
+          sx={{
+            backgroundColor: color,
+            color: "white",
+            fontWeight: 600,
+          }}
+        />
+      );
     },
   },
 ];

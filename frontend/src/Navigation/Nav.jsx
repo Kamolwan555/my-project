@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, Menu, MenuItem, Grid, Avatar,Badge
+  Drawer, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Typography, Divider, ListItemButton, useMediaQuery, Menu, MenuItem, Grid, Avatar, Badge
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -15,7 +15,7 @@ import {
   AccountBoxRounded as AccountBoxRoundedIcon,
   NotificationsRounded as NotificationsRoundedIcon,
   PersonRounded as PersonRoundedIcon,
-  Person2Rounded as Person2RoundedIcon ,
+  Person2Rounded as Person2RoundedIcon,
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Swal from "sweetalert2"; // นำเข้า SweetAlert2
@@ -47,7 +47,7 @@ const demoTheme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          color: "#FFFFFF", 
+          color: "#FFFFFF",
         },
       },
     },
@@ -64,23 +64,23 @@ const demoTheme = createTheme({
 });
 
 const menuItems = [
-  { kind: 'header', title: 'เมนูหลัก', roles: ["Administrator", "Farmer","Customer"] }, 
-  { key: "/home", label: "หน้าหลัก", icon: <HomeRoundedIcon />, link: "/home", roles: ["Administrator", "Farmer","Customer"] },
-  { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/cropcal", roles: ["Administrator", "Farmer","Customer"] },
-  { key: "/order", label: "คำสั่งซื้อ", icon: <ShoppingCartRoundedIcon />, link: "/order", roles: ["Administrator", "Farmer","Customer"]},
-  { kind: 'header', title: 'ตรวจสอบข้อมูล', roles: ["Administrator", "Farmer","Customer"] }, 
+  { kind: 'header', title: 'เมนูหลัก', roles: ["Administrator", "Farmer", "Customer"] },
+  { key: "/home", label: "หน้าหลัก", icon: <HomeRoundedIcon />, link: "/home", roles: ["Administrator", "Farmer", "Customer"] },
+  { key: "/calculate", label: "คำนวณ", icon: <CalculateRoundedIcon />, link: "/cropcal", roles: ["Administrator", "Farmer", "Customer"] },
+  { key: "/order", label: "คำสั่งซื้อ", icon: <ShoppingCartRoundedIcon />, link: "/order", roles: ["Administrator", "Farmer", "Customer"] },
+  { kind: 'header', title: 'ตรวจสอบข้อมูล', roles: ["Administrator", "Farmer", "Customer"] },
   { key: "/soil", label: "ตรวจสอบดิน", icon: <TerrainRoundedIcon />, link: "/soil", roles: ["Administrator", "Farmer"] },
   { key: "/fertilizer", label: "ตรวจสอบปุ๋ย", icon: <LocalFloristRoundedIcon />, link: "/fertilizer", roles: ["Administrator", "Farmer"] },
-  { key: "/soilcard", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soilcard", roles: ["Administrator", "Farmer","Customer"] },
-  { kind: 'header', title: 'การตั้งค่า', roles: ["Administrator", "Farmer","Customer"] }, 
-  { key: "/logout", label: "ออกจากระบบ", icon: <LogoutRoundedIcon />, link: "/logout", roles: ["Administrator", "Farmer","Customer"] },
+  { key: "/soilcard", label: "ชุดข้อมูลดิน", icon: <DataUsageRoundedIcon />, link: "/soilcard", roles: ["Administrator", "Farmer", "Customer"] },
+  { kind: 'header', title: 'การตั้งค่า', roles: ["Administrator", "Farmer", "Customer"] },
+  { key: "/logout", label: "ออกจากระบบ", icon: <LogoutRoundedIcon />, link: "/logout", roles: ["Administrator", "Farmer", "Customer"] },
 ];
 
 const Navigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State สำหรับควบคุมการเปิดปิดเมนูโปรไฟล์
   const [user, setUser] = useState(null); // State สำหรับเก็บข้อมูลผู้ใช้
-  const [userrole,setUserrole] = useState(null)
+  const [userrole, setUserrole] = useState(null)
   const [loading, setLoading] = useState(true); // State สำหรับการโหลดข้อมูล
   const [error, setError] = useState(null); // State สำหรับเก็บข้อผิดพลาด
   const location = useLocation();
@@ -134,7 +134,7 @@ const Navigation = () => {
   };
 
 
- 
+
 
   // ดึงข้อมูลผู้ใช้จาก API
   useEffect(() => {
@@ -177,7 +177,7 @@ const Navigation = () => {
 
   // ฟังก์ชันสำหรับการออกจากระบบ
   const handleLogout = (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
     Swal.fire({
       title: "คุณแน่ใจหรือไม่?",
       text: "คุณต้องการออกจากระบบหรือไม่?",
@@ -193,7 +193,7 @@ const Navigation = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem('user_id'); // ลบ user_id ออกจาก localStorage
-        navigate("/"); 
+        navigate("/");
       }
     });
   };
@@ -211,12 +211,12 @@ const Navigation = () => {
     }
   };
   const handleClearAlerts = () => {
-    setAlerts([]);  
+    setAlerts([]);
     toast.dismiss();
     setAlertCount(0);
-    handleNotificationsClose(); 
+    handleNotificationsClose();
   };
-  
+
   return (
     <ThemeProvider theme={demoTheme}>
       <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -245,7 +245,7 @@ const Navigation = () => {
 
             {/* ปุ่ม Notification และ Profile */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton color="inherit" aria-label="notifications" onClick={handleNotificationsClick}>
+              <IconButton color="inherit" aria-label="notifications" onClick={handleNotificationsClick}>
                 <Badge badgeContent={alertCount} color="secondary">
                   <NotificationsRoundedIcon />
                 </Badge>
@@ -272,9 +272,9 @@ const Navigation = () => {
                 )}
               </Menu>
 
-              <IconButton 
-                color="inherit" 
-                aria-label="profile" 
+              <IconButton
+                color="inherit"
+                aria-label="profile"
                 onClick={handleProfileMenuOpen}
               >
                 <PersonRoundedIcon />
@@ -326,7 +326,7 @@ const Navigation = () => {
 
               {/* เมนูย่อย */}
               <Box>
-                <MenuItem 
+                <MenuItem
                   onClick={() => handleProfileMenuClose('/profile')}
                   sx={{
                     '&:hover': {
@@ -339,19 +339,19 @@ const Navigation = () => {
                   </ListItemIcon>
                   <ListItemText primary="ดูโปรไฟล์" />
                 </MenuItem>
-                <MenuItem 
-                onClick={handleLogout}
-                sx={{
-                  '&:hover': {
+                <MenuItem
+                  onClick={handleLogout}
+                  sx={{
+                    '&:hover': {
                       backgroundColor: '#f5f5f5',
                     },
-                }}
-              >
-                <ListItemIcon>
-                  <LogoutRoundedIcon fontSize="small" sx={{ color: 'error.main' }} />
-                </ListItemIcon>
-                <ListItemText primary="ออกจากระบบ" />
-              </MenuItem>
+                  }}
+                >
+                  <ListItemIcon>
+                    <LogoutRoundedIcon fontSize="small" sx={{ color: 'error.main' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="ออกจากระบบ" />
+                </MenuItem>
               </Box>
             </Menu>
           </Toolbar>
@@ -366,7 +366,8 @@ const Navigation = () => {
             flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: 220,
-              color: "#38b000",
+              color: "#FFFFFF", // เปลี่ยนสีข้อความเป็นสีขาว
+              backgroundColor: "#121212", // เปลี่ยนสีพื้นหลังเป็นสีเข้ม
               transition: "width 0.3s ease-out",
               height: "calc(100% - 64px)",
               position: "fixed",
@@ -388,10 +389,10 @@ const Navigation = () => {
                       variant="subtitle1"
                       sx={{
                         fontWeight: 700,
-                        color: "#38b000",
+                        color: "#38b000", // เปลี่ยนสีข้อความหัวข้อ
                         padding: "16px 16px 8px 16px",
                         textTransform: "uppercase",
-                        fontSize: "14px", 
+                        fontSize: "14px",
                       }}
                     >
                       {item.title}
@@ -404,13 +405,13 @@ const Navigation = () => {
                       component={Link}
                       to={item.link}
                       selected={location.pathname === item.link}
-                      onClick={item.key === "/logout" ? handleLogout : handleMenuItemClick} // เรียก handleLogout เมื่อคลิกที่ "ออกจากระบบ"
+                      onClick={item.key === "/logout" ? handleLogout : handleMenuItemClick}
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#38b000",
                           color: "#FFFFFF",
                         },
-                        "&:hover": { backgroundColor: "#f6f6f6", color: "#38b000" },
+                        "&:hover": { backgroundColor: "#1E1E1E", color: "#38b000" }, // เปลี่ยนสีเมื่อ hover
                       }}
                     >
                       <ListItemIcon sx={{ color: "inherit" }}>{item.icon}</ListItemIcon>
@@ -422,29 +423,28 @@ const Navigation = () => {
             </List>
           </Box>
 
-          <Divider />
+          <Divider sx={{ backgroundColor: "#333" }} /> {/* เปลี่ยนสีเส้นแบ่ง */}
           {userrole == 'Administrator' && (
             <ListItem
-            button
-            key="/userconfig"
-            component={Link}
-            to="/configmenu"
-            onClick={handleMenuItemClick}
-            sx={{
-              "&.Mui-selected": {
-                backgroundColor: "#38b000",
-                color: "#FFFFFF",
-              },
-              "&:hover": { backgroundColor: "#f6f6f6", color: "#38b000" },
-            }}
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <AccountBoxRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="การตั้งค่าผู้ใช้" />
-          </ListItem>
+              button
+              key="/userconfig"
+              component={Link}
+              to="/configmenu"
+              onClick={handleMenuItemClick}
+              sx={{
+                "&.Mui-selected": {
+                  backgroundColor: "#38b000",
+                  color: "#FFFFFF",
+                },
+                "&:hover": { backgroundColor: "#1E1E1E", color: "#38b000" }, // เปลี่ยนสีเมื่อ hover
+              }}
+            >
+              <ListItemIcon sx={{ color: "inherit" }}>
+                <AccountBoxRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="การตั้งค่าผู้ใช้" />
+            </ListItem>
           )}
-          
         </Drawer>
 
         <Box
