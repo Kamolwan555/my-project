@@ -362,10 +362,10 @@ const Navigation = () => {
           open={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
           sx={{
-            width: isDrawerOpen ? 220 : 0,
+            width: isDrawerOpen ? 350 : 0,
             flexShrink: 0,
             "& .MuiDrawer-paper": {
-              width: 220,
+              width: 360,
               color: "#FFFFFF", // เปลี่ยนสีข้อความเป็นสีขาว
               backgroundColor: "#121212", // เปลี่ยนสีพื้นหลังเป็นสีเข้ม
               transition: "width 0.3s ease-out",

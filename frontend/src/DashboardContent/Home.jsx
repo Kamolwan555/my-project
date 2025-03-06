@@ -57,9 +57,9 @@ const columns = [
       <span
         style={{
           display: "inline-block",
-          width: 10,
-          height: 10,
-          borderRadius: "50%",
+          width: 8,
+          height: 40,
+          borderRadius: "25%",
           backgroundColor: getStatusColor(record.order_status),
           marginRight: 8,
         }}
@@ -92,6 +92,8 @@ const columns = [
             backgroundColor: color,
             color: "white",
             fontWeight: 600,
+            width: 90,
+            height: 40
           }}
         />
       );
