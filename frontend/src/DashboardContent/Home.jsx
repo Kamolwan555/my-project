@@ -384,7 +384,7 @@ const Home = () => {
 
     {/* ฟอร์มเลือกสถานะใหม่ */}
     <FormControl fullWidth sx={{ mb: 3 }}>
-      <InputLabel sx={{ fontWeight: 600 }}>เลือกสถานะใหม่</InputLabel>
+      <InputLabel sx={{ fontWeight: 600 }}></InputLabel>
       <Select
         value={orderDetails.order_status}
         onChange={(e) => setStatusModal({ ...statusModal, orderDetails: { ...orderDetails, order_status: e.target.value } })}
