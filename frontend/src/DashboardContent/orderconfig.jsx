@@ -114,17 +114,16 @@ const OrderTable = () => {
         {
             title: "สถานะ",
             field: "order_status",
-            render: (record) => {
-                let color = "primary";
-                if (record.order_status === "Pending") color = "warning";
-                if (record.order_status === "Completed") color = "success";
-                if (
-                    record.order_status === "Canceled" ||
-                    record.order_status === "Cancelled"
-                )
-                    color = "error";
-                return <Chip label={record.order_status} color={color} />;
-            },
+            render: (record) => (
+                <Chip
+                    label={record.order_status}
+                    sx={{
+                        backgroundColor: getStatusColor(record.order_status),
+                        color: "white",
+                        fontWeight: 600,
+                    }}
+                />
+            ),
         },
     ];
 
