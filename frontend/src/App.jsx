@@ -21,6 +21,8 @@ import EditOrder from "./DashboardContent/EditOrder";
 import Soilcard from "./DashboardContent/Soilcard";
 import Cropcal from "./DashboardContent/Cropcal"
 import Profile from "./Navigation/profile";
+import Orderfrom from "./DashboardContent/orderfrom";
+
 // import { PrivateRoute } from "./component/PrivateRoute";
 
 const App = () => {
@@ -45,9 +47,11 @@ const App = () => {
           <Route path="/editorder/:orderId" element={<EditOrder />} />
           <Route path="/soilcard" element={<Soilcard />} />
           <Route path="/soil/:id" element={<Soildata />} />
+          <Route path="/calorder" element={<Orderfrom />} />
           <Route path="/cropcal" element={<Cropcal />} />
           <Route path="/calculate/:cropID/:N/:P/:K" element={<Calculate />} />
           <Route path="/profile" element={<Profile />} />
+          
         </Route>
         <Route path="/register" element={<Register />} />
       </Routes>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Paper, CircularProgress, Box, Button } from '@mui/material';
+import { Container, Typography, Grid, Paper, CircularProgress, Button } from '@mui/material';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -46,6 +46,12 @@ const Calculate = () => {
       </Container>
     );
   }
+
+  const handleNext = () => {
+    navigate(`/calorder?fert1=${data.fert1.name}&amount1=${data.fert1.result}&unit1=${data.fert1.unit}` +
+             `&fert2=${data.fert2.name}&amount2=${data.fert2.result}&unit2=${data.fert2.unit}` +
+             `&fert3=${data.fert3.name}&amount3=${data.fert3.result}&unit3=${data.fert3.unit}`);
+  };
 
   return (
     <Container maxWidth={false} style={{ padding: '20px' }}>
@@ -98,14 +104,14 @@ const Calculate = () => {
         <Typography color="black">{data.fert3.name}: <strong>{data.fert3.result}</strong> {data.fert3.unit}</Typography>
       </Paper>
 
-      <Paper elevation={4} style={{ padding: '20px', marginTop: '20px', backgroundColor: '#ede7f6' }}>
-        <Typography variant="h6" color="black">คำแนะนำการใช้ปุ๋ย</Typography>
-        <Box style={{ paddingLeft: '15px', borderLeft: '4px solid black' }}>
-          {data.note1 && <div dangerouslySetInnerHTML={{ __html: data.note1 }} />}
-          {data.note2 && <div dangerouslySetInnerHTML={{ __html: data.note2 }} />}
-          {data.note3 && <div dangerouslySetInnerHTML={{ __html: data.note3 }} />}
-        </Box>
-      </Paper>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleNext}
+        sx={{ display: 'block', margin: '20px auto', backgroundColor: '#ff9800', '&:hover': { backgroundColor: '#e68900' } }}
+      >
+        ถัดไป
+      </Button>
     </Container>
   );
 };
