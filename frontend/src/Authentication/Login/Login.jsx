@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { ThemeProvider } from "@mui/material/styles";
 
-
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
 const { Text, Title, Link } = Typography;
@@ -51,20 +50,20 @@ export default function Login() {
         throw new Error("No access token received");
       }
     } catch (err) { // eslint-disable-line no-unused-vars
-  Swal.fire({
-    icon: "error",
-    title: "เกิดข้อผิดพลาด",
-    text: "มีบางอย่างผิดพลาด กรุณาลองอีกครั้งในภายหลัง",
-    confirmButtonText: "ตกลง",
-    confirmButtonColor: "#32CD32",
-    customClass: {
-      popup: "sarabun-font",
-      title: "sarabun-font",
-      content: "sarabun-font",
-      confirmButton: "sarabun-font",
-    },
-  });
-}
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "มีบางอย่างผิดพลาด กรุณาลองอีกครั้งในภายหลัง",
+        confirmButtonText: "ตกลง",
+        confirmButtonColor: "#32CD32",
+        customClass: {
+          popup: "sarabun-font",
+          title: "sarabun-font",
+          content: "sarabun-font",
+          confirmButton: "sarabun-font",
+        },
+      });
+    }
   };
   
 
@@ -144,10 +143,10 @@ export default function Login() {
       <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
       <style>
         {`
-                  .sarabun-font {
-                    font-family: 'Sarabun', sans-serif !important;
-                  }
-                `}
+          .sarabun-font {
+            font-family: 'Sarabun', sans-serif !important;
+          }
+        `}
       </style>
       <section style={styles.section}>
         <div style={styles.imageSection}></div>
@@ -179,6 +178,10 @@ export default function Login() {
                     required: true,
                     message: "กรุณาใส่อีเมลของคุณ!",
                   },
+                  {
+                    max: 30,
+                    message: "Email exceeds 30 characters",
+                  },
                 ]}
               >
                 <input
@@ -198,6 +201,10 @@ export default function Login() {
                   {
                     required: true,
                     message: "กรุณาใส่รหัสผ่านของคุณ!",
+                  },
+                  {
+                    max: 25,
+                    message: "Password exceeds 25 characters",
                   },
                 ]}
               >

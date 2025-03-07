@@ -901,7 +901,7 @@ const SoilCard = () => {
     if (selectedRegion === "central" && id >= 40 && id <= 61) return true;
     if (selectedRegion === "northeast" && id >= 62 && id <= 101) return true;
     if (selectedRegion === "east" && id >= 102 && id <= 123) return true;
-    if (selectedRegion === "south" && id >= 124 && id <= 142) return true;
+    if (selectedRegion === "south" && id >= 124 && id <= 142) return true; // ปรับเป็น id <= 143 หากเพิ่มข้อมูลใหม่
     return false;
   });
 

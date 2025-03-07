@@ -114,221 +114,229 @@ export default function SignUpPage() {
 
   return (
     <ThemeProvider theme={demoTheme}>
-          <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
-          <style>
-            {`
-              .sarabun-font {
-                font-family: 'Sarabun', sans-serif !important;
-              }
-            `}
-          </style>
-    <section style={styles.section}>
-      <div className="wrapper">
-        <div style={styles.header}>
-          <Title style={styles.title}>ลงทะเบียน</Title>
-          <Text style={styles.text}>สร้างบัญชีเพื่อเริ่มต้น</Text>
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
+      <style>
+        {`
+          .sarabun-font {
+            font-family: 'Sarabun', sans-serif !important;
+          }
+        `}
+      </style>
+      <section style={styles.section}>
+        <div className="wrapper">
+          <div style={styles.header}>
+            <Title style={styles.title}>ลงทะเบียน</Title>
+            <Text style={styles.text}>สร้างบัญชีเพื่อเริ่มต้น</Text>
+          </div>
+          <Form
+            name="normal_signup"
+            onFinish={onFinish}
+            layout="vertical"
+            requiredMark="optional"
+          >
+            <div className="form-group">
+              <label htmlFor="username" className="username-label">
+                ชื่อผู้ใช้
+              </label>
+              <Form.Item
+                name="username"
+                rules={[
+                  {
+                    type: "username",
+                    required: false,
+                    message: "กรุณาใส่ชื่อผู้ใช้ของคุณ!",
+                  },
+                ]}
+              >
+                <input
+                  type="username"
+                  id="username"
+                  className="username-Input"
+                  placeholder="ชื่อผู้ใช้"
+                  style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
+                />
+              </Form.Item>
+            </div>
+            <div className="form-group">
+              <label htmlFor="email" className="email-label">
+                อีเมล
+              </label>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    type: "email",
+                    required: false,
+                    message: "กรุณาใส่อีเมลของคุณ!",
+                  },
+                ]}
+              >
+                <input
+                  type="email"
+                  id="email"
+                  className="email-Input"
+                  placeholder="อีเมล"
+                  style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
+                />
+              </Form.Item>
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone" className="phone-label">
+                เบอร์โทรศัพท์
+              </label>
+              <Form.Item
+                name="phone"
+                rules={[
+                  {
+                    type: "tel",
+                    required: false,
+                    message: "กรุณาใส่เบอร์โทรศัพท์ของคุณ!",
+                  },
+                ]}
+              >
+                <input
+                  type="tel"
+                  id="phone"
+                  className="phone-input"
+                  placeholder="เบอร์โทรศัพท์"
+                  style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
+                />
+              </Form.Item>
+            </div>
+            <div className="form-grid">
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="firstName" className="firstName-label">
+                    ชื่อ
+                  </label>
+                  <Form.Item
+                    name="firstName"
+                    rules={[
+                      {
+                        type: "text",
+                        required: false,
+                        message: "กรุณาใส่ชื่อของคุณ!",
+                      },
+                    ]}
+                  >
+                    <input
+                      type="text"
+                      id="firstName"
+                      className="firstName-input"
+                      placeholder="ชื่อ"
+                      style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="lastName" className="lastName-label">
+                    นามสกุล
+                  </label>
+                  <Form.Item
+                    name="lastName"
+                    rules={[
+                      {
+                        type: "text",
+                        required: false,
+                        message: "กรุณาใส่นามสกุลของคุณ!",
+                      },
+                    ]}
+                  >
+                    <input
+                      type="text"
+                      id="lastName"
+                      className="lastName-input"
+                      placeholder="นามสกุล"
+                      style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="password" className="password-label">
+                รหัสผ่าน
+              </label>
+              <Form.Item
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณาใส่รหัสผ่านของคุณ!",
+                  },
+                  {
+                    min: 8,
+                    message: "รหัสผ่านน้อยกว่า 8 ตัวอักษร",
+                  },
+                  {
+                    max: 25,
+                    message: "รหัสผ่านเกิน 25 ตัวอักษร",
+                  },
+                ]}
+              >
+                <input
+                  type="password"
+                  id="password"
+                  className="password-Input"
+                  placeholder="รหัสผ่าน"
+                  style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
+                />
+              </Form.Item>
+            </div>
+            <div className="form-group">
+              <label
+                htmlFor="confirm-password"
+                className="confirm-password-label"
+              >
+                ยืนยันรหัสผ่าน
+              </label>
+              <Form.Item
+                name="confirm-password"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณาใส่รหัสผ่านของคุณ!",
+                  },
+                ]}
+              >
+                <input
+                  type="password"
+                  id="confirm-password"
+                  className="confirm-password-Input"
+                  placeholder="ยืนยันรหัสผ่าน"
+                  style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
+                />
+              </Form.Item>
+            </div>
+            <Form.Item style={{ marginBottom: "0" }}>
+              <Button
+                block
+                type="primary"
+                size="large"
+                htmlType="submit"
+                style={{
+                  backgroundColor: "#32CD32",
+                  borderColor: "#32CD32",
+                  color: "#fff",
+                  fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
+                }}
+              >
+                ลงทะเบียน
+              </Button>
+              <div style={styles.signupLink}>
+                <Text style={styles.text}>มีบัญชีอยู่แล้วหรือ?</Text>{" "}
+                <Link href="/" style={{
+                  color: "#32CD32", fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
+                }}>
+                  เข้าสู่ระบบ
+                </Link>
+              </div>
+            </Form.Item>
+          </Form>
         </div>
-        <Form
-          name="normal_signup"
-          onFinish={onFinish}
-          layout="vertical"
-          requiredMark="optional"
-        >
-          <div className="form-group">
-            <label htmlFor="username" className="username-label">
-              ชื่อผู้ใช้
-            </label>
-            <Form.Item
-              name="username"
-              rules={[
-                {
-                  type: "username",
-                  required: false,
-                  message: "กรุณาใส่ชื่อผู้ใช้ของคุณ!",
-                },
-              ]}
-            >
-              <input
-                type="username"
-                id="username"
-                className="username-Input"
-                placeholder="ชื่อผู้ใช้"
-                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
-              />
-            </Form.Item>
-          </div>
-          <div className="form-group">
-            <label htmlFor="email" className="email-label">
-              อีเมล
-            </label>
-            <Form.Item
-              name="email"
-              rules={[
-                {
-                  type: "email",
-                  required: false,
-                  message: "กรุณาใส่อีเมลของคุณ!",
-                },
-              ]}
-            >
-              <input
-                type="email"
-                id="email"
-                className="email-Input"
-                placeholder="อีเมล"
-                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
-              />
-            </Form.Item>
-          </div>
-          <div className="form-group">
-            <label htmlFor="phone" className="phone-label">
-              เบอร์โทรศัพท์
-            </label>
-            <Form.Item
-              name="phone"
-              rules={[
-                {
-                  type: "tel",
-                  required: false,
-                  message: "กรุณาใส่เบอร์โทรศัพท์ของคุณ!",
-                },
-              ]}
-            >
-              <input
-                type="tel"
-                id="phone"
-                className="phone-input"
-                placeholder="เบอร์โทรศัพท์"
-                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
-              />
-            </Form.Item>
-          </div>
-          <div className="form-grid">
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="firstName" className="firstName-label">
-                  ชื่อ
-                </label>
-                <Form.Item
-                  name="firstName"
-                  rules={[
-                    {
-                      type: "text",
-                      required: false,
-                      message: "กรุณาใส่ชื่อของคุณ!",
-                    },
-                  ]}
-                >
-                  <input
-                    type="text"
-                    id="firstName"
-                    className="firstName-input"
-                    placeholder="ชื่อ"
-                    style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
-                  />
-                </Form.Item>
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="lastName" className="lastName-label">
-                  นามสกุล
-                </label>
-                <Form.Item
-                  name="lastName"
-                  rules={[
-                    {
-                      type: "text",
-                      required: false,
-                      message: "กรุณาใส่นามสกุลของคุณ!",
-                    },
-                  ]}
-                >
-                  <input
-                    type="text"
-                    id="lastName"
-                    className="lastName-input"
-                    placeholder="นามสกุล"
-                    style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
-                  />
-                </Form.Item>
-              </div>
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="password" className="password-label">
-              รหัสผ่าน
-            </label>
-            <Form.Item
-              name="password"
-              rules={[
-                {
-                  required: false,
-                  message: "กรุณาใส่รหัสผ่านของคุณ!",
-                },
-              ]}
-            >
-              <input
-                type="password"
-                id="password"
-                className="password-Input"
-                placeholder="รหัสผ่าน"
-                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
-              />
-            </Form.Item>
-          </div>
-          <div className="form-group">
-            <label
-              htmlFor="confirm-password"
-              className="confirm-password-label"
-            >
-              ยืนยันรหัสผ่าน
-            </label>
-            <Form.Item
-              name="confirm-password"
-              rules={[
-                {
-                  required: false,
-                  message: "กรุณาใส่รหัสผ่านของคุณ!",
-                },
-              ]}
-            >
-              <input
-                type="password"
-                id="confirm-password"
-                className="confirm-password-Input"
-                placeholder="ยืนยันรหัสผ่าน"
-                style={{ fontFamily: "'Sarabun', sans-serif" }} // Updated to Sarabun
-              />
-            </Form.Item>
-          </div>
-          <Form.Item style={{ marginBottom: "0" }}>
-            <Button
-              block
-              type="primary"
-              size="large"
-              htmlType="submit"
-              style={{
-                backgroundColor: "#32CD32",
-                borderColor: "#32CD32",
-                color: "#fff",
-                fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
-              }}
-            >
-              ลงทะเบียน
-            </Button>
-            <div style={styles.signupLink}>
-              <Text style={styles.text}>มีบัญชีอยู่แล้วหรือ?</Text>{" "}
-              <Link href="/" style={{
-                color: "#32CD32", fontFamily: "'Sarabun', sans-serif", // Updated to Sarabun
-              }}>
-                เข้าสู่ระบบ
-              </Link>
-            </div>
-          </Form.Item>
-        </Form>
-      </div>
-    </section>
+      </section>
     </ThemeProvider>
   );
 }
