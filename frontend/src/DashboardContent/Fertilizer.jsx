@@ -60,88 +60,93 @@ const SensorCard = () => {
         </Box>
       ) : (
         <Grid container spacing={4}>
-          {sensorData.map((sensor) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={sensor.id}>
-              <Card 
-                component={Link}
-                to={`/customerfer?orderId=${sensor.order}`}
-                sx={{ 
-                  borderRadius: 2,
-                  boxShadow: 3,
-                  transition: 'transform 0.2s',
-                  '&:hover': { transform: 'scale(1.02)' },
-                  textDecoration: 'none',
-                  backgroundColor: '#ffffff',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <CardHeader
-                  title={
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
-                      <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'black' }}> 
-                        ออร์เดอร์ที่ {sensor.order}
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{
-                    backgroundColor: '#f1ffe5', 
-                    color: 'black',
-                    borderTopLeftRadius: 8,
-                    borderTopRightRadius: 8,
-                    py: 3,
-                    '& .MuiCardHeader-content': {
-                      display: 'flex',
-                      justifyContent: 'center'
-                    }
+          {sensorData.map((sensor) => {
+            const isInactive = sensor.status.toLowerCase() === 'inactive';
+            return (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={sensor.id}>
+                <Card 
+                  component={isInactive ? 'div' : Link}
+                  to={isInactive ? undefined : `/customerfer?sensorId=${sensor.id}`}
+                  sx={{ 
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    transition: 'transform 0.2s',
+                    '&:hover': { transform: isInactive ? 'none' : 'scale(1.02)' },
+                    textDecoration: 'none',
+                    backgroundColor: '#ffffff',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    pointerEvents: isInactive ? 'none' : 'auto',
+                    opacity: isInactive ? 0.6 : 1
                   }}
-                />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Chip
-                    icon={<AccessTime />}
-                    label={`จำนวนวัน: ${sensor.daysf}`}
-                    variant="outlined"
-                    sx={{ mb: 2, color: '#38b000', borderColor: '#38b000' }} 
+                >
+                  <CardHeader
+                    title={
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'black' }}> 
+                          เซ็นเซอร์ ID: {sensor.id}
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{
+                      backgroundColor: isInactive ? '#e0e0e0' : '#f1ffe5', 
+                      color: 'black',
+                      borderTopLeftRadius: 8,
+                      borderTopRightRadius: 8,
+                      py: 3,
+                      '& .MuiCardHeader-content': {
+                        display: 'flex',
+                        justifyContent: 'center'
+                      }
+                    }}
                   />
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Chip
+                      icon={<AccessTime />}
+                      label={`จำนวนวัน: ${sensor.daysf}`}
+                      variant="outlined"
+                      sx={{ mb: 2, color: '#38b000', borderColor: '#38b000' }} 
+                    />
 
-                  <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        <PlayCircleOutline fontSize="small" /> เริ่มต้น
-                      </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                        {sensor.start}
-                      </Typography>
+                    <Grid container spacing={2} sx={{ mb: 2 }}>
+                      <Grid item xs={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          <PlayCircleOutline fontSize="small" /> เริ่มต้น
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                          {sensor.start}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          <CheckCircleOutline fontSize="small" /> สถานะ
+                        </Typography>
+                        <Chip
+                          label={sensor.status.toUpperCase()}
+                          color={getStatusColor(sensor.status)}
+                          size="small"
+                          sx={{ fontWeight: 'bold' }}
+                        />
+                      </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        <CheckCircleOutline fontSize="small" /> สถานะ
-                      </Typography>
-                      <Chip
-                        label={sensor.status.toUpperCase()}
-                        color={getStatusColor(sensor.status)}
-                        size="small"
-                        sx={{ fontWeight: 'bold' }}
-                      />
-                    </Grid>
-                  </Grid>
 
-                  <Typography variant="caption" color="textSecondary">
-                    รหัสเซ็นเซอร์: {sensor.id}
-                  </Typography>
-                </CardContent>
-                <Divider sx={{ my: 1 }} />
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', p: 2 }}>
-                  <Typography variant="body2" sx={{ color: '#black', mr: 1 }}> 
-                    ดูรายละเอียด
-                  </Typography>
-                  <ChevronRight sx={{ color: '#black' }} /> 
-                </Box>
-              </Card>
-            </Grid>
-          ))}
+                    <Typography variant="caption" color="textSecondary">
+                      รหัสเซ็นเซอร์: {sensor.id}
+                    </Typography>
+                  </CardContent>
+                  <Divider sx={{ my: 1 }} />
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', p: 2 }}>
+                    <Typography variant="body2" sx={{ color: 'black', mr: 1 }}> 
+                      ดูรายละเอียด
+                    </Typography>
+                    <ChevronRight sx={{ color: 'black' }} /> 
+                  </Box>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
       )}
     </Box>

@@ -1,6 +1,6 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Typography, Paper, Grid, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+// import { useState, useEffect } from 'react';
 
 const OrderFertilizer = () => {
   const location = useLocation();
@@ -31,39 +31,29 @@ const OrderFertilizer = () => {
     navigate(-1); // Navigate back to the previous page
   };
 
+  const handleConfirm = () => {
+    navigate('/fertilizer'); // Navigate to the fertilizer page
+  };
+
   return (
     <Container maxWidth="md" style={{ padding: '20px' }}>
       <Button onClick={handleBack} style={{ marginBottom: '20px' }}>ย้อนกลับ</Button>
       
       <Typography variant="h4" align="center" gutterBottom>ข้อมูลการสั่งซื้อปุ๋ย</Typography>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} style={{ padding: '20px' }}>
-            <Typography variant="h6">ปุ๋ย 1</Typography>
-            <Typography>ชื่อปุ๋ย: <strong>{fert1.name}</strong></Typography>
-            <Typography>ปริมาณ: <strong>{fert1.amount}</strong> {fert1.unit}</Typography>
-          </Paper>
-        </Grid>
-        
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} style={{ padding: '20px' }}>
-            <Typography variant="h6">ปุ๋ย 2</Typography>
-            <Typography>ชื่อปุ๋ย: <strong>{fert2.name}</strong></Typography>
-            <Typography>ปริมาณ: <strong>{fert2.amount}</strong> {fert2.unit}</Typography>
-          </Paper>
-        </Grid>
-        
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} style={{ padding: '20px' }}>
-            <Typography variant="h6">ปุ๋ย 3</Typography>
-            <Typography>ชื่อปุ๋ย: <strong>{fert3.name}</strong></Typography>
-            <Typography>ปริมาณ: <strong>{fert3.amount}</strong> {fert3.unit}</Typography>
-          </Paper>
-        </Grid>
+      <Grid container spacing={3} alignItems="stretch">
+        {[fert1, fert2, fert3].map((fert, index) => (
+          <Grid item xs={12} md={4} key={index} style={{ display: 'flex' }}>
+            <Paper elevation={3} style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <Typography variant="h6">ปุ๋ย {index + 1}</Typography>
+              <Typography>ชื่อปุ๋ย: <strong>{fert.name}</strong></Typography>
+              <Typography>ปริมาณ: <strong>{fert.amount}</strong> {fert.unit}</Typography>
+            </Paper>
+          </Grid>
+        ))}
       </Grid>
 
-      <Button variant="contained" color="primary" style={{ marginTop: '20px' }}>
+      <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={handleConfirm}>
         ยืนยันการสั่งซื้อ
       </Button>
     </Container>

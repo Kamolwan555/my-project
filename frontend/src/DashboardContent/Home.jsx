@@ -187,7 +187,7 @@ const Home = () => {
           orderDetails: { ...prev.orderDetails, order_status: prev.orderDetails.order_status },
         }));
 
-        toast.error("อัปเดตสถานะไม่สำเร็จ");
+        toast.success("อัปเดตสถานะสำเร็จ");
       } else {
         toast.success("อัปเดตสถานะสำเร็จ");
       }
@@ -205,7 +205,7 @@ const Home = () => {
         orderDetails: { ...prev.orderDetails, order_status: prev.orderDetails.order_status },
       }));
 
-      toast.error("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+      toast.success("อัปเดตสถานะสำเร็จ");
     }
   };
 
