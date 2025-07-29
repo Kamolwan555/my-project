@@ -32,7 +32,7 @@ const OrderFertilizer = () => {
   };
 
   const handleConfirm = () => {
-    navigate('/fertilizer'); // Navigate to the fertilizer page
+    navigate('/home'); // Navigate to the fertilizer page
   };
 
   return (
@@ -54,7 +54,7 @@ const OrderFertilizer = () => {
       </Grid>
 
       <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={handleConfirm}>
-        ยืนยันการสั่งซื้อ
+        เสร็จสิ้น
       </Button>
     </Container>
   );
